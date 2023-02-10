@@ -42,7 +42,7 @@ function nova_spawn(dx, dy, radius, data)
 end
 
 function frontal_spawn(dx, dy, radius, direction, data)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(direction[1], direction[2], radius)
+  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, unpack(direction))
   for y=fy, fly, iy do
     for x=fx, flx, ix do
       if (x ~= 0 or y ~= 0) add(particles, Particle:new(dx + x, dy + y, false, Animator:new(data, false)))

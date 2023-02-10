@@ -53,7 +53,7 @@ function Tower:nova_collision()
 end
 function Tower:frontal_collision()
   local hits = {}
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(self.dir[1], self.dir[2], self.radius)
+  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(self.radius, unpack(self.dir))
   for y=fy, fly, iy do
     for x=fx, flx, ix do
       if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)

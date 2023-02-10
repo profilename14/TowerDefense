@@ -35,7 +35,7 @@ function Enemy:step()
   return true
 end
 function Enemy:get_pixel_location()
-  local n, prev = pathing[self.pos], {x=map_data[loaded_map].enemy_spawn_location[1], y=map_data[loaded_map].enemy_spawn_location[2]}
+  local n, prev = pathing[self.pos], unpack_to_coord(map_data[loaded_map].enemy_spawn_location)
   if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
   local px, py = self.x * 8, self.y * 8
   if not self.is_frozen then 
@@ -131,7 +131,7 @@ end
 function spawn_enemy()
   while enemies_remaining > 0 do 
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
-    if (is_there_something_at(map_data[loaded_map].enemy_spawn_location[1], map_data[loaded_map].enemy_spawn_location[2], enemies)) goto spawn_enemy_continue
+    if (is_there_something_at(unpack(map_data[loaded_map].enemy_spawn_location), enemies)) goto spawn_enemy_continue
     if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
     enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
     printh(enemy_data_from_template.hp)

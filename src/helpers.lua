@@ -97,7 +97,7 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
 end
 
 function parse_direction(direction)
-  local dx, dy = direction[1], direction[2]
+  local dx, dy = unpack(direction)
   if (dx > 0) return 90
   if (dx < 0) return 270
   if (dy > 0) return 180
@@ -131,7 +131,7 @@ function refund_tower_at(dx, dy)
   end
 end
 
-function parse_frontal_bounds(dx, dy, radius)
+function parse_frontal_bounds(radius, dx, dy)
   -- Default South
   local fx, fy, flx, fly, ix, iy = -1, 1, 1, radius, 1, 1
 
