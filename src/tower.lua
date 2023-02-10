@@ -76,7 +76,12 @@ function Tower:freeze_enemies(targets)
   end
 end
 function Tower:draw()
-  Animator.draw(self.animator, self.x*8, self.y*8)
+  -- Animator.draw(self.animator, self.x*8, self.y*8)
+  draw_sprite_rotated(
+    Animator.get_sprite(self.animator),
+    self.x*8, self.y*8, self.animator.sprite_size,
+    parse_direction(self.dir)
+  )
 end
 
 function place_tower(x, y)

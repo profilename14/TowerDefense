@@ -35,9 +35,12 @@ animation_data = {
   },
   incoming_hint = {
     data = {
-      {sprite = 4},
+      {sprite = 4, offset = {0, 0}},
+      {sprite = 4, offset = {1, 0}},
+      {sprite = 4, offset = {2, 0}},
+      {sprite = 4, offset = {1, 0}}
     },
-    ticks_per_frame = 3
+    ticks_per_frame = 5
   },
   blade_circle = {
     data = {
@@ -49,6 +52,20 @@ animation_data = {
       {sprite = 77}
     },
     ticks_per_frame = 3
+  },
+  lightning_lance = {
+    data = {
+      {sprite = 108},
+      {sprite = 109}
+    },
+    ticks_per_frame = 5, 
+  },
+  hale_howitzer = {
+    data = {
+      {sprite = 92},
+      {sprite = 93}
+    },
+    ticks_per_frame = 5, 
   }
 }
 map_data = {
@@ -109,30 +126,22 @@ tower_templates = {
     name = "lightning lance",
     damage = 5,
     radius = 5,
-    sprite_data = {
-      { 110, 108 },
-      { 111, 109 },
-    },
-    ticks_per_frame = 5, 
+    animation = animation_data.lightning_lance,
     cost = 55,
     type = "rail", 
     attack_delay = 25,
-    icon_data = 20,
+    icon_data = 18,
     disable_icon_rotation = false
   },
   {
     name = "hale howitzer",
     damage = 5, -- freeze delay; ! not damage
     radius = 2,
-    sprite_data = {
-      { 93, 92 },
-      { 95, 94 }
-    },
-    ticks_per_frame = 5, 
+    animation = animation_data.hale_howitzer, 
     cost = 25,
     type = "frontal", 
     attack_delay = 30,
-    icon_data = 68,
+    icon_data = 20,
     disable_icon_rotation = false
   },
   { 
@@ -255,7 +264,7 @@ function reset_game()
     pos = 0
   }
   option_selector = {
-    sprite_index = 8,
+    sprite_index = 2,
     size = 1,
     pos = 1
   }
@@ -273,7 +282,7 @@ function reset_game()
   start_next_wave = false
   wave_cor = nil
   incoming_hint = {}
-  direction = { 1, 0 }
+  direction = { 0, -1 }
   grid = {} -- 16 x 16 cell states
   towers = {}
   enemies = {}
