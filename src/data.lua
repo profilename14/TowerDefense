@@ -66,6 +66,17 @@ animation_data = {
       {sprite = 93}
     },
     ticks_per_frame = 5, 
+  },
+  fire_pit = {
+    data = {
+      {sprite = 124},
+      {sprite = 125},
+      {sprite = 126},
+      {sprite = 127},
+      {sprite = 126},
+      {sprite = 125}
+    },
+    ticks_per_frame = 5, 
   }
 }
 map_data = {
@@ -148,19 +159,11 @@ tower_templates = {
     name = "fire pit",
     damage = 3, -- fire tick duration
     radius = 0,
-    sprite_data = {
-      { 124, 124 },
-      { 125, 125 },
-      { 126, 126 },
-      { 127, 127 },
-      { 126, 126 },
-      { 125, 125 },
-    },
-    ticks_per_frame = 5, 
+    animation = animation_data.fire_pit, 
     cost = 25,
     type = "floor", 
     attack_delay = 15,
-    icon_data = 70,
+    icon_data = 22,
     disable_icon_rotation = true
   }
 }
