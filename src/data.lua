@@ -82,45 +82,38 @@ animation_data = {
 map_data = {
   {
     name = "curves",
-    data = {0, 0, 0, 0, 16, 16},
-    path_id = {45, 47, 25, 26, 27, 31},
     mget_shift = {0, 0},
     enemy_spawn_location = { 0, 1 },
     enemy_end_location = { 15, 11 },
     movement_direction = {1, 0},
-    allowed_tiles = { 28, 29, 30, 42, 43, 44, 46, 58, 59, 60, 61, 62, 63}
   },
   {
     name = "loop",
-    data = {16, 0, 0, 0, 16, 16},
-    path_id = {45, 47, 25, 26, 27, 31},
     mget_shift = {16, 0},
     enemy_spawn_location = { 0, 1 },
     enemy_end_location = { 15, 11 },
     movement_direction = {1, 0},
-    allowed_tiles = { 28, 29, 30, 42, 43, 44, 46, 58, 59, 60, 61, 62, 63}
   },
   {
     name = "straight",
-    data = {32, 0, 0, 0, 16, 16},
-    path_id = {45, 47, 25, 26, 27, 31},
     mget_shift = {32, 0},
     enemy_spawn_location = { 0, 1 },
     enemy_end_location = { 15, 2 },
     movement_direction = {1, 0},
-    allowed_tiles = { 28, 29, 30, 42, 43, 44, 46, 58, 59, 60, 61, 62, 63}
   },
   {
     name = "u-turn",
-    data = {48, 0, 0, 0, 16, 16},
-    path_id = {45, 47, 25, 26, 27, 31},
     mget_shift = {48, 0},
     enemy_spawn_location = { 0, 1 },
     enemy_end_location = { 0, 6 },
     movement_direction = {1, 0},
-    allowed_tiles = { 28, 29, 30, 42, 43, 44, 46, 58, 59, 60, 61, 62, 63}
   }
 }  
+map_meta_data = {
+  path_flag_id = 0,
+  non_path_flag_id = 1,
+  map_func_static = {0, 0, 16, 16}
+}
 tower_templates = {
   {
     name = "sword circle",

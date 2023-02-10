@@ -1,11 +1,7 @@
 function game_draw_loop()
   map(
-    map_data[loaded_map].data[1], 
-    map_data[loaded_map].data[2], 
-    map_data[loaded_map].data[3], 
-    map_data[loaded_map].data[4], 
-    map_data[loaded_map].data[5], 
-    map_data[loaded_map].data[6]
+    unpack(map_data[loaded_map].mget_shift),
+    unpack(map_meta_data)
   )
   -- towers
   foreach(towers, Tower.draw)
@@ -54,8 +50,7 @@ function game_draw_loop()
 end
 
 function draw_map_overview(map_id, xoffset, yoffset)
-  local mxshift = map_data[map_id].mget_shift[1]
-  local myshift = map_data[map_id].mget_shift[2]
+  local mxshift, myshift = unpack(map_data[map_id].mget_shift)
   for y=0, 15 do
     for x=0, 15 do
       local is_not_path = placable_tile_location(x + mxshift, y + myshift, map_id)

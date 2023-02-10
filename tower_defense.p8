@@ -84,44 +84,37 @@ ticks_per_frame=5,
 map_data={
 {
 name = "curves",
-data={0,0,0,0,16,16},
-path_id={45,47,25,26,27,31},
 mget_shift = {0, 0},
 enemy_spawn_location={0,1},
 enemy_end_location={15,11},
 movement_direction={1,0},
-allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 },
 {
 name = "loop",
-data={16,0,0,0,16,16},
-path_id={45,47,25,26,27,31},
 mget_shift = {16, 0},
 enemy_spawn_location={0,1},
 enemy_end_location={15,11},
 movement_direction={1,0},
-allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 },
 {
 name = "straight",
-data={32,0,0,0,16,16},
-path_id={45,47,25,26,27,31},
 mget_shift = {32, 0},
 enemy_spawn_location={0,1},
 enemy_end_location={15,2},
 movement_direction={1,0},
-allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 },
 {
 name = "u-turn",
-data={48,0,0,0,16,16},
-path_id={45,47,25,26,27,31},
 mget_shift = {48, 0},
 enemy_spawn_location={0,1},
 enemy_end_location={0,6},
 movement_direction={1,0},
-allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 }
+}
+map_meta_data={
+path_flag_id=0,
+non_path_flag_id=1,
+map_func_static={0,0,16,16}
 }
 tower_templates={
 {
@@ -356,27 +349,23 @@ player_health-=enemy.damage
 del(enemies,enemy)
 end
 function parse_path()
+local map_shift = map_data[loaded_map].mget_shift
+local map_enemy_spawn_location = map_data[loaded_map].enemy_spawn_location
 local path_tiles = {}
-for iy=0, 16 do
-for ix=0, 16 do
-local mx = ix + map_data[loaded_map].mget_shift[1]
-local my = iy + map_data[loaded_map].mget_shift[2]
-for _, id in pairs(map_data[loaded_map].path_id) do
-if (mget(mx, my) == id) then 
-add(path_tiles,{x=mx,y=my})
-end
+for iy=0, 15 do
+for ix=0, 15 do
+local map_cord = vec2_add(pack(ix, iy), map_shift)
+if fget(mget(unpack(map_cord)), map_meta_data.path_flag_id) then 
+add(path_tiles, unpack_to_coord(map_cord))
 end
 end
 end
 local path = {}
-local dir = {x=map_data[loaded_map].movement_direction[1],y=map_data[loaded_map].movement_direction[2]}
-local ending = {
-x=map_data[loaded_map].enemy_end_location[1] + map_data[loaded_map].mget_shift[1], 
-y=map_data[loaded_map].enemy_end_location[2] + map_data[loaded_map].mget_shift[2]
-}
+local dir = unpack_to_coord(map_data[loaded_map].movement_direction)
+local ending = unpack_to_coord(vec2_add(map_data[loaded_map].enemy_end_location, map_shift))
 local cur = {
-x = map_data[loaded_map].enemy_spawn_location[1] + map_data[loaded_map].mget_shift[1] + dir.x, 
-y = map_data[loaded_map].enemy_spawn_location[2] + map_data[loaded_map].mget_shift[2] + dir.y
+x = map_enemy_spawn_location[1] + map_shift[1] + dir.x, 
+y = map_enemy_spawn_location[2] + map_shift[2] + dir.y
 }
 while not (cur.x == ending.x and cur.y == ending.y) do 
 local north = {x=cur.x, y=cur.y-1}
@@ -675,11 +664,7 @@ end
 function placable_tile_location(x, y, map_id)
 local map_index = loaded_map
 if (map_id ~= nil) map_index = map_id
-local sprite_id = mget(x, y)
-for i=1, #map_data[map_index].allowed_tiles do 
-if (sprite_id == map_data[map_index].allowed_tiles[i]) return true
-end
-return false
+return fget(mget(x, y), map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(dx, dy, table)
 for _, enemy in pairs(enemies) do
@@ -714,6 +699,12 @@ if (dx < 0) return 270
 if (dy > 0) return 180
 if (dy < 0) return 0
 end
+function vec2_add(vec1, vec2)
+return {vec1[1] + vec2[1], vec1[2] + vec2[2]}
+end
+function unpack_to_coord(vec1)
+return {x=vec1[1], y=vec1[2]}
+end
 function is_there_something_at(dx, dy, table)
 for _, obj in pairs(table) do
 if (obj.x == dx and obj.y == dy) return true 
@@ -744,12 +735,8 @@ return fx, fy, flx, fly, ix, iy
 end
 function game_draw_loop()
 map(
-map_data[loaded_map].data[1],
-map_data[loaded_map].data[2],
-map_data[loaded_map].data[3],
-map_data[loaded_map].data[4],
-map_data[loaded_map].data[5],
-map_data[loaded_map].data[6]
+unpack(map_data[loaded_map].mget_shift),
+unpack(map_meta_data)
 )
 foreach(towers, Tower.draw)
 foreach(enemies, Enemy.draw)
@@ -790,8 +777,7 @@ print_with_outline(text,1,122,7,0)
 end
 end
 function draw_map_overview(map_id, xoffset, yoffset)
-local mxshift = map_data[map_id].mget_shift[1]
-local myshift = map_data[map_id].mget_shift[2]
+local mxshift, myshift = unpack(map_data[map_id].mget_shift)
 for y=0, 15 do
 for x=0, 15 do
 local is_not_path = placable_tile_location(x + mxshift, y + myshift, map_id)
@@ -1098,6 +1084,9 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000aaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000000000000000000000000000
+__gff__
+0000000000000000000000000000000000000000000000000001010102020201000000000000000000000202020102010000000000000000000002020202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 1d1d1d1d1d1d1d1d1d1d1d1d1e3f3f3f1d1d1d1d1d1d1d1d1d1d1d1d1e3f3f3f1d1d1d1d1d1d1d1d1d1e3f3f3f3f3f3f1d1d1d1d1d1d1d1e3f3f3f3f3f3f3f3f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 2f2f2f2f2f2f2f2f2f2f2f1f2e3f3f3f2f2f2f2f2f2f2f2f2f2f2f1f2e3f3f3f2f2f2f2f2f2f2f2f1f3a1d1d1d1d1d1d2f2f2f2f2f2f1f2e3f3f3f3f3f3f3f3f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

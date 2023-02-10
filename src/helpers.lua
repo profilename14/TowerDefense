@@ -64,11 +64,7 @@ end
 function placable_tile_location(x, y, map_id)
   local map_index = loaded_map
   if (map_id ~= nil) map_index = map_id
-  local sprite_id = mget(x, y)
-  for i=1, #map_data[map_index].allowed_tiles do 
-    if (sprite_id == map_data[map_index].allowed_tiles[i]) return true
-  end
-  return false
+  return fget(mget(x, y), map_meta_data.non_path_flag_id)
 end
 
 function add_enemy_at_to_table(dx, dy, table)
@@ -100,13 +96,20 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
   end
 end
 
--- temp
 function parse_direction(direction)
   local dx, dy = direction[1], direction[2]
   if (dx > 0) return 90
   if (dx < 0) return 270
   if (dy > 0) return 180
   if (dy < 0) return 0
+end
+
+function vec2_add(vec1, vec2)
+  return {vec1[1] + vec2[1], vec1[2] + vec2[2]}
+end
+
+function unpack_to_coord(vec1)
+  return {x=vec1[1], y=vec1[2]}
 end
 
 function is_there_something_at(dx, dy, table)

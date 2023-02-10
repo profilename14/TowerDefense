@@ -68,28 +68,24 @@ function update_enemy_position(enemy)
 end
 
 function parse_path()
+  local map_shift = map_data[loaded_map].mget_shift
+  local map_enemy_spawn_location = map_data[loaded_map].enemy_spawn_location
   local path_tiles = {}
-  for iy=0, 16 do
-    for ix=0, 16 do
-      local mx = ix + map_data[loaded_map].mget_shift[1]
-      local my = iy + map_data[loaded_map].mget_shift[2]
-      for _, id in pairs(map_data[loaded_map].path_id) do
-        if (mget(mx, my) == id) then 
-          add(path_tiles, { x = mx, y = my })
-        end
+  for iy=0, 15 do
+    for ix=0, 15 do
+      local map_cord = vec2_add(pack(ix, iy), map_shift)
+      if fget(mget(unpack(map_cord)), map_meta_data.path_flag_id) then 
+        add(path_tiles, unpack_to_coord(map_cord))
       end
     end
   end
 
   local path = {}
-  local dir = {x=map_data[loaded_map].movement_direction[1],y=map_data[loaded_map].movement_direction[2]}
-  local ending = {
-    x=map_data[loaded_map].enemy_end_location[1] + map_data[loaded_map].mget_shift[1], 
-    y=map_data[loaded_map].enemy_end_location[2] + map_data[loaded_map].mget_shift[2]
-  }
+  local dir = unpack_to_coord(map_data[loaded_map].movement_direction)
+  local ending = unpack_to_coord(vec2_add(map_data[loaded_map].enemy_end_location, map_shift))
   local cur = {
-    x = map_data[loaded_map].enemy_spawn_location[1] + map_data[loaded_map].mget_shift[1] + dir.x, 
-    y = map_data[loaded_map].enemy_spawn_location[2] + map_data[loaded_map].mget_shift[2] + dir.y
+    x = map_enemy_spawn_location[1] + map_shift[1] + dir.x, 
+    y = map_enemy_spawn_location[2] + map_shift[2] + dir.y
   }
   while not (cur.x == ending.x and cur.y == ending.y) do 
     local north = {x=cur.x, y=cur.y-1}
