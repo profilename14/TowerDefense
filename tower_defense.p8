@@ -750,8 +750,7 @@ draw_selector(shop_selector)
 end
 else
 if not enemies_active and incoming_hint ~= nil then 
-local dx = map_data[loaded_map].enemy_spawn_location[1]
-local dy = map_data[loaded_map].enemy_spawn_location[2]
+local dx, dy = unpack(map_data[loaded_map].enemy_spawn_location)
 local dir = map_data[loaded_map].movement_direction
 for i=1, #incoming_hint do 
 Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
@@ -787,32 +786,6 @@ else
 pset(x+xoffset,y+yoffset,map_draw_data.path)
 end
 end
-end
-end
-function draw_attack_tiles(tower_template, dx, dy)
-if tower_template.type == "tack" then 
-for y=-tower_template.radius, tower_template.radius do
-for x=-tower_template.radius, tower_template.radius do
-if (x ~= 0 or y ~= 0) spr(tile_display.attack, dx + x * 8, dy + y * 8)
-end
-end
-spr(tower_template.sprite_data[1][2],dx,dy)
-elseif tower_template.type == "rail" then 
-local shift = (tower_template.radius + 1) / 2 - 1
-for x=1, tower_template.radius do
-if (x > 0) spr(tile_display.attack, dx + x * 8 - (shift * 8), dy)
-end
-spr(tower_template.sprite_data[1][2], dx - (shift * 8), dy)
-elseif tower_template.type == "frontal" then 
-for y=-1, 1 do
-for x=1, tower_template.radius do 
-spr(tile_display.attack,dx+x*8,dy+y*8)
-end
-end
-spr(tower_template.sprite_data[1][2],dx,dy)
-elseif tower_template.type == "floor" then 
-spr(tile_display.attack,dx,dy)
-spr(tower_template.sprite_data[1][2],dx,dy)
 end
 end
 function draw_shop_icons()
@@ -1117,18 +1090,18 @@ __sfx__
 480300000a6500000006630000000000000000000000000000000000000000000000000001e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000c000004110071100e110121201a100000000c30000000000000070000700006000060000600006000060000600000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
-0100000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0000000004
-0200000004
+01 01464344
+00 01024344
+00 01024344
+00 01024304
+00 01024304
+00 01424304
+00 01424304
+00 01420304
+00 01420304
+00 01020304
+00 01020304
+00 01020344
+00 01020344
+00 01420344
+02 01420344

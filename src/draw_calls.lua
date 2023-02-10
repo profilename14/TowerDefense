@@ -20,8 +20,7 @@ function game_draw_loop()
     end
   else 
     if not enemies_active and incoming_hint ~= nil then 
-      local dx = map_data[loaded_map].enemy_spawn_location[1]
-      local dy = map_data[loaded_map].enemy_spawn_location[2]
+      local dx, dy = unpack(map_data[loaded_map].enemy_spawn_location)
       local dir = map_data[loaded_map].movement_direction
       for i=1, #incoming_hint do 
         Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
@@ -39,7 +38,6 @@ function game_draw_loop()
     local len = #tower_templates[shop_selector.pos + 1].name
     print_with_outline(tower_templates[shop_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
     print_with_outline("❎ rotate | 🅾️ close shop", 1, 120, 7, 0)
-    -- draw_attack_tiles(tower_templates[shop_selector.pos + 1], 128/2 - 8, shop_ui_data.y[1] + 24)
     draw_shop_cost()
     draw_shop_dmg()
   else 
@@ -60,33 +58,6 @@ function draw_map_overview(map_id, xoffset, yoffset)
         pset(x + xoffset, y + yoffset, map_draw_data.path)
       end
     end
-  end
-end
-
-function draw_attack_tiles(tower_template, dx, dy)
-  if tower_template.type == "tack" then 
-    for y=-tower_template.radius, tower_template.radius do
-      for x=-tower_template.radius, tower_template.radius do
-        if (x ~= 0 or y ~= 0) spr(tile_display.attack, dx + x * 8, dy + y * 8)
-      end
-    end
-    spr(tower_template.sprite_data[1][2], dx, dy)
-  elseif tower_template.type == "rail" then 
-    local shift = (tower_template.radius + 1) / 2 - 1
-    for x=1, tower_template.radius do
-      if (x > 0) spr(tile_display.attack, dx + x * 8 - (shift * 8), dy)
-    end
-    spr(tower_template.sprite_data[1][2], dx - (shift * 8), dy)
-  elseif tower_template.type == "frontal" then 
-    for y=-1, 1 do
-      for x=1, tower_template.radius do 
-        spr(tile_display.attack, dx + x * 8, dy + y * 8)
-      end
-    end
-    spr(tower_template.sprite_data[1][2], dx, dy)
-  elseif tower_template.type == "floor" then 
-    spr(tile_display.attack, dx, dy)
-    spr(tower_template.sprite_data[1][2], dx, dy)
   end
 end
 
