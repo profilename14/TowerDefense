@@ -313,6 +313,95 @@ local px, py, n = Enemy.get_pixel_location(self)
 local dir = {normalize(n.x - self.x), normalize(n.y - self.y)}
 spr(parse_direction(self.gfx,dir),px,py,1,1,get_flip_direction(dir))
 end
+function kill_enemy(enemy)
+if (enemy.hp > 0) return
+coins+=enemy.reward
+del(enemies,enemy)
+end
+function update_enemy_position(enemy)
+if (not Enemy.step(enemy)) return
+enemy.x=pathing[enemy.pos].x
+enemy.y=pathing[enemy.pos].y
+enemy.pos+=1
+if (enemy.pos < #pathing + 1) return
+player_health-=enemy.damage
+del(enemies,enemy)
+end
+function parse_path()
+local path_tiles = {}
+for iy=0, 16 do
+for ix=0, 16 do
+local mx = ix + map_data[loaded_map].mget_shift[1]
+local my = iy + map_data[loaded_map].mget_shift[2]
+for _, id in pairs(map_data[loaded_map].path_id) do
+if (mget(mx, my) == id) then 
+add(path_tiles,{x=mx,y=my})
+end
+end
+end
+end
+local path = {}
+local dir = {x=map_data[loaded_map].movement_direction[1],y=map_data[loaded_map].movement_direction[2]}
+local ending = {
+x=map_data[loaded_map].enemy_end_location[1] + map_data[loaded_map].mget_shift[1], 
+y=map_data[loaded_map].enemy_end_location[2] + map_data[loaded_map].mget_shift[2]
+}
+local cur = {
+x = map_data[loaded_map].enemy_spawn_location[1] + map_data[loaded_map].mget_shift[1] + dir.x, 
+y = map_data[loaded_map].enemy_spawn_location[2] + map_data[loaded_map].mget_shift[2] + dir.y
+}
+while not (cur.x == ending.x and cur.y == ending.y) do 
+local north = {x=cur.x, y=cur.y-1}
+local south = {x=cur.x, y=cur.y+1}
+local west = {x=cur.x-1, y=cur.y}
+local east = {x=cur.x+1, y=cur.y}
+local state = false
+local direction = nil
+if dir.x == 1 then -- east 
+state, direction = check_direction(east, {north, south}, path_tiles, path)
+elseif dir.x == -1 then -- west
+state, direction = check_direction(west, {north, south}, path_tiles, path)
+elseif dir.y == 1 then -- south
+state,direction=check_direction(south,{west,east},path_tiles,path)
+elseif dir.y == -1 then -- north
+state, direction = check_direction(north, {west, east}, path_tiles, path)
+end
+assert(state,"Failedtofindpathat:"..cur.x..","..cur.y.."indirection:"..dir.x..","..dir.y.."end:"..ending.x..","..ending.y)
+if state then 
+dir = {x=normalize(direction.x-cur.x), y=normalize(direction.y-cur.y)}
+cur={x=direction.x,y=direction.y}
+else
+end
+end
+return path
+end
+function check_direction(direction, fail_directions, path_tiles, path)
+if (direction == nil) return false, nil
+local state, index = is_in_table(direction, path_tiles)
+if state then
+local tile = {
+x = path_tiles[index].x - map_data[loaded_map].mget_shift[1],
+y = path_tiles[index].y - map_data[loaded_map].mget_shift[2]
+}
+add(path,tile)
+else
+return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path)
+end
+return true, direction
+end
+function spawn_enemy()
+while enemies_remaining > 0 do 
+enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
+if (is_there_something_at(map_data[loaded_map].enemy_spawn_location[1], map_data[loaded_map].enemy_spawn_location[2], enemies)) goto spawn_enemy_continue
+if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
+enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
+printh(enemy_data_from_template.hp)
+add(enemies,Enemy:new(map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
+enemies_remaining-=1
+::spawn_enemy_continue::
+yield()
+end
+end
 Tower={}
 function Tower:new(dx, dy, tower_template_data, direction)
 obj={
@@ -397,6 +486,16 @@ function Tower:draw()
 local id = parse_direction(Animator.sprite_id(self.animator), self.dir)
 spr(id,self.x*8,self.y*8,1,1,get_flip_direction(self.dir))
 end
+function place_tower(x, y)
+if (grid[y][x] == "tower") return false
+if (coins < tower_templates[shop_selector.pos + 1].cost) return false
+local tower_type = tower_templates[shop_selector.pos + 1].type 
+if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
+add(towers, Tower:new(x, y, tower_templates[shop_selector.pos + 1], direction))
+coins -= tower_templates[shop_selector.pos + 1].cost
+grid[y][x]="tower"
+return true
+end
 Particle={}
 function Particle:new(dx, dy, pixel_perfect, animator_)
 obj={
@@ -419,6 +518,10 @@ spr(id,self.x,self.y)
 else
 spr(id,self.x*8,self.y*8)
 end
+end
+function destroy_particle(particle)
+if (not Animator.finished(particle.animator)) return
+del(particles,particle)
 end
 Animator = {}
 function Animator:new(data, continuous_)
@@ -451,247 +554,6 @@ return self.sprite_data[self.animation_frame]
 end
 function Animator:reset()
 self.animation_frame=1
-end
-function _init()
-reset_game()
-end
-function _draw()
-cls()
-if map_menu_enable then 
-for i=1, #map_data do
-draw_map_overview(i,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16)
-end
-print_with_outline("chooseamaptoplay",25,1,7,0)
-local len = #map_data[map_selector.pos + 1].name
-print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
-draw_selector(map_selector)
-else
-game_draw_loop()
-end
-end
-function _update()
-if map_menu_enable then 
-map_loop()
-else
-if (player_health <= 0) reset_game()
-if shop_enable then shop_loop() else game_loop() end
-end
-end
-function load_game(map_id)
-wave_round=0
-freeplay_rounds=0
-loaded_map=map_id
-pathing=parse_path()
-shop_selector.x = shop_ui_data.x[shop_selector.pos + 1]-20
-shop_selector.y = shop_ui_data.y[1]-20
-option_selector.x = shop_ui_data.x[1]-16
-option_selector.y = 32
-for i=1, 3 do
-add(incoming_hint, Animator:new(hud_data.incoming_hint, true))
-end
-for y=0, 15 do 
-grid[y]={}
-for x=0, 15 do 
-grid[y][x]="empty"
-local mx = x + map_data[loaded_map].mget_shift[1]
-local my = y + map_data[loaded_map].mget_shift[2]
-if (not placable_tile_location(mx, my)) grid[y][x] = "path" 
-end
-end
-music(0)
-end
-function map_loop()
-if btnp(❎) then 
-load_game(map_selector.pos + 1)
-map_menu_enable=false
-return
-end
-local dx, dy = controls()
-if dx < 0 then 
-map_selector.pos = (map_selector.pos - 1) % #map_data
-map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
-elseif dx > 0 then 
-map_selector.pos = (map_selector.pos + 1) % #map_data
-map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
-end
-end
-function shop_loop()
-if btnp(🅾️) then -- disable shop
-shop_enable=false
-return
-end
-if btnp(❎) then 
-if option_enable then 
-if option_selector.pos == 1 and not start_next_wave and #enemies == 0 then
-start_next_wave=true
-enemies_active=true
-wave_round+=1
-wave_round=min(wave_round,#wave_data)
-if wave_round == #wave_data then 
-freeplay_rounds+=1
-end
-enemies_remaining=#wave_data[wave_round]
-elseif option_selector.pos == 3 then 
-reset_game()
-map_menu_enable=true
-end
-shop_enable=false
-return
-else
-direction={direction[2]*-1,direction[1]}
-end
-end
-local dx, dy = controls()
-if (dy ~= 0) option_enable = not option_enable
-if (dx == 0) return
-if option_enable then
-move_ui_selector(option_selector, dx, 2, 0, 16) 
-else
-move_ui_selector(shop_selector, dx, 1, 1, 20)
-end
-end
-function game_loop()
-if btnp(🅾️) then
-shop_enable=true
-return
-end
-if btnp(❎) then 
-local dx = selector.x / 8
-local dy = selector.y / 8
-if is_there_something_at(dx, dy, towers) then 
-refund_tower_at(dx,dy)
-else
-place_tower(dx,dy)
-end
-end
-local dx, dy = controls()
-selector.x = clamp(selector.x + dx * 8, 0, 120)
-selector.y = clamp(selector.y + dy * 8, 0, 120)
-if enemies_active then 
-foreach(enemies, update_enemy_position)
-foreach(towers, Tower.attack)
-if start_next_wave then 
-start_next_wave=false
-wave_cor = cocreate(spawn_enemy)
-end
-if wave_cor and costatus(wave_cor) != 'dead' then
-coresume(wave_cor)
-else
-wave_cor = nil
-end
-end
-foreach(particles, Particle.tick)
-foreach(animators, Animator.update)
-if (not enemies_active and incoming_hint) foreach(incoming_hint, Animator.update)
-foreach(enemies, kill_enemy)
-foreach(particles, destroy_particle)
-if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
-enemies_active=false
-sfx(sfx_data.round_complete)
-end
-end
-function spawn_enemy()
-while enemies_remaining > 0 do 
-enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
-if (is_there_something_at(map_data[loaded_map].enemy_spawn_location[1], map_data[loaded_map].enemy_spawn_location[2], enemies)) goto spawn_enemy_continue
-if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
-enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
-printh(enemy_data_from_template.hp)
-add(enemies,Enemy:new(map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
-enemies_remaining-=1
-::spawn_enemy_continue::
-yield()
-end
-end
-function kill_enemy(enemy)
-if (enemy.hp > 0) return
-coins+=enemy.reward
-del(enemies,enemy)
-end
-function destroy_particle(particle)
-if (not Animator.finished(particle.animator)) return
-del(particles,particle)
-end
-function update_enemy_position(enemy)
-if (not Enemy.step(enemy)) return
-enemy.x=pathing[enemy.pos].x
-enemy.y=pathing[enemy.pos].y
-enemy.pos+=1
-if (enemy.pos < #pathing + 1) return
-player_health-=enemy.damage
-del(enemies,enemy)
-end
-function parse_path()
-local path_tiles = {}
-for iy=0, 16 do
-for ix=0, 16 do
-local mx = ix + map_data[loaded_map].mget_shift[1]
-local my = iy + map_data[loaded_map].mget_shift[2]
-for _, id in pairs(map_data[loaded_map].path_id) do
-if (mget(mx, my) == id) then 
-add(path_tiles,{x=mx,y=my})
-end
-end
-end
-end
-local path = {}
-local dir = {x=map_data[loaded_map].movement_direction[1],y=map_data[loaded_map].movement_direction[2]}
-local ending = {
-x=map_data[loaded_map].enemy_end_location[1] + map_data[loaded_map].mget_shift[1], 
-y=map_data[loaded_map].enemy_end_location[2] + map_data[loaded_map].mget_shift[2]
-}
-local cur = {
-x = map_data[loaded_map].enemy_spawn_location[1] + map_data[loaded_map].mget_shift[1] + dir.x, 
-y = map_data[loaded_map].enemy_spawn_location[2] + map_data[loaded_map].mget_shift[2] + dir.y
-}
-while not (cur.x == ending.x and cur.y == ending.y) do 
-local north = {x=cur.x, y=cur.y-1}
-local south = {x=cur.x, y=cur.y+1}
-local west = {x=cur.x-1, y=cur.y}
-local east = {x=cur.x+1, y=cur.y}
-local state = false
-local direction = nil
-if dir.x == 1 then -- east 
-state, direction = check_direction(east, {north, south}, path_tiles, path)
-elseif dir.x == -1 then -- west
-state, direction = check_direction(west, {north, south}, path_tiles, path)
-elseif dir.y == 1 then -- south
-state,direction=check_direction(south,{west,east},path_tiles,path)
-elseif dir.y == -1 then -- north
-state, direction = check_direction(north, {west, east}, path_tiles, path)
-end
-assert(state,"Failedtofindpathat:"..cur.x..","..cur.y.."indirection:"..dir.x..","..dir.y.."end:"..ending.x..","..ending.y)
-if state then 
-dir = {x=normalize(direction.x-cur.x), y=normalize(direction.y-cur.y)}
-cur={x=direction.x,y=direction.y}
-else
-end
-end
-return path
-end
-function check_direction(direction, fail_directions, path_tiles, path)
-if (direction == nil) return false, nil
-local state, index = is_in_table(direction, path_tiles)
-if state then
-local tile = {
-x = path_tiles[index].x - map_data[loaded_map].mget_shift[1],
-y = path_tiles[index].y - map_data[loaded_map].mget_shift[2]
-}
-add(path,tile)
-else
-return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path)
-end
-return true, direction
-end
-function place_tower(x, y)
-if (grid[y][x] == "tower") return false
-if (coins < tower_templates[shop_selector.pos + 1].cost) return false
-local tower_type = tower_templates[shop_selector.pos + 1].type 
-if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
-add(towers, Tower:new(x, y, tower_templates[shop_selector.pos + 1], direction))
-coins -= tower_templates[shop_selector.pos + 1].cost
-grid[y][x]="tower"
-return true
 end
 function print_with_outline(text, dx, dy, text_color, outline_color)
 print(text, dx - 1, dy, outline_color)
@@ -945,6 +807,144 @@ end
 function draw_selector(sel)
 spr(sel.sprite_index,sel.x,sel.y,sel.size,sel.size)
 end
+function _init()
+reset_game()
+end
+function _draw()
+cls()
+if map_menu_enable then 
+for i=1, #map_data do
+draw_map_overview(i,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16)
+end
+print_with_outline("chooseamaptoplay",25,1,7,0)
+local len = #map_data[map_selector.pos + 1].name
+print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
+draw_selector(map_selector)
+else
+game_draw_loop()
+end
+end
+function _update()
+if map_menu_enable then 
+map_loop()
+else
+if (player_health <= 0) reset_game()
+if shop_enable then shop_loop() else game_loop() end
+end
+end
+function load_game(map_id)
+wave_round=0
+freeplay_rounds=0
+loaded_map=map_id
+pathing=parse_path()
+shop_selector.x = shop_ui_data.x[shop_selector.pos + 1]-20
+shop_selector.y = shop_ui_data.y[1]-20
+option_selector.x = shop_ui_data.x[1]-16
+option_selector.y = 32
+for i=1, 3 do
+add(incoming_hint, Animator:new(hud_data.incoming_hint, true))
+end
+for y=0, 15 do 
+grid[y]={}
+for x=0, 15 do 
+grid[y][x]="empty"
+local mx = x + map_data[loaded_map].mget_shift[1]
+local my = y + map_data[loaded_map].mget_shift[2]
+if (not placable_tile_location(mx, my)) grid[y][x] = "path" 
+end
+end
+music(0)
+end
+function map_loop()
+if btnp(❎) then 
+load_game(map_selector.pos + 1)
+map_menu_enable=false
+return
+end
+local dx, dy = controls()
+if dx < 0 then 
+map_selector.pos = (map_selector.pos - 1) % #map_data
+map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
+elseif dx > 0 then 
+map_selector.pos = (map_selector.pos + 1) % #map_data
+map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
+end
+end
+function shop_loop()
+if btnp(🅾️) then -- disable shop
+shop_enable=false
+return
+end
+if btnp(❎) then 
+if option_enable then 
+if option_selector.pos == 1 and not start_next_wave and #enemies == 0 then
+start_next_wave=true
+enemies_active=true
+wave_round+=1
+wave_round=min(wave_round,#wave_data)
+if wave_round == #wave_data then 
+freeplay_rounds+=1
+end
+enemies_remaining=#wave_data[wave_round]
+elseif option_selector.pos == 3 then 
+reset_game()
+map_menu_enable=true
+end
+shop_enable=false
+return
+else
+direction={direction[2]*-1,direction[1]}
+end
+end
+local dx, dy = controls()
+if (dy ~= 0) option_enable = not option_enable
+if (dx == 0) return
+if option_enable then
+move_ui_selector(option_selector, dx, 2, 0, 16) 
+else
+move_ui_selector(shop_selector, dx, 1, 1, 20)
+end
+end
+function game_loop()
+if btnp(🅾️) then
+shop_enable=true
+return
+end
+if btnp(❎) then 
+local dx = selector.x / 8
+local dy = selector.y / 8
+if is_there_something_at(dx, dy, towers) then 
+refund_tower_at(dx,dy)
+else
+place_tower(dx,dy)
+end
+end
+local dx, dy = controls()
+selector.x = clamp(selector.x + dx * 8, 0, 120)
+selector.y = clamp(selector.y + dy * 8, 0, 120)
+if enemies_active then 
+foreach(enemies, update_enemy_position)
+foreach(towers, Tower.attack)
+if start_next_wave then 
+start_next_wave=false
+wave_cor = cocreate(spawn_enemy)
+end
+if wave_cor and costatus(wave_cor) != 'dead' then
+coresume(wave_cor)
+else
+wave_cor = nil
+end
+end
+foreach(particles, Particle.tick)
+foreach(animators, Animator.update)
+if (not enemies_active and incoming_hint) foreach(incoming_hint, Animator.update)
+foreach(enemies, kill_enemy)
+foreach(particles, destroy_particle)
+if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
+enemies_active=false
+sfx(sfx_data.round_complete)
+end
+end
 __gfx__
 112211228887788800000000000000000000c00000c11c000000000006333360777000007777777770000000a0000000000000000000d000000d000000d00000
 112211228000000806600660068998600000cc0000011000666660000633336078877000788888877a0a0000aa000a000000a000000d200000d2d00000d20000
@@ -954,30 +954,30 @@ __gfx__
 11221122800000080899919a06111160c00ccc0000cddc00333390000003300078888770788888870009097a970090070009700000d12d000dd21d00ddd21d00
 221122118000000806600660069999600000cc0000011000666660000003300078877000788888870000009709000009000090000002d000000d2d0000002d00
 22112211888778880000000000a99a000000c0000001100000000000000330007770000077777777000000090000000000000000000d00000000d00000000d00
-00000d000010000000a00a0000000000a0a0aa0550aaaaaa07777000000777700000000000077000000770000000000066666666666666666666666600000000
-00000dd0011000000a6a0000a00000000a66a666666666a078888700007888870000000000077000000770000000000066666666666666666666666600000000
-000002dd11100000a67a040000000000067777777777aa6078877000000778870000000000077000000770000000000066666666666666666666666600000000
-0000022dd1100000067a049060a0000000777777aa77770a78700000000007870000000077777000000777770007777766666666666666666666666677777000
-00000222dd100000a67709906704000000000005500000a078700000000007870000000077777000000777770007777766666666666666666666666677777000
-11111d222dd222dd0a77aa907709a6000a4444444aaa440007000000000000700000000000000000000000000007700066666666666666666666666600077000
-0111dd2002222dd00a775a907709a56a0a0aaa999999900000000000000000000000000000000000000000000007700066666600000000000066666600077000
-001ddd000022dd0056775a957759555700aa00055000000000000000000000000000000000000000000000000007700066666600000000000066666600077000
-00dd2200002dd1005a7759a57759555a00667aaaa777660000000000000000000000000000000000000000000000000066666600000770000066666600000000
-0dd2222002dd111006a7599077095560000777777aaa7a0000000000000000000000000000000000000000000000000066666600000770000066666600000000
-dd222dd222d111110677099a770906000a00000550aaa0a007000000000000700000000000000000006666666666660066666600000770000066666600000000
-000001dd2220000006a7099aa704a00000499999a9a99a0078700000000007870000000000000000006666666666660066666600000770000066666677777777
-0000011dd2200000067aa490a0aa0000000aaaa55aa0000078700000000007870000000000000000006666666666660066666600000770000066666677777777
-00000111dd20000006a704000a0000000000a6555560000078877000000778870000000000000000006666666666660066666600000770000066666600000000
-000001100dd000000a6000000a000000000000655700000078888700007888870000000000000000006666666666660066666600000770000066666600000000
-0000010000d00000aa00000000000000000000a0a000000007777000000777700000000000000000006666666666660066666600000770000066666600000000
-0c667670660007760000c00000800000000080008000008007700000007700000077000000000000006666666666660066666600000000000066666655555555
-ccc66c7006777766066ccc0000088000000880080008880078870000078870000788700000000000006666666666660066666600000000000066666655666650
-7c67ccc0677767700777c60000008808000888000088800078887000078887000788870000000000006666666666660066666666666666666666666656666660
-76766c6707c777706c76776000888800008888000888880007888700007888700078887000000000006666666666660066666666666666666666666656666660
-776777767ccc7c60ccc77760008998800889998008a9998007888700007888700078887000000000006666666666660066666666666666666666666656666660
-766767c707c7ccc60c7676700899a980089aa98008aaa98078887000078887000788870000000000006666666666660066666666666666666666666656666660
-67776ccc07777c7000067700089a7a8008a7aa80087a7a8078870000078870000788700000000000000000000000000066666666666666666666666655666650
-007677c6006707770000000000877a8000877a000087780007700000007700000077000000000000000000000000000066666666666666666666666650000000
+00000d000010000000a00a0000000000a0a0aa0550aaaaaa07777000000777700000000000077000000770000000000055555555555555555555555500000000
+00000dd0011000000a6a0000a00000000a66a666666666a078888700007888870000000000077000000770000000000055666651556666515566665100000000
+000002dd11100000a67a040000000000067777777777aa6078877000000778870000000000077000000770000000000056666661566666615666666100000000
+0000022dd1100000067a049060a0000000777777aa77770a78700000000007870000000077777000000777770007777756666661566666615666666177777000
+00000222dd100000a67709906704000000000005500000a078700000000007870000000077777000000777770007777756666651556666515566666177777000
+11111d222dd222dd0a77aa907709a6000a4444444aaa440007000000000000700000000000000000000000000007700056666511511111115556666100077000
+0111dd2002222dd00a775a907709a56a0a0aaa999999900000000000000000000000000000000000000000000007700055665166666666666655665100077000
+001ddd000022dd0056775a957759555700aa00055000000000000000000000000000000000000000000000000007700051111160000000000611111100077000
+00dd2200002dd1005a7759a57759555a00667aaaa777660000000000000000000000000000000000000000000000000055555560000770000655555500000000
+0dd2222002dd111006a7599077095560000777777aaa7a0000000000000000000000000000000000066666666666666055665160000770000655665100000000
+dd222dd222d111110677099a770906000a00000550aaa0a007000000000000700000000000000000065555555555556056666160000770000656666100000000
+000001dd2220000006a7099aa704a00000499999a9a99a0078700000000007870000000000000000065566515566516056666160000770000656666177777777
+0000011dd2200000067aa490a0aa0000000aaaa55aa0000078700000000007870000000000000000065666615666616056666160000770000656666177777777
+00000111dd20000006a704000a0000000000a6555560000078877000000778870000000000000000065666615666616056666160000770000656666100000000
+000001100dd000000a6000000a000000000000655700000078888700007888870000000000000000065566515566516055665160000770000655665100000000
+0000010000d00000aa00000000000000000000a0a000000007777000000777700000000000000000065111115111116051111160000770000651111100000000
+0c667670660007760000c00000800000000080008000008007700000007700000077000000000000065555555555556055555560000000000655555555555555
+ccc66c7006777766066ccc0000088000000880080008880078870000078870000788700000000000065566515566516055665566666666666655665155666651
+7c67ccc0677767700777c60000008808000888000088800078887000078887000788870000000000065666615666616056666555555555555556666156666661
+76766c6707c777706c76776000888800008888000888880007888700007888700078887000000000065666615666616056666651556666515566666156666661
+776777767ccc7c60ccc77760008998800889998008a9998007888700007888700078887000000000065566515566516056666661566666615666666156666661
+766767c707c7ccc60c7676700899a980089aa98008aaa98078887000078887000788870000000000065111115111116056666661566666615666666156666661
+67776ccc07777c7000067700089a7a8008a7aa80087a7a8078870000078870000788700000000000066666666666666055666651556666515566665155666651
+007677c6006707770000000000877a8000877a000087780007700000007700000077000000000000000000000000000051111111511111115111111151111111
 000000000000000000000000000000000000111cc1110000000800000008008000000000000088880000000000000000000000d0000200000d200000000000d0
 00000000000000000000011111111700000111cccc111000008800088888008800000000000000880000000000000000d2210d2000dd20000d2210ddd2210d20
 000000000000000000011111111cc77000011c7cccc110000080088899800008000000000000000800000000000000000d11d120001d11d000d11d220d11d120
@@ -1072,18 +1072,19 @@ __sfx__
 480300000a6500000006630000000000000000000000000000000000000000000000000001e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000c000004110071100e110121201a100000000c30000000000000070000700006000060000600006000060000600000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
-0101464344
-0001024344
-0001024344
-0001024304
-0001024304
-0001424304
-0001424304
-0001420304
-0001420304
-0001020304
-0001020304
-0001020344
-0001020344
-0001420344
-0201420344
+01 14643404
+00 10243404
+00 10243404
+00 10243004
+00 10243004
+00 14243004
+00 14243004
+00 14203004
+00 14203004
+00 10203004
+00 10203004
+00 10203404
+00 10203404
+00 14203404
+02 14203404
+

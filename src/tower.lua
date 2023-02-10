@@ -83,3 +83,17 @@ function Tower:draw()
   local id = parse_direction(Animator.sprite_id(self.animator), self.dir)
   spr(id, self.x * 8, self.y * 8, 1, 1, get_flip_direction(self.dir))
 end
+
+function place_tower(x, y)
+  -- check if there is a tower here
+  if (grid[y][x] == "tower") return false
+  -- check if player has the money
+  if (coins < tower_templates[shop_selector.pos + 1].cost) return false
+  -- spawn the tower
+  local tower_type = tower_templates[shop_selector.pos + 1].type 
+  if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
+  add(towers, Tower:new(x, y, tower_templates[shop_selector.pos + 1], direction))
+  coins -= tower_templates[shop_selector.pos + 1].cost
+  grid[y][x] = "tower"
+  return true
+end

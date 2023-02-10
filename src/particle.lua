@@ -21,3 +21,8 @@ function Particle:draw()
     spr(id, self.x*8, self.y*8)
   end
 end
+
+function destroy_particle(particle)
+  if (not Animator.finished(particle.animator)) return
+  del(particles, particle)
+end
