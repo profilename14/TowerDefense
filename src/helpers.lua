@@ -8,9 +8,7 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
 end
 
 function print_tower_cost(cost, dx, dy)
-  local color = 7
-  if (cost > coins) color = 8
-  print_with_outline("C"..cost, dx, dy, color, 0)
+  print_with_outline("C"..cost, dx, dy, (cost > coins) and 8 or 7, 0)
 end
 
 -- Utility
@@ -48,22 +46,21 @@ function increase_enemy_health(enemy_data)
 end
 
 function move_ui_selector(sel, dx, shift, offset, delta)
-  local inc = shift
-  if (dx < 0) inc = -shift
-  sel.pos = (sel.pos + inc) % #shop_ui_data.x
+  sel.pos = (sel.pos + ((dx < 0) and -shift or shift)) % #shop_ui_data.x
   sel.x = shop_ui_data.x[sel.pos + offset]-delta
 end
 
 function is_in_table(val, table)
-  for i=1, #table do 
-    if (val.x == table[i].x and val.y == table[i].y) return true, i 
+  for i, obj in pairs(table) do
+    if (val.x == obj.x and val.y == obj.y) return true, i 
   end
-  return false, -1
 end
 
-function placable_tile_location(x, y, map_id)
-  local map_index = loaded_map
-  if (map_id ~= nil) map_index = map_id
+function is_there_something_at(dx, dy, table)
+  return is_in_table(unpack_to_coord(pack(dx, dy)), table) and true or false
+end
+
+function placable_tile_location(x, y)
   return fget(mget(x, y), map_meta_data.non_path_flag_id)
 end
 
@@ -112,19 +109,12 @@ function unpack_to_coord(vec1)
   return {x=vec1[1], y=vec1[2]}
 end
 
-function is_there_something_at(dx, dy, table)
-  for _, obj in pairs(table) do
-    if (obj.x == dx and obj.y == dy) return true 
-  end
-  return false
-end
-
 function refund_tower_at(dx, dy)
   for _, tower in pairs(towers) do
     if tower.x == dx and tower.y == dy then
       grid[dy][dx] = "empty"
       if (tower.type == "floor") grid[dy][dx] = "path"
-      coins += flr(tower.cost / 2) 
+      coins += tower.cost \ 2
       del(animators, tower.animator) 
       del(towers, tower)
     end

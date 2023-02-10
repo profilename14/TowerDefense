@@ -51,28 +51,19 @@ function draw_map_overview(map_id, xoffset, yoffset)
   local mxshift, myshift = unpack(map_data[map_id].mget_shift)
   for y=0, 15 do
     for x=0, 15 do
-      local is_not_path = placable_tile_location(x + mxshift, y + myshift, map_id)
-      if is_not_path then 
-        pset(x + xoffset, y + yoffset, map_draw_data.other)
-      else 
-        pset(x + xoffset, y + yoffset, map_draw_data.path)
-      end
+      pset(x + xoffset, y + yoffset, placable_tile_location(x + mxshift, y + myshift) and map_draw_data.other or map_draw_data.path)
     end
   end
 end
 
 function draw_shop_icons()
   for i=1, #tower_templates do 
+    local id = tower_templates[i].icon_data
     if (tower_templates[i].disable_icon_rotation) then 
-      palt(0, false)
-      spr(shop_ui_data.blank, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3)
-      palt()
-      local id = tower_templates[i].icon_data
+      rectfill(shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, shop_ui_data.x[i]+3, shop_ui_data.y[1]+3, 0)
       spr(id, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2)
     else
-      local id = shop_ui_data.background
-      draw_sprite_rotated(id, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction), true)
-      id = tower_templates[i].icon_data
+      draw_sprite_rotated(shop_ui_data.background, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction), true)
       draw_sprite_rotated(id, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16, 16, parse_direction(direction))
     end
   end

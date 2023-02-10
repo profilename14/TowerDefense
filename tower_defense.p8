@@ -617,9 +617,7 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
 ?text,dx,dy,text_color
 end
 function print_tower_cost(cost, dx, dy)
-local color = 7
-if (cost > coins) color = 8
-print_with_outline("C"..cost, dx, dy, color, 0)
+print_with_outline("C"..cost, dx, dy, (cost > coins) and 8 or 7, 0)
 end
 function dist(posA, posB) 
 local x = posA.x - posB.x
@@ -650,20 +648,18 @@ damage=enemy_data.damage
 }
 end
 function move_ui_selector(sel, dx, shift, offset, delta)
-local inc = shift
-if (dx < 0) inc = -shift
-sel.pos=(sel.pos+inc)%#shop_ui_data.x
+sel.pos = (sel.pos + ((dx < 0) and -shift or shift)) % #shop_ui_data.x
 sel.x=shop_ui_data.x[sel.pos+offset]-delta
 end
 function is_in_table(val, table)
-for i=1, #table do 
-if (val.x == table[i].x and val.y == table[i].y) return true, i 
+for i, obj in pairs(table) do
+if (val.x == obj.x and val.y == obj.y) return true, i 
 end
-return false, -1
 end
-function placable_tile_location(x, y, map_id)
-local map_index = loaded_map
-if (map_id ~= nil) map_index = map_id
+function is_there_something_at(dx, dy, table)
+return is_in_table(unpack_to_coord(pack(dx, dy)), table) and true or false
+end
+function placable_tile_location(x, y)
 return fget(mget(x, y), map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(dx, dy, table)
@@ -705,18 +701,12 @@ end
 function unpack_to_coord(vec1)
 return {x=vec1[1], y=vec1[2]}
 end
-function is_there_something_at(dx, dy, table)
-for _, obj in pairs(table) do
-if (obj.x == dx and obj.y == dy) return true 
-end
-return false
-end
 function refund_tower_at(dx, dy)
 for _, tower in pairs(towers) do
 if tower.x == dx and tower.y == dy then
 grid[dy][dx] = "empty"
 if (tower.type == "floor") grid[dy][dx] = "path"
-coins+=flr(tower.cost/2)
+coins+=tower.cost\2
 del(animators, tower.animator) 
 del(towers,tower)
 end
@@ -779,27 +769,18 @@ function draw_map_overview(map_id, xoffset, yoffset)
 local mxshift, myshift = unpack(map_data[map_id].mget_shift)
 for y=0, 15 do
 for x=0, 15 do
-local is_not_path = placable_tile_location(x + mxshift, y + myshift, map_id)
-if is_not_path then 
-pset(x+xoffset,y+yoffset,map_draw_data.other)
-else
-pset(x+xoffset,y+yoffset,map_draw_data.path)
-end
+pset(x + xoffset, y + yoffset, placable_tile_location(x + mxshift, y + myshift) and map_draw_data.other or map_draw_data.path)
 end
 end
 end
 function draw_shop_icons()
 for i=1, #tower_templates do 
-if (tower_templates[i].disable_icon_rotation) then 
-palt(0,false)
-spr(shop_ui_data.blank,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,3,3)
-palt()
 local id = tower_templates[i].icon_data
+if (tower_templates[i].disable_icon_rotation) then 
+rectfill(shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,shop_ui_data.x[i]+3,shop_ui_data.y[1]+3,0)
 spr(id,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,2,2)
 else
-local id = shop_ui_data.background
-draw_sprite_rotated(id,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,24,parse_direction(direction),true)
-id=tower_templates[i].icon_data
+draw_sprite_rotated(shop_ui_data.background,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,24,parse_direction(direction),true)
 draw_sprite_rotated(id,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,16,parse_direction(direction))
 end
 end
