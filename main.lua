@@ -55,7 +55,7 @@ function load_game(map_id)
   option_selector.x = shop_ui_data.x[1]-16
   option_selector.y = 32
   for i=1, 3 do
-    add(incoming_hint, Animator:new(hud_data.incoming_hint, true))
+    add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
   end
   for y=0, 15 do 
     grid[y] = {}

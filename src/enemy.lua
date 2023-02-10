@@ -25,7 +25,7 @@ function Enemy:step()
     self.burning_tick -= 1
     self.hp -= 2
     local px, py, _ = Enemy.get_pixel_location(self)
-    add(particles, Particle:new(px, py, true, Animator:new(particle_data.burn, false)))
+    add(particles, Particle:new(px, py, true, Animator:new(animation_data.burn, false)))
   end
 
   if (not self.is_frozen) return true 
@@ -48,7 +48,8 @@ function Enemy:draw()
   if (self.hp <= 0) return
   local px, py, n = Enemy.get_pixel_location(self)
   local dir = {normalize(n.x - self.x), normalize(n.y - self.y)}
-  spr(parse_direction(self.gfx, dir), px, py, 1, 1, get_flip_direction(dir))
+  -- temp
+  draw_sprite_rotated(2, px, py, 8, parse_direction(dir))
 end
 
 function kill_enemy(enemy)

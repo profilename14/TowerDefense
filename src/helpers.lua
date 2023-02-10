@@ -65,10 +65,6 @@ function is_in_table(val, table)
   return false, -1
 end
 
-function get_flip_direction(direction)
-  return (direction[1] == -1), (direction[2] == -1)
-end
-
 function placable_tile_location(x, y, map_id)
   local map_index = loaded_map
   if (map_id ~= nil) map_index = map_id
@@ -88,12 +84,50 @@ function add_enemy_at_to_table(dx, dy, table, single_only)
   end
 end
 
-function parse_direction(data, dir)
-  if dir[1] == 0 and dir[2] ~= 0 then 
-    return data[1]
-  elseif dir[1] ~= 0 and dir[2] == 0 then
-    return data[2]
+-- https://www.lexaloffle.com/bbs/?pid=52525 [modified for this game]
+function draw_sprite_rotated(sprite_id, x, y, size, theta)
+  local sx, sy = (sprite_id % 16) * size, (sprite_id \ 16) * size 
+  local sine, cosine = sin(theta / 360), cos(theta / 360)
+  local shift = flr(size*0.5) - 0.5
+  for mx=0, size-1 do 
+    for my=0, size-1 do 
+      local dx, dy = mx-shift, my-shift
+      local xx = flr(dx*cosine-dy*sine+shift)
+      local yy = flr(dx*sine+dy*cosine+shift)
+      if xx >= 0 and xx < size and yy >= 0 and yy <= size then
+        local id = sget(sx+xx, sy+yy)
+        if id ~= transparent_color_id then 
+          pset(x+mx, y+my, id)
+        end
+      end
+    end
   end
+end
+
+-- temp
+function parse_direction(direction)
+  local dx, dy = direction[1], direction[2]
+  if (dx > 0) return 90
+  if (dx < 0) return 270
+  if (dy > 0) return 180
+  if (dy < 0) return 0
+end
+
+-- function parse_direction(data, dir)
+--   if dir[1] == 0 and dir[2] ~= 0 then 
+--     return data[1]
+--   elseif dir[1] ~= 0 and dir[2] == 0 then
+--     return data[2]
+--   end
+-- end
+
+function get_flip_direction(direction)
+  return pack((direction[1] == -1), (direction[2] == -1))
+end
+
+function draw_sprite_direction(sprite_id, size, x, y, fx, fy)
+  local sx, sy = (sprite_id % 16) * size, flr(sprite_id / 16) * size
+  sspr(sx, sy, size, size, x, y, size, size, fx, fy)
 end
 
 function is_there_something_at(dx, dy, table)

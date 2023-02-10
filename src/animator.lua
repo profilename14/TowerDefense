@@ -1,9 +1,9 @@
-Animator = {}
-function Animator:new(data, continuous_)
+Animator = {} -- updated from tower_defence
+function Animator:new(animation_data, continuous_)
   obj = {
-    sprite_data = data.sprite_data,
+    data = animation_data.data,
     animation_frame = 1,
-    frame_duration = data.ticks_per_frame,
+    frame_duration = animation_data.ticks_per_frame,
     tick = 0,
     continuous = continuous_
   }
@@ -22,10 +22,16 @@ function Animator:update()
   return false
 end
 function Animator:finished()
-  return self.animation_frame >= #self.sprite_data
+  return self.animation_frame >= #self.data
 end
-function Animator:sprite_id()
-  return self.sprite_data[self.animation_frame]
+function Animator:draw(dx, dy)
+  local x,y=dx,dy 
+  -- if positions were given to the animation array
+  if self.data[self.animation_frame].offset then 
+    x += self.data[self.animation_frame].offset[1]
+    y += self.data[self.animation_frame].offset[2]
+  end
+  spr(self.data[self.animation_frame].sprite,x,y)
 end
 function Animator:reset()
   self.animation_frame = 1

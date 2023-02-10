@@ -28,7 +28,7 @@ function game_draw_loop()
       local dy = map_data[loaded_map].enemy_spawn_location[2]
       local dir = map_data[loaded_map].movement_direction
       for i=1, #incoming_hint do 
-        spr(Animator.sprite_id(incoming_hint[i]), (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8) 
+        Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
       end
     end
     draw_selector(selector) 
@@ -96,18 +96,25 @@ function draw_attack_tiles(tower_template, dx, dy)
 end
 
 function draw_shop_icons()
-  local fx, fy = get_flip_direction(direction)
+  -- local fx, fy = get_flip_direction(direction)
   for i=1, #tower_templates do 
     palt(0, false)
     palt(14, false)
     if (tower_templates[i].disable_icon_rotation) then 
       spr(shop_ui_data.blank, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3)
       palt()
-      spr(parse_direction(tower_templates[i].icon_data, direction), shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2)
+      local id = tower_templates[i].icon_data[1]
+      spr(id, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2)
     else
-      spr(parse_direction(shop_ui_data.background, direction), shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3, fx, fy)
-      palt()
-      spr(parse_direction(tower_templates[i].icon_data, direction), shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2, fx, fy)
+      local id = shop_ui_data.background[1]
+      -- spr(id, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3, fx, fy)
+      -- draw_sprite_rotated(id, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction))
+      -- draw_sprite_direction(id, 16, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, unpack(direction))
+      -- palt()
+      id = tower_templates[i].icon_data[1]
+      -- spr(id, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2, fx, fy)
+      draw_sprite_rotated(20, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16, 16, parse_direction(direction))
+      -- draw_sprite_direction(id, 16, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, unpack(direction))
     end
   end
 end

@@ -1,4 +1,49 @@
 -- Game Data -- Modify at will
+transparent_color_id = 0
+animation_data = {
+  spark = {
+    data = { 
+      {sprite = 10},
+      {sprite = 11},
+      {sprite = 12}
+    },
+    ticks_per_frame = 2
+  },
+  blade = {
+    data = { 
+      {sprite = 13},
+      {sprite = 14},
+      {sprite = 15}
+    },
+    ticks_per_frame = 2
+  },
+  frost = {
+    data = { 
+      {sprite = 48},
+      {sprite = 49},
+      {sprite = 50}
+    },
+    ticks_per_frame = 2
+  },
+  burn = {
+    data = { 
+      {sprite = 51},
+      {sprite = 52},
+      {sprite = 53}
+    },
+    ticks_per_frame = 2
+  },
+  incoming_hint = {
+    data = {
+      {sprite = 54},
+      {sprite = 55},
+      {sprite = 56},
+      {sprite = 55}
+    },
+    ticks_per_frame = 3
+  }
+}
+
 map_data = {
   {
     name = "curves",
@@ -116,24 +161,6 @@ tower_templates = {
     single_tile_hit_only = true
   }
 }
-particle_data = {
-  spark = {
-    sprite_data = { 10, 11, 12 },
-    ticks_per_frame = 2
-  },
-  blade = {
-    sprite_data = { 13, 14, 15 },
-    ticks_per_frame = 2
-  },
-  frost = {
-    sprite_data = { 48, 49, 50 },
-    ticks_per_frame = 2
-  },
-  burn = {
-    sprite_data = { 51, 52, 53 },
-    ticks_per_frame = 2
-  }
-}
 shop_ui_data = {
   x = {128 / 4 - 10, 128/2 - 10, 128 * 3 / 4 - 10, 128 - 10},
   y = {128 / 2},
@@ -212,12 +239,6 @@ map_draw_data = {
 }
 sfx_data = {
   round_complete = 10
-}
-hud_data = {
-  incoming_hint = {
-    sprite_data = {54, 55, 56, 55},
-    ticks_per_frame = 3
-  }
 }
 
 function reset_game()

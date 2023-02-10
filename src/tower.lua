@@ -10,12 +10,14 @@ function Tower:new(dx, dy, tower_template_data, direction)
     type = tower_template_data.type,
     dir = direction,
     single_hit = tower_template_data.single_tile_hit_only,
-    animator = Animator:new({
-      sprite_data = tower_template_data.sprite_data,
-      ticks_per_frame = tower_template_data.ticks_per_frame
-    }, true),
+    -- temp
+    sprite = tower_template_data.sprite_data
+    -- animator = Animator:new({
+    --   sprite_data = tower_template_data.sprite_data,
+    --   ticks_per_frame = tower_template_data.ticks_per_frame
+    -- }, true),
   }
-  add(animators, obj.animator)
+  -- add(animators, obj.animator)
   setmetatable(obj, self)
   self.__index = self 
   return obj 
@@ -42,7 +44,7 @@ function Tower:raycast()
   for i=1, self.radius do 
     add_enemy_at_to_table(self.x + i * self.dir[1] , self.y + i * self.dir[2], hits)
   end
-  if (#hits > 0) raycast_spawn(self.x, self.y, self.radius, self.dir, particle_data.spark)
+  if (#hits > 0) raycast_spawn(self.x, self.y, self.radius, self.dir, animation_data.spark)
   return hits
 end
 function Tower:nova_collision()
@@ -52,7 +54,7 @@ function Tower:nova_collision()
       if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits, self.single_hit)
     end
   end
-  if (#hits > 0) nova_spawn(self.x, self.y, self.radius, particle_data.blade)
+  if (#hits > 0) nova_spawn(self.x, self.y, self.radius, animation_data.blade)
   return hits
 end
 function Tower:frontal_collision()
@@ -63,7 +65,7 @@ function Tower:frontal_collision()
       if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
     end
   end
-  if (#hits > 0) frontal_spawn(self.x, self.y, self.radius, self.dir, particle_data.frost)
+  if (#hits > 0) frontal_spawn(self.x, self.y, self.radius, self.dir, animation_data.frost)
   return hits
 end
 function Tower:apply_damage(targets)
@@ -80,8 +82,9 @@ function Tower:freeze_enemies(targets)
   end
 end
 function Tower:draw()
-  local id = parse_direction(Animator.sprite_id(self.animator), self.dir)
-  spr(id, self.x * 8, self.y * 8, 1, 1, get_flip_direction(self.dir))
+  local id = self.sprite[1][1]
+  -- spr(id, self.x * 8, self.y * 8, 1, 1, get_flip_direction(self.dir))
+  draw_sprite_direction(id, 8, self.x*8, self.y*8, unpack(self.dir))
 end
 
 function place_tower(x, y)

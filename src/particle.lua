@@ -14,7 +14,7 @@ function Particle:tick()
 end
 function Particle:draw()
   if (Animator.finished(self.animator)) return 
-  local id = Animator.sprite_id(self.animator)
+  local id = self.animator.data[self.animator.animation_frame].sprite
   if self.is_pxl_perfect then 
     spr(id, self.x, self.y)
   else

@@ -1,6 +1,50 @@
 pico-8 cartridge // http://www.pico-8.com
 version 39
 __lua__
+transparent_color_id = 0
+animation_data={
+spark={
+data={
+{sprite=10},
+{sprite=11},
+{sprite=12}
+},
+ticks_per_frame=2
+},
+blade={
+data={
+{sprite=13},
+{sprite=14},
+{sprite=15}
+},
+ticks_per_frame=2
+},
+frost={
+data={
+{sprite=48},
+{sprite=49},
+{sprite=50}
+},
+ticks_per_frame=2
+},
+burn={
+data={
+{sprite=51},
+{sprite=52},
+{sprite=53}
+},
+ticks_per_frame=2
+},
+incoming_hint={
+data={
+{sprite=54},
+{sprite=55},
+{sprite=56},
+{sprite=55}
+},
+ticks_per_frame=3
+}
+}
 map_data={
 {
 name="curves",
@@ -117,24 +161,6 @@ disable_icon_rotation=true,
 single_tile_hit_only=true
 }
 }
-particle_data={
-spark={
-sprite_data={10,11,12},
-ticks_per_frame=2
-},
-blade={
-sprite_data={13,14,15},
-ticks_per_frame=2
-},
-frost={
-sprite_data={48,49,50},
-ticks_per_frame=2
-},
-burn={
-sprite_data={51,52,53},
-ticks_per_frame=2
-}
-}
 shop_ui_data={
 x={128/4-10,128/2-10,128*3/4-10,128-10},
 y={128/2},
@@ -214,12 +240,6 @@ other=6
 sfx_data={
 round_complete=10
 }
-hud_data={
-incoming_hint={
-sprite_data={54,55,56,55},
-ticks_per_frame=3
-}
-}
 function reset_game()
 selector = {
 x=64,y=64,
@@ -289,7 +309,7 @@ if self.burning_tick > 0 then
 self.burning_tick-=1
 self.hp-=2
 local px, py, _ = Enemy.get_pixel_location(self)
-add(particles, Particle:new(px, py, true, Animator:new(particle_data.burn, false)))
+add(particles, Particle:new(px, py, true, Animator:new(animation_data.burn, false)))
 end
 if (not self.is_frozen) return true 
 self.frozen_tick=max(self.frozen_tick-1,0)
@@ -311,7 +331,7 @@ function Enemy:draw()
 if (self.hp <= 0) return
 local px, py, n = Enemy.get_pixel_location(self)
 local dir = {normalize(n.x - self.x), normalize(n.y - self.y)}
-spr(parse_direction(self.gfx,dir),px,py,1,1,get_flip_direction(dir))
+draw_sprite_rotated(2,px,py,8,parse_direction(dir))
 end
 function kill_enemy(enemy)
 if (enemy.hp > 0) return
@@ -414,12 +434,8 @@ cost=tower_template_data.cost,
 type=tower_template_data.type,
 dir=direction,
 single_hit=tower_template_data.single_tile_hit_only,
-animator = Animator:new({
-sprite_data=tower_template_data.sprite_data,
-ticks_per_frame=tower_template_data.ticks_per_frame
-},true),
+sprite=tower_template_data.sprite_data
 }
-add(animators, obj.animator)
 setmetatable(obj,self)
 self.__index=self
 return obj 
@@ -445,7 +461,7 @@ local hits = {}
 for i=1, self.radius do 
 add_enemy_at_to_table(self.x+i*self.dir[1],self.y+i*self.dir[2],hits)
 end
-if (#hits > 0) raycast_spawn(self.x, self.y, self.radius, self.dir, particle_data.spark)
+if (#hits > 0) raycast_spawn(self.x, self.y, self.radius, self.dir, animation_data.spark)
 return hits
 end
 function Tower:nova_collision()
@@ -455,7 +471,7 @@ for x=-self.radius, self.radius do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits, self.single_hit)
 end
 end
-if (#hits > 0) nova_spawn(self.x, self.y, self.radius, particle_data.blade)
+if (#hits > 0) nova_spawn(self.x, self.y, self.radius, animation_data.blade)
 return hits
 end
 function Tower:frontal_collision()
@@ -466,7 +482,7 @@ for x=fx, flx, ix do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
 end
 end
-if (#hits > 0) frontal_spawn(self.x, self.y, self.radius, self.dir, particle_data.frost)
+if (#hits > 0) frontal_spawn(self.x, self.y, self.radius, self.dir, animation_data.frost)
 return hits
 end
 function Tower:apply_damage(targets)
@@ -483,8 +499,8 @@ end
 end
 end
 function Tower:draw()
-local id = parse_direction(Animator.sprite_id(self.animator), self.dir)
-spr(id,self.x*8,self.y*8,1,1,get_flip_direction(self.dir))
+local id = self.sprite[1][1]
+draw_sprite_direction(id,8,self.x*8,self.y*8,unpack(self.dir))
 end
 function place_tower(x, y)
 if (grid[y][x] == "tower") return false
@@ -512,7 +528,7 @@ return Animator.update(self.animator)
 end
 function Particle:draw()
 if (Animator.finished(self.animator)) return 
-local id = Animator.sprite_id(self.animator)
+local id = self.animator.data[self.animator.animation_frame].sprite
 if self.is_pxl_perfect then 
 spr(id,self.x,self.y)
 else
@@ -523,12 +539,12 @@ function destroy_particle(particle)
 if (not Animator.finished(particle.animator)) return
 del(particles,particle)
 end
-Animator = {}
-function Animator:new(data, continuous_)
+Animator = {} -- updated from tower_defence
+function Animator:new(animation_data, continuous_)
 obj={
-sprite_data=data.sprite_data,
+data=animation_data.data,
 animation_frame=1,
-frame_duration=data.ticks_per_frame,
+frame_duration=animation_data.ticks_per_frame,
 tick=0,
 continuous=continuous_
 }
@@ -547,10 +563,15 @@ self.animation_frame+=1
 return false
 end
 function Animator:finished()
-return self.animation_frame >= #self.sprite_data
+return self.animation_frame >= #self.data
 end
-function Animator:sprite_id()
-return self.sprite_data[self.animation_frame]
+function Animator:draw(dx, dy)
+local x,y=dx,dy 
+if self.data[self.animation_frame].offset then 
+x+=self.data[self.animation_frame].offset[1]
+y+=self.data[self.animation_frame].offset[2]
+end
+spr(self.data[self.animation_frame].sprite,x,y)
 end
 function Animator:reset()
 self.animation_frame=1
@@ -610,9 +631,6 @@ if (val.x == table[i].x and val.y == table[i].y) return true, i
 end
 return false, -1
 end
-function get_flip_direction(direction)
-return (direction[1] == -1), (direction[2] == -1)
-end
 function placable_tile_location(x, y, map_id)
 local map_index = loaded_map
 if (map_id ~= nil) map_index = map_id
@@ -630,12 +648,37 @@ if (single_only) return
 end
 end
 end
-function parse_direction(data, dir)
-if dir[1] == 0 and dir[2] ~= 0 then 
-return data[1]
-elseif dir[1] ~= 0 and dir[2] == 0 then
-return data[2]
+function draw_sprite_rotated(sprite_id, x, y, size, theta)
+local sx, sy = (sprite_id % 16) * size, (sprite_id \ 16) * size 
+local sine, cosine = sin(theta / 360), cos(theta / 360)
+local shift = flr(size*0.5) - 0.5
+for mx=0, size-1 do 
+for my=0, size-1 do 
+local dx, dy = mx-shift, my-shift
+local xx = flr(dx*cosine-dy*sine+shift)
+local yy = flr(dx*sine+dy*cosine+shift)
+if xx >= 0 and xx < size and yy >= 0 and yy <= size then
+local id = sget(sx+xx, sy+yy)
+if id ~= transparent_color_id then 
+pset(x+mx,y+my,id)
 end
+end
+end
+end
+end
+function parse_direction(direction)
+local dx, dy = direction[1], direction[2]
+if (dx > 0) return 90
+if (dx < 0) return 270
+if (dy > 0) return 180
+if (dy < 0) return 0
+end
+function get_flip_direction(direction)
+return pack((direction[1] == -1), (direction[2] == -1))
+end
+function draw_sprite_direction(sprite_id, size, x, y, fx, fy)
+local sx, sy = (sprite_id % 16) * size, flr(sprite_id / 16) * size
+sspr(sx,sy,size,size,x,y,size,size,fx,fy)
 end
 function is_there_something_at(dx, dy, table)
 for _, obj in pairs(table) do
@@ -710,7 +753,7 @@ local dx = map_data[loaded_map].enemy_spawn_location[1]
 local dy = map_data[loaded_map].enemy_spawn_location[2]
 local dir = map_data[loaded_map].movement_direction
 for i=1, #incoming_hint do 
-spr(Animator.sprite_id(incoming_hint[i]), (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8) 
+Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
 end
 end
 draw_selector(selector) 
@@ -774,18 +817,18 @@ spr(tower_template.sprite_data[1][2],dx,dy)
 end
 end
 function draw_shop_icons()
-local fx, fy = get_flip_direction(direction)
 for i=1, #tower_templates do 
 palt(0,false)
 palt(14,false)
 if (tower_templates[i].disable_icon_rotation) then 
 spr(shop_ui_data.blank,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,3,3)
 palt()
-spr(parse_direction(tower_templates[i].icon_data,direction),shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,2,2)
+local id = tower_templates[i].icon_data[1]
+spr(id,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,2,2)
 else
-spr(parse_direction(shop_ui_data.background,direction),shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,3,3,fx,fy)
-palt()
-spr(parse_direction(tower_templates[i].icon_data,direction),shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,2,2,fx,fy)
+local id = shop_ui_data.background[1]
+id=tower_templates[i].icon_data[1]
+draw_sprite_rotated(20,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,16,parse_direction(direction))
 end
 end
 end
@@ -842,7 +885,7 @@ shop_selector.y = shop_ui_data.y[1]-20
 option_selector.x = shop_ui_data.x[1]-16
 option_selector.y = 32
 for i=1, 3 do
-add(incoming_hint, Animator:new(hud_data.incoming_hint, true))
+add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
 end
 for y=0, 15 do 
 grid[y]={}
@@ -946,14 +989,14 @@ sfx(sfx_data.round_complete)
 end
 end
 __gfx__
-112211228887788800000000000000000000c00000c11c000000000006333360777000007777777770000000a0000000000000000000d000000d000000d00000
-112211228000000806600660068998600000cc0000011000666660000633336078877000788888877a0a0000aa000a000000a000000d200000d2d00000d20000
-22112211800000080899919a06999960c00ccc00000110003333900006333360788887707888888797aaa0007aa0aaa09a00aa0000d21d0000d12dd000d12ddd
-2211221170000007099991990099990011111d110cc11cc033333333063333600788888778888887097aaa007aaaaaaa097aa770d21002d00d20012d00200120
-1122112270000007099991990099990011111d11ccc11ccc3333333306933960078888877888888700979aa07a07a0970097a0990d20012dd21002d002100200
-11221122800000080899919a06111160c00ccc0000cddc00333390000003300078888770788888870009097a970090070009700000d12d000dd21d00ddd21d00
-221122118000000806600660069999600000cc0000011000666660000003300078877000788888870000009709000009000090000002d000000d2d0000002d00
-22112211888778880000000000a99a000000c0000001100000000000000330007770000077777777000000090000000000000000000d00000000d00000000d00
+112211228887788800a99a000000000000000000000000000000000000000000777000007777777770000000a0000000000000000000d000000d000000d00000
+112211228000000806999960000000000000000000000000000000000000000078877000788888877a0a0000aa000a000000a000000d200000d2d00000d20000
+2211221180000008061111600000000000000000000000000000000000000000788887707888888797aaa0007aa0aaa09a00aa0000d21d0000d12dd000d12ddd
+22112211700000070099990000000000000000000000000000000000000000000788888778888887097aaa007aaaaaaa097aa770d21002d00d20012d00200120
+1122112270000007009999000000000000000000000000000000000000000000078888877888888700979aa07a07a0970097a0990d20012dd21002d002100200
+112211228000000806999960000000000000000000000000000000000000000078888770788888870009097a970090070009700000d12d000dd21d00ddd21d00
+221122118000000806899860000000000000000000000000000000000000000078877000788888870000009709000009000090000002d000000d2d0000002d00
+22112211888778880000000000000000000000000000000000000000000000007770000077777777000000090000000000000000000d00000000d00000000d00
 00000d000010000000a00a0000000000a0a0aa0550aaaaaa07777000000777700000000000077000000770000000000055555555555555555555555500000000
 00000dd0011000000a6a0000a00000000a66a666666666a078888700007888870000000000077000000770000000000055666651556666515566665100000000
 000002dd11100000a67a040000000000067777777777aa6078877000000778870000000000077000000770000000000056666661566666615666666100000000
@@ -1002,14 +1045,14 @@ ccc66c7006777766066ccc0000088000000880080008880078870000078870000788700000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000596060006950500a067750a0a57760a
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000500000a0600000a0a09a0a000aa9090
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000009a000a04909000094900
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000080000000800000000800
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000698600006896000065890000659800
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000068a9160068a916006189a6006198960
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000589a9500598a950059a8850059a9850
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000059a7a50059a7a5005a7a95005a7a950
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000619a1600619a160061a9160061a9160
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000655600006556000065560000655600
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000c00000c11c00000000000633336000000000000000000000000000000000000000000000000000080000000080000000800000000800
+06600660068998600000cc0000011000666660000633336000000000000000000000000000000000000000000000000000698600006896000065890000659800
+0899919a06999960c00ccc00000110003333900006333360000000000000000000000000000000000000000000000000068a9160068a916006189a6006198960
+099991990099990011111d110cc11cc033333333063333600000000000000000000000000000000000000000000000000589a9500598a950059a8850059a9850
+099991990099990011111d11ccc11ccc3333333306933960000000000000000000000000000000000000000000000000059a7a50059a7a5005a7a95005a7a950
+0899919a06111160c00ccc0000cddc0033339000000330000000000000000000000000000000000000000000000000000619a1600619a160061a9160061a9160
+06600660069999600000cc0000011000666660000003300000000000000000000000000000000000000000000000000000655600006556000065560000655600
+0000000000a99a000000c00000011000000000000003300000000000000000000000000000000000000000000000000000000000000000000000000000000000
 077770000000000000077770aaaaaaaa000000000000000000000000aaaaaaaa000000000000000000000000aaaaaaaa00000000000000000000000000000000
 788887000000000000788887aaaaaaaa000000000000000000000000aaaaaaaa000000000000000000000000aaaaaaaa00000000000000000000000000000000
 788770000000000000077887aaaaaaaa000000000000000000000000aaaaaaaa000000000000000000000000aaaaaaaa00000000000000000000000000000000
@@ -1072,19 +1115,18 @@ __sfx__
 480300000a6500000006630000000000000000000000000000000000000000000000000001e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000c000004110071100e110121201a100000000c30000000000000070000700006000060000600006000060000600000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
-01 14643404
-00 10243404
-00 10243404
-00 10243004
-00 10243004
-00 14243004
-00 14243004
-00 14203004
-00 14203004
-00 10203004
-00 10203004
-00 10203404
-00 10203404
-00 14203404
-02 14203404
-
+0146434004
+0002434004
+0002434004
+0002430004
+0002430004
+0042430004
+0042430004
+0042030004
+0042030004
+0002030004
+0002030004
+0002034004
+0002034004
+0042034004
+0242034004
