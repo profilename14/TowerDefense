@@ -55,7 +55,7 @@ ticks_per_frame=3
 }
 map_data={
 {
-name="curves",
+name = "curves",
 data={0,0,0,0,16,16},
 path_id={45,47,25,26,27,31},
 mget_shift = {0, 0},
@@ -65,7 +65,7 @@ movement_direction={1,0},
 allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 },
 {
-name="loop",
+name = "loop",
 data={16,0,0,0,16,16},
 path_id={45,47,25,26,27,31},
 mget_shift = {16, 0},
@@ -75,7 +75,7 @@ movement_direction={1,0},
 allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 },
 {
-name="straight",
+name = "straight",
 data={32,0,0,0,16,16},
 path_id={45,47,25,26,27,31},
 mget_shift = {32, 0},
@@ -85,7 +85,7 @@ movement_direction={1,0},
 allowed_tiles={28,29,30,42,43,44,46,58,59,60,61,62,63}
 },
 {
-name="u-turn",
+name = "u-turn",
 data={48,0,0,0,16,16},
 path_id={45,47,25,26,27,31},
 mget_shift = {48, 0},
@@ -102,14 +102,14 @@ damage=2,
 radius=1,
 animation=animation_data.blade_circle,
 cost=25,
-type="tack",
+type = "tack",
 attack_delay=10,
 icon_data={16,16},
 disable_icon_rotation=true,
 single_tile_hit_only=true
 },
 {
-name="lightninglance",
+name = "lightning lance",
 damage=5,
 radius=5,
 sprite_data={
@@ -118,14 +118,14 @@ sprite_data={
 },
 ticks_per_frame=5,
 cost=55,
-type="rail",
+type = "rail", 
 attack_delay=25,
 icon_data={20,18},
 disable_icon_rotation=false,
 single_tile_hit_only=true
 },
 {
-name="halehowitzer",
+name = "hale howitzer",
 damage=5,--freezedelay;!notdamage
 radius=2,
 sprite_data={
@@ -134,14 +134,14 @@ sprite_data={
 },
 ticks_per_frame=5,
 cost=25,
-type="frontal",
+type = "frontal", 
 attack_delay=30,
 icon_data={68,66},
 disable_icon_rotation=false,
 single_tile_hit_only=true
 },
 {
-name="firepit",
+name = "fire pit",
 damage=3,--firetickduration
 radius=0,
 sprite_data={
@@ -386,7 +386,7 @@ state,direction=check_direction(south,{west,east},path_tiles,path)
 elseif dir.y == -1 then -- north
 state, direction = check_direction(north, {west, east}, path_tiles, path)
 end
-assert(state,"Failedtofindpathat:"..cur.x..","..cur.y.."indirection:"..dir.x..","..dir.y.."end:"..ending.x..","..ending.y)
+assert(state, "Failed to find path at: "..cur.x..", "..cur.y.." in direction: "..dir.x..", "..dir.y.." end: "..ending.x..", "..ending.y)
 if state then 
 dir = {x=normalize(direction.x-cur.x), y=normalize(direction.y-cur.y)}
 cur={x=direction.x,y=direction.y}
@@ -501,7 +501,6 @@ end
 end
 function Tower:draw()
 Animator.draw(self.animator, self.x*8, self.y*8)
-printh(self.animator.theta)
 end
 function place_tower(x, y)
 if (grid[y][x] == "tower") return false
@@ -510,7 +509,7 @@ local tower_type = tower_templates[shop_selector.pos + 1].type
 if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
 add(towers, Tower:new(x, y, tower_templates[shop_selector.pos + 1], direction))
 coins -= tower_templates[shop_selector.pos + 1].cost
-grid[y][x]="tower"
+grid[y][x] = "tower"
 return true
 end
 Particle={}
@@ -720,7 +719,7 @@ end
 function refund_tower_at(dx, dy)
 for _, tower in pairs(towers) do
 if tower.x == dx and tower.y == dy then
-grid[dy][dx]="empty"
+grid[dy][dx] = "empty"
 if (tower.type == "floor") grid[dy][dx] = "path"
 coins+=flr(tower.cost/2)
 del(animators, tower.animator) 
@@ -769,15 +768,15 @@ end
 end
 draw_selector(selector) 
 end
-print_with_outline("scrap:"..coins,0,1,7,0)
-print_with_outline("♥"..player_health,103,1,8,0)
+print_with_outline("scrap: "..coins, 0, 1, 7, 0)
+print_with_outline("♥ "..player_health, 103, 1, 8, 0)
 if shop_enable then
-print_with_outline("gamepaused[wave"..(wave_round+freeplay_rounds).."]",18,16,7,0)
-print_with_outline("startround",shop_ui_data.x[1]-6,33,7,0)
-print_with_outline("mapmenu",shop_ui_data.x[3]-6,33,7,0)
+print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
+print_with_outline("start round", shop_ui_data.x[1]-6, 33, 7, 0)
+print_with_outline("map menu", shop_ui_data.x[3]-6, 33, 7, 0)
 local len = #tower_templates[shop_selector.pos + 1].name
 print_with_outline(tower_templates[shop_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
-print_with_outline("❎rotate|🅾️closeshop",1,120,7,0)
+print_with_outline("❎ rotate | 🅾️ close shop", 1, 120, 7, 0)
 draw_shop_cost()
 draw_shop_dmg()
 else
@@ -853,9 +852,9 @@ function draw_shop_dmg()
 for i=1, #tower_templates do
 local type = tower_templates[i].type
 if type == "tack" or type == "rail" then 
-print_with_outline("D"..tower_templates[i].damage,shop_ui_data.x[i]-4,shop_ui_data.y[1],8,0)
+print_with_outline("D"..tower_templates[i].damage, shop_ui_data.x[i] - 4, shop_ui_data.y[1], 8, 0)
 else
-print_with_outline("T"..tower_templates[i].damage,shop_ui_data.x[i]-4,shop_ui_data.y[1],12,0)
+print_with_outline("T"..tower_templates[i].damage, shop_ui_data.x[i] - 4, shop_ui_data.y[1], 12, 0)
 end
 end
 end
@@ -871,7 +870,7 @@ if map_menu_enable then
 for i=1, #map_data do
 draw_map_overview(i,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16)
 end
-print_with_outline("chooseamaptoplay",25,1,7,0)
+print_with_outline("choose a map to play", 25, 1, 7, 0)
 local len = #map_data[map_selector.pos + 1].name
 print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
 draw_selector(map_selector)
@@ -902,7 +901,7 @@ end
 for y=0, 15 do 
 grid[y]={}
 for x=0, 15 do 
-grid[y][x]="empty"
+grid[y][x] = "empty"
 local mx = x + map_data[loaded_map].mget_shift[1]
 local my = y + map_data[loaded_map].mget_shift[2]
 if (not placable_tile_location(mx, my)) grid[y][x] = "path" 
