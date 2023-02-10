@@ -48,8 +48,7 @@ function Enemy:draw()
   if (self.hp <= 0) return
   local px, py, n = Enemy.get_pixel_location(self)
   local dir = {normalize(n.x - self.x), normalize(n.y - self.y)}
-  -- temp
-  draw_sprite_rotated(2, px, py, 8, parse_direction(dir))
+  draw_sprite_rotated(self.gfx, px, py, 8, parse_direction(dir))
 end
 
 function kill_enemy(enemy)

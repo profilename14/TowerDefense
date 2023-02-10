@@ -176,42 +176,42 @@ enemy_templates = {
   {
     hp = 10,
     step_delay = 10,
-    sprite_index = { 3, 2 },
+    sprite_index = 2,
     reward = 3,
     damage = 1
   },
   {
     hp = 10,
     step_delay = 8,
-    sprite_index = { 5, 4 },
+    sprite_index = 3,
     reward = 5,
     damage = 2
   },
   {
     hp = 25,
     step_delay = 12,
-    sprite_index = { 7, 6 },
+    sprite_index = 4,
     reward = 7,
     damage = 5
   },
   {
     hp = 20,
     step_delay = 9,
-    sprite_index = { 3, 2 },
+    sprite_index = 2,
     reward = 3,
     damage = 4
   },
   {
     hp = 15,
     step_delay = 5,
-    sprite_index = { 5, 4 },
+    sprite_index = 3,
     reward = 5,
     damage = 5
   },
   {
     hp = 70,
     step_delay = 13,
-    sprite_index = { 7, 6 },
+    sprite_index = 4,
     reward = 7,
     damage = 10
   }
