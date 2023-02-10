@@ -4,7 +4,7 @@
 - [Design Document](https://docs.google.com/document/d/1cdd3pdNITeIYohnU7j1p6ek8NbD_pG9kevsfCBfXnQQ/edit)
 - [Trello / Roadmap](https://trello.com/b/IxeCKIFN/cdm176towerdefense)
 
-## Rework Stats
+## Rework Status
 ### Starting
 - Chars: 23905
 - Tokens: 4867
