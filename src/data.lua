@@ -98,14 +98,12 @@ tower_templates = {
     name = "sword circle",
     damage = 2,
     radius = 1,
-    --? 1:=north/south, 2:=west/east
     animation = animation_data.blade_circle,
     cost = 25,
     type = "tack",
     attack_delay = 10,
-    icon_data = { 16, 16 },
-    disable_icon_rotation = true,
-    single_tile_hit_only = true
+    icon_data = 16,
+    disable_icon_rotation = true
   },
   { 
     name = "lightning lance",
@@ -119,9 +117,8 @@ tower_templates = {
     cost = 55,
     type = "rail", 
     attack_delay = 25,
-    icon_data = { 20, 18 },
-    disable_icon_rotation = false,
-    single_tile_hit_only = true
+    icon_data = 20,
+    disable_icon_rotation = false
   },
   {
     name = "hale howitzer",
@@ -135,9 +132,8 @@ tower_templates = {
     cost = 25,
     type = "frontal", 
     attack_delay = 30,
-    icon_data = { 68, 66 },
-    disable_icon_rotation = false,
-    single_tile_hit_only = true
+    icon_data = 68,
+    disable_icon_rotation = false
   },
   { 
     name = "fire pit",
@@ -155,15 +151,14 @@ tower_templates = {
     cost = 25,
     type = "floor", 
     attack_delay = 15,
-    icon_data = { 70, 70 },
-    disable_icon_rotation = true,
-    single_tile_hit_only = true
+    icon_data = 70,
+    disable_icon_rotation = true
   }
 }
 shop_ui_data = {
   x = {128 / 4 - 10, 128/2 - 10, 128 * 3 / 4 - 10, 128 - 10},
   y = {128 / 2},
-  background = { 136, 132 },
+  background = 136,
   blank = 140
 }
 freeplay_stats = {

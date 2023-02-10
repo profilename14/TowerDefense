@@ -104,9 +104,8 @@ animation=animation_data.blade_circle,
 cost=25,
 type = "tack",
 attack_delay=10,
-icon_data={16,16},
-disable_icon_rotation=true,
-single_tile_hit_only=true
+icon_data=16,
+disable_icon_rotation=true
 },
 {
 name = "lightning lance",
@@ -120,9 +119,8 @@ ticks_per_frame=5,
 cost=55,
 type = "rail", 
 attack_delay=25,
-icon_data={20,18},
-disable_icon_rotation=false,
-single_tile_hit_only=true
+icon_data=20,
+disable_icon_rotation=false
 },
 {
 name = "hale howitzer",
@@ -136,9 +134,8 @@ ticks_per_frame=5,
 cost=25,
 type = "frontal", 
 attack_delay=30,
-icon_data={68,66},
-disable_icon_rotation=false,
-single_tile_hit_only=true
+icon_data=68,
+disable_icon_rotation=false
 },
 {
 name = "fire pit",
@@ -156,15 +153,14 @@ ticks_per_frame=5,
 cost=25,
 type = "floor", 
 attack_delay=15,
-icon_data={70,70},
-disable_icon_rotation=true,
-single_tile_hit_only=true
+icon_data=70,
+disable_icon_rotation=true
 }
 }
 shop_ui_data={
 x={128/4-10,128/2-10,128*3/4-10,128-10},
 y={128/2},
-background={136,132},
+background=136,
 blank=140
 }
 freeplay_stats={
@@ -433,7 +429,6 @@ current_attack_ticks=0,
 cost=tower_template_data.cost,
 type=tower_template_data.type,
 dir=direction,
-single_hit=tower_template_data.single_tile_hit_only,
 animator = Animator:new(tower_template_data.animation, true)
 }
 add(animators, obj.animator)
@@ -469,7 +464,7 @@ function Tower:nova_collision()
 local hits = {}
 for y=-self.radius, self.radius do
 for x=-self.radius, self.radius do
-if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits, self.single_hit)
+if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
 end
 end
 if (#hits > 0) nova_spawn(self.x, self.y, self.radius, animation_data.blade)
@@ -670,15 +665,15 @@ if (sprite_id == map_data[map_index].allowed_tiles[i]) return true
 end
 return false
 end
-function add_enemy_at_to_table(dx, dy, table, single_only)
+function add_enemy_at_to_table(dx, dy, table)
 for _, enemy in pairs(enemies) do
 if (enemy.x == dx and enemy.y == dy) then
 add(table,enemy)
-if (single_only) return
+return
 end
 end
 end
-function draw_sprite_rotated(sprite_id, x, y, size, theta)
+function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
 local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
 local sine, cosine = sin(theta / 360), cos(theta / 360)
 local shift = flr(size*0.5) - 0.5
@@ -689,7 +684,7 @@ local xx = flr(dx*cosine-dy*sine+shift)
 local yy = flr(dx*sine+dy*cosine+shift)
 if xx >= 0 and xx < size and yy >= 0 and yy <= size then
 local id = sget(sx+xx, sy+yy)
-if id ~= transparent_color_id then 
+if id ~= transparent_color_id or is_opaque then 
 pset(x+mx,y+my,id)
 end
 end
@@ -827,19 +822,17 @@ end
 end
 function draw_shop_icons()
 for i=1, #tower_templates do 
-palt(0,false)
-palt(14,false)
 if (tower_templates[i].disable_icon_rotation) then 
+palt(0,false)
 spr(shop_ui_data.blank,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,3,3)
 palt()
-local id = tower_templates[i].icon_data[1]
+local id = tower_templates[i].icon_data
 spr(id,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,2,2)
 else
-local id = shop_ui_data.background[1]
-draw_sprite_rotated(id,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,24,parse_direction(direction))
-palt()
-id=tower_templates[i].icon_data[1]
-draw_sprite_rotated(20,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,16,parse_direction(direction))
+local id = shop_ui_data.background
+draw_sprite_rotated(id,shop_ui_data.x[i]-20,shop_ui_data.y[1]-20,24,parse_direction(direction),true)
+id=tower_templates[i].icon_data
+draw_sprite_rotated(id,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16,16,parse_direction(direction))
 end
 end
 end

@@ -75,17 +75,17 @@ function placable_tile_location(x, y, map_id)
   return false
 end
 
-function add_enemy_at_to_table(dx, dy, table, single_only)
+function add_enemy_at_to_table(dx, dy, table)
   for _, enemy in pairs(enemies) do
     if (enemy.x == dx and enemy.y == dy) then
       add(table, enemy)
-      if (single_only) return
+      return
     end
   end
 end
 
 -- https://www.lexaloffle.com/bbs/?pid=52525 [modified for this game]
-function draw_sprite_rotated(sprite_id, x, y, size, theta)
+function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
   local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
   local sine, cosine = sin(theta / 360), cos(theta / 360)
   local shift = flr(size*0.5) - 0.5
@@ -96,7 +96,7 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta)
       local yy = flr(dx*sine+dy*cosine+shift)
       if xx >= 0 and xx < size and yy >= 0 and yy <= size then
         local id = sget(sx+xx, sy+yy)
-        if id ~= transparent_color_id then 
+        if id ~= transparent_color_id or is_opaque then 
           pset(x+mx, y+my, id)
         end
       end
@@ -112,14 +112,6 @@ function parse_direction(direction)
   if (dy > 0) return 180
   if (dy < 0) return 0
 end
-
--- function parse_direction(data, dir)
---   if dir[1] == 0 and dir[2] ~= 0 then 
---     return data[1]
---   elseif dir[1] ~= 0 and dir[2] == 0 then
---     return data[2]
---   end
--- end
 
 function get_flip_direction(direction)
   return pack((direction[1] == -1), (direction[2] == -1))

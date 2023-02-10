@@ -98,23 +98,17 @@ end
 function draw_shop_icons()
   -- local fx, fy = get_flip_direction(direction)
   for i=1, #tower_templates do 
-    palt(0, false)
-    palt(14, false)
     if (tower_templates[i].disable_icon_rotation) then 
+      palt(0, false)
       spr(shop_ui_data.blank, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3)
       palt()
-      local id = tower_templates[i].icon_data[1]
+      local id = tower_templates[i].icon_data
       spr(id, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2)
     else
-      local id = shop_ui_data.background[1]
-      -- spr(id, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3, fx, fy)
-      draw_sprite_rotated(id, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction))
-      -- draw_sprite_direction(id, 16, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, unpack(direction))
-      palt()
-      id = tower_templates[i].icon_data[1]
-      -- spr(id, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2, fx, fy)
-      draw_sprite_rotated(20, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16, 16, parse_direction(direction))
-      -- draw_sprite_direction(id, 16, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, unpack(direction))
+      local id = shop_ui_data.background
+      draw_sprite_rotated(id, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction), true)
+      id = tower_templates[i].icon_data
+      draw_sprite_rotated(id, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16, 16, parse_direction(direction))
     end
   end
 end

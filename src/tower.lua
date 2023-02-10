@@ -9,7 +9,6 @@ function Tower:new(dx, dy, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
-    single_hit = tower_template_data.single_tile_hit_only,
     animator = Animator:new(tower_template_data.animation, true)
   }
   add(animators, obj.animator)
@@ -46,7 +45,7 @@ function Tower:nova_collision()
   local hits = {}
   for y=-self.radius, self.radius do
     for x=-self.radius, self.radius do
-      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits, self.single_hit)
+      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
     end
   end
   if (#hits > 0) nova_spawn(self.x, self.y, self.radius, animation_data.blade)
