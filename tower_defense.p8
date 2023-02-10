@@ -621,11 +621,11 @@ function Animator:reset()
 self.animation_frame=1
 end
 function print_with_outline(text, dx, dy, text_color, outline_color)
-print(text, dx - 1, dy, outline_color)
-print(text, dx + 1, dy, outline_color)
-print(text, dx, dy-1, outline_color)
-print(text, dx, dy+1, outline_color)
-print(text, dx, dy, text_color)
+?text,dx-1,dy,outline_color
+?text,dx+1,dy
+?text,dx,dy-1
+?text,dx,dy+1
+?text,dx,dy,text_color
 end
 function print_tower_cost(cost, dx, dy)
 local color = 7
@@ -637,11 +637,8 @@ local x = posA.x - posB.x
 local y = posA.y - posB.y
 return sqrt(x * x + y * y)
 end
-function clamp(val, min_val, max_val)
-return min(max(min_val, val), max_val)
-end
 function normalize(val)
-return flr(clamp(val, -1, 1))
+return flr(mid(val, -1, 1))
 end
 function lerp(start, last, rate)
 return start + (last - start) * rate
@@ -716,13 +713,6 @@ if (dx > 0) return 90
 if (dx < 0) return 270
 if (dy > 0) return 180
 if (dy < 0) return 0
-end
-function get_flip_direction(direction)
-return pack((direction[1] == -1), (direction[2] == -1))
-end
-function draw_sprite_direction(sprite_id, size, x, y, fx, fy)
-local sx, sy = (sprite_id % 16) * size, flr(sprite_id / 16) * size
-sspr(sx,sy,size,size,x,y,size,size,fx,fy)
 end
 function is_there_something_at(dx, dy, table)
 for _, obj in pairs(table) do
@@ -986,8 +976,8 @@ place_tower(dx,dy)
 end
 end
 local dx, dy = controls()
-selector.x = clamp(selector.x + dx * 8, 0, 120)
-selector.y = clamp(selector.y + dy * 8, 0, 120)
+selector.x = mid(selector.x + dx * 8, 0, 120)
+selector.y = mid(selector.y + dy * 8, 0, 120)
 if enemies_active then 
 foreach(enemies, update_enemy_position)
 foreach(towers, Tower.attack)

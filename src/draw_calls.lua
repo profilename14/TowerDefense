@@ -96,7 +96,6 @@ function draw_attack_tiles(tower_template, dx, dy)
 end
 
 function draw_shop_icons()
-  -- local fx, fy = get_flip_direction(direction)
   for i=1, #tower_templates do 
     if (tower_templates[i].disable_icon_rotation) then 
       palt(0, false)

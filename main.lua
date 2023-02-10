@@ -140,8 +140,8 @@ function game_loop()
   end
 
   local dx, dy = controls()
-  selector.x = clamp(selector.x + dx * 8, 0, 120)
-  selector.y = clamp(selector.y + dy * 8, 0, 120)
+  selector.x = mid(selector.x + dx * 8, 0, 120)
+  selector.y = mid(selector.y + dy * 8, 0, 120)
 
   -- update objs
   if enemies_active then 
