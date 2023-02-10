@@ -43,7 +43,7 @@ function game_draw_loop()
     local len = #tower_templates[shop_selector.pos + 1].name
     print_with_outline(tower_templates[shop_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
     print_with_outline("❎ rotate | 🅾️ close shop", 1, 120, 7, 0)
-    draw_attack_tiles(tower_templates[shop_selector.pos + 1], 128/2 - 8, shop_ui_data.y[1] + 24)
+    -- draw_attack_tiles(tower_templates[shop_selector.pos + 1], 128/2 - 8, shop_ui_data.y[1] + 24)
     draw_shop_cost()
     draw_shop_dmg()
   else 
@@ -108,9 +108,9 @@ function draw_shop_icons()
     else
       local id = shop_ui_data.background[1]
       -- spr(id, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, 3, 3, fx, fy)
-      -- draw_sprite_rotated(id, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction))
+      draw_sprite_rotated(id, shop_ui_data.x[i]-20, shop_ui_data.y[1]-20, 24, parse_direction(direction))
       -- draw_sprite_direction(id, 16, shop_ui_data.x[i] - 20, shop_ui_data.y[1] - 20, unpack(direction))
-      -- palt()
+      palt()
       id = tower_templates[i].icon_data[1]
       -- spr(id, shop_ui_data.x[i] - 16, shop_ui_data.y[1] - 16, 2, 2, fx, fy)
       draw_sprite_rotated(20, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16, 16, parse_direction(direction))

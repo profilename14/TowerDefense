@@ -10,14 +10,9 @@ function Tower:new(dx, dy, tower_template_data, direction)
     type = tower_template_data.type,
     dir = direction,
     single_hit = tower_template_data.single_tile_hit_only,
-    -- temp
-    sprite = tower_template_data.sprite_data
-    -- animator = Animator:new({
-    --   sprite_data = tower_template_data.sprite_data,
-    --   ticks_per_frame = tower_template_data.ticks_per_frame
-    -- }, true),
+    animator = Animator:new(tower_template_data.animation, true)
   }
-  -- add(animators, obj.animator)
+  add(animators, obj.animator)
   setmetatable(obj, self)
   self.__index = self 
   return obj 
@@ -82,9 +77,7 @@ function Tower:freeze_enemies(targets)
   end
 end
 function Tower:draw()
-  local id = self.sprite[1][1]
-  -- spr(id, self.x * 8, self.y * 8, 1, 1, get_flip_direction(self.dir))
-  draw_sprite_direction(id, 8, self.x*8, self.y*8, unpack(self.dir))
+  Animator.draw(self.animator, self.x*8, self.y*8)
 end
 
 function place_tower(x, y)

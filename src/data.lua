@@ -35,15 +35,22 @@ animation_data = {
   },
   incoming_hint = {
     data = {
-      {sprite = 54},
-      {sprite = 55},
-      {sprite = 56},
-      {sprite = 55}
+      {sprite = 4},
+    },
+    ticks_per_frame = 3
+  },
+  blade_circle = {
+    data = {
+      {sprite = 76},
+      {sprite = 77},
+      {sprite = 78},
+      {sprite = 79},
+      {sprite = 78},
+      {sprite = 77}
     },
     ticks_per_frame = 3
   }
 }
-
 map_data = {
   {
     name = "curves",
@@ -92,15 +99,7 @@ tower_templates = {
     damage = 2,
     radius = 1,
     --? 1:=north/south, 2:=west/east
-    sprite_data = {
-      { 76, 76 },
-      { 77, 77 },
-      { 78, 78 },
-      { 79, 79 },
-      { 78, 78 },
-      { 77, 77 },
-    },
-    ticks_per_frame = 3, 
+    animation = animation_data.blade_circle,
     cost = 25,
     type = "tack",
     attack_delay = 10,
@@ -176,42 +175,42 @@ enemy_templates = {
   {
     hp = 10,
     step_delay = 10,
-    sprite_index = 2,
+    sprite_index = 5,
     reward = 3,
     damage = 1
   },
   {
     hp = 10,
     step_delay = 8,
-    sprite_index = 3,
+    sprite_index = 6,
     reward = 5,
     damage = 2
   },
   {
     hp = 25,
     step_delay = 12,
-    sprite_index = 4,
+    sprite_index = 7,
     reward = 7,
     damage = 5
   },
   {
     hp = 20,
     step_delay = 9,
-    sprite_index = 2,
+    sprite_index = 5,
     reward = 3,
     damage = 4
   },
   {
     hp = 15,
     step_delay = 5,
-    sprite_index = 3,
+    sprite_index = 6,
     reward = 5,
     damage = 5
   },
   {
     hp = 70,
     step_delay = 13,
-    sprite_index = 4,
+    sprite_index = 7,
     reward = 7,
     damage = 10
   }

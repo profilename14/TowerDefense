@@ -86,7 +86,7 @@ end
 
 -- https://www.lexaloffle.com/bbs/?pid=52525 [modified for this game]
 function draw_sprite_rotated(sprite_id, x, y, size, theta)
-  local sx, sy = (sprite_id % 16) * size, (sprite_id \ 16) * size 
+  local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
   local sine, cosine = sin(theta / 360), cos(theta / 360)
   local shift = flr(size*0.5) - 0.5
   for mx=0, size-1 do 
@@ -163,26 +163,3 @@ function parse_frontal_bounds(dx, dy, radius)
   return fx, fy, flx, fly, ix, iy
 end
 
--- particle spawing
-function raycast_spawn(dx, dy, range, direction, data)
-  for i=1, range do 
-    add(particles, Particle:new(dx + (i * direction[1]), dy + (i * direction[2]), false, Animator:new(data, false)))
-  end
-end
-
-function nova_spawn(dx, dy, radius, data)
-  for y=-radius, radius do
-    for x=-radius, radius do
-      if (x ~= 0 or y ~= 0) add(particles, Particle:new(dx + x, dy + y, false, Animator:new(data, false)))
-    end
-  end
-end
-
-function frontal_spawn(dx, dy, radius, direction, data)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(direction[1], direction[2], radius)
-  for y=fy, fly, iy do
-    for x=fx, flx, ix do
-      if (x ~= 0 or y ~= 0) add(particles, Particle:new(dx + x, dy + y, false, Animator:new(data, false)))
-    end
-  end
-end
