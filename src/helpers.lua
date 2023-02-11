@@ -91,3 +91,13 @@ function parse_frontal_bounds(radius, position)
   return fx, fy, flx, fly, ix, iy
 end
 
+function combine_and_unpack(data1, data2)
+  local data = {}
+  for dat in all(data1) do
+    add(data, dat)
+  end
+  for dat in all(data2) do
+    add(data, dat)
+  end
+  return unpack(data)
+end

@@ -23,6 +23,12 @@ function Vec:new(dx, dy)
   self.__eq = function(a, b)
     return (a.x==b.x and a.y==b.y)
   end
+  self.__tostring = function(vec)
+    return "("..vec.x..", "..vec.y..")"
+  end
+  self.__concat = function(vec, other)
+    return (type(vec) == "table") and Vec.__tostring(vec)..other or Vec.__tostring(other)..vec
+  end
   return obj
 end
 function Vec:unpack()
@@ -31,16 +37,9 @@ end
 function Vec:clamp(min, max)
   self.x, self.y = mid(self.x, min, max), mid(self.y, min, max)
 end
-function Vec:to_str()
-  return "("..self.x..", "..self.y..")"
-end
 
 function normalize(val)
-  if type(val) == "table" then 
-    return Vec:new(normalize(val.x), normalize(val.y))
-  else
-    return flr(mid(val, -1, 1))
-  end
+  return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
 end
 
 function lerp(start, last, rate)

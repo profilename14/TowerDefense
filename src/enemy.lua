@@ -98,7 +98,7 @@ function parse_path()
     elseif dir.y == -1 then -- north
       state, direct = check_direction(north, {west, east}, path_tiles, path)
     end
-    assert(state, "Failed to find path at: "..Vec.to_str(cur).." in direction: "..Vec.to_str(dir).." end: "..Vec.to_str(ending))
+    assert(state, "Failed to find path at: "..cur.." in direction: "..dir.." end: "..ending)
     if state then 
       dir = normalize(direct - cur)
       cur = direct

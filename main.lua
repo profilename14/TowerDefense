@@ -10,6 +10,7 @@
 #include src/tower.lua
 #include src/particle.lua
 #include src/animator.lua
+#include src/borderRect.lua
 #include src/menu.lua
 
 -- Utility/Helper Functions
