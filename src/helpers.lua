@@ -82,15 +82,15 @@ function parse_direction(direction)
   if (dy < 0) return 0
 end
 
-function parse_frontal_bounds(radius, dx, dy)
+function parse_frontal_bounds(radius, position)
   -- Default South
   local fx, fy, flx, fly, ix, iy = -1, 1, 1, radius, 1, 1
 
-  if dx > 0 then -- east
+  if position.x > 0 then -- east
     fx, fy, flx, fly = 1, -1, radius, 1
-  elseif dx < 0 then -- west
+  elseif position.x < 0 then -- west
     fx, fy, flx, fly, ix = -1, -1, -radius, 1, -1
-  elseif dy < 0 then -- north
+  elseif position.y < 0 then -- north
     fx, fy, flx, fly, iy = -1, -1, 1, -radius, -1
   end
   return fx, fy, flx, fly, ix, iy
