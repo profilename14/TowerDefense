@@ -7,6 +7,11 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
   ?text,dx,dy,text_color
 end
 
+function print_text_center(text, dy, text_color, outline_color)
+  local dx = 64 - (#text*5)\2
+  print_with_outline(text, dx, dy, text_color, outline_color)
+end
+
 -- Utility
 function controls()
   if btnp(⬆️) then return 0, -1

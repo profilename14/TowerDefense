@@ -1,18 +1,15 @@
 function map_loop()
-  if btnp(❎) then 
-    load_game(map_selector.pos + 1)
+  local map_menu = get_menu("map")
+  Menu.update(map_menu)
+
+  if btnp(❎) then
+    Menu.invoke(map_menu)
+    map_menu.enable = false
     map_menu_enable = false 
     return
   end
 
-  local dx, dy = controls()
-  if dx < 0 then 
-    map_selector.pos = (map_selector.pos - 1) % #map_data
-    map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
-  elseif dx > 0 then 
-    map_selector.pos = (map_selector.pos + 1) % #map_data
-    map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
-  end
+  Menu.move(map_menu)
 end
 
 function shop_loop()

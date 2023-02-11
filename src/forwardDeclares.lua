@@ -103,3 +103,25 @@ function longest_menu_str(data)
   end
   return len
 end
+
+-- Game State Related
+function load_game(map_id)
+  pal()
+  auto_start_wave = false
+  wave_round = 0
+  freeplay_rounds = 0
+  loaded_map = map_id
+  pathing = parse_path()
+  for i=1, 3 do
+    add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+  end
+  for y=0, 15 do 
+    grid[y] = {}
+    for x=0, 15 do 
+      grid[y][x] = "empty"
+      local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+      if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
+    end
+  end
+  music(0)
+end

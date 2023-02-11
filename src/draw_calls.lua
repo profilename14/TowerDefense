@@ -54,22 +54,17 @@ function game_draw_loop()
 end
 
 function map_draw_loop()
-  for i=1, #map_data do
-    draw_map_overview(i, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16)
-  end
-  print_with_outline("choose a map to play", 25, 1, 7, 0)
-  local len = #map_data[map_selector.pos + 1].name
-  print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
-  draw_selector(map_selector)
+  local map_menu = get_menu("map")
+
+  draw_map_shadow_filter()
+  map(unpack(map_data[map_menu.pos].mget_shift))
+  pal()
+  Menu.draw(map_menu)
+  print_text_center("map select", 5, 7, 1)
 end
 
-function draw_map_overview(map_id, xoffset, yoffset)
-  local map_shift = Vec:new(map_data[map_id].mget_shift)
-  for y=0, 15 do
-    for x=0, 15 do
-      pset(x + xoffset, y + yoffset, placable_tile_location(Vec:new(x, y)+map_shift) and map_draw_data.other or map_draw_data.path)
-    end
-  end
+function draw_map_shadow_filter()
+  pal(palettes.dark_mode)
 end
 
 function draw_selector(sel)
