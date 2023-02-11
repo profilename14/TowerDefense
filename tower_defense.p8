@@ -442,8 +442,6 @@ end
 function Enemy:draw()
 if (self.hp <= 0) return
 local px, py, n = Enemy.get_pixel_location(self)
-printh(Vec.to_str(n))
-printh(Vec.to_str(self.position))
 local dir = normalize(n-self.position)
 draw_sprite_rotated(self.gfx,px,py,8,parse_direction(dir))
 end
@@ -514,7 +512,7 @@ end
 function spawn_enemy()
 while enemies_remaining > 0 do 
 enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
-if (is_there_something_at(enemies, unpack(map_data[loaded_map].enemy_spawn_location))) goto spawn_enemy_continue
+if (is_in_table(Vec:new(map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
 if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
 enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
 add(enemies,Enemy:new(map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
@@ -524,9 +522,9 @@ yield()
 end
 end
 Tower={}
-function Tower:new(dx, dy, tower_template_data, direction)
+function Tower:new(pos, tower_template_data, direction)
 obj={
-position=Vec:new(dx,dy),
+position=pos,
 dmg=tower_template_data.damage,
 radius=tower_template_data.radius,
 attack_delay=tower_template_data.attack_delay,
@@ -607,21 +605,21 @@ p.x, p.y, self.animator.sprite_size,
 parse_direction(self.dir)
 )
 end
-function place_tower(x, y)
-if (grid[y][x] == "tower") return false
+function place_tower(position)
+if (grid[position.y][position.x] == "tower") return false
 if (coins < tower_templates[selected_menu_tower_id].cost) return false
 local tower_type = tower_templates[selected_menu_tower_id].type 
-if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
-add(towers,Tower:new(x,y,tower_templates[selected_menu_tower_id],direction))
+if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+add(towers,Tower:new(position,tower_templates[selected_menu_tower_id],direction))
 coins-=tower_templates[selected_menu_tower_id].cost
-grid[y][x] = "tower"
+grid[position.y][position.x] = "tower"
 return true
 end
-function refund_tower_at(dx, dy)
+function refund_tower_at(position)
 for _, tower in pairs(towers) do
-if tower.x == dx and tower.y == dy then
-grid[dy][dx] = "empty"
-if (tower.type == "floor") grid[dy][dx] = "path"
+if tower.position == position then
+grid[position.y][position.x] = "empty"
+if (tower.type == "floor") grid[position.y][position.x] = "path"
 coins+=tower.cost\2
 del(animators, tower.animator) 
 del(towers,tower)
@@ -851,16 +849,17 @@ reward=enemy_data.reward,
 damage=enemy_data.damage
 }
 end
-function is_in_table(val, table)
+function is_in_table(val, table, is_entity)
 for i, obj in pairs(table) do
-if (val.x == obj.x and val.y == obj.y) return true, i 
+if is_entity then 
+if (val == obj.position) return true, i 
+else
+if (val == obj) return true, i 
 end
 end
-function is_there_something_at(table, dx, dy)
-return is_in_table(Vec:new(dx, dy), table) and true or false
 end
-function placable_tile_location(x, y)
-return fget(mget(x, y), map_meta_data.non_path_flag_id)
+function placable_tile_location(coord)
+return fget(mget(coord.x, coord.y), map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(pos, table)
 for _, enemy in pairs(enemies) do
@@ -888,12 +887,11 @@ end
 end
 end
 end
-function parse_direction(direction)
-local dx, dy = Vec.unpack(direction)
-if (dx > 0) return 90
-if (dx < 0) return 270
-if (dy > 0) return 180
-if (dy < 0) return 0
+function parse_direction(dir)
+if (dir.x > 0) return 90
+if (dir.x < 0) return 270
+if (dir.y > 0) return 180
+if (dir.y < 0) return 0
 end
 function parse_frontal_bounds(radius, position)
 local fx, fy, flx, fly, ix, iy = -1, 1, 1, radius, 1, 1
@@ -965,10 +963,11 @@ foreach(particles, Particle.draw)
 if (shop_enable) foreach(menus, Menu.draw)
 if not shop_enable then 
 if not enemies_active and incoming_hint ~= nil then 
-local dx, dy = unpack(map_data[loaded_map].enemy_spawn_location)
-local dir = map_data[loaded_map].movement_direction
+local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
+local dir = Vec:new(map_data[loaded_map].movement_direction)
 for i=1, #incoming_hint do 
-Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
+local position = (spawn_location + dir * (i-1))*8
+Animator.draw(incoming_hint[i], Vec.unpack(position))
 end
 end
 spr(selector.sprite_index, Vec.unpack(selector.position))
@@ -983,7 +982,7 @@ else
 print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
 end
 else
-if is_there_something_at(towers, Vec.unpack(selector.position/8)) then
+if is_in_table(selector.position/8, towers, true) then
 print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
 else
 print_with_outline(
@@ -993,10 +992,10 @@ end
 end
 end
 function draw_map_overview(map_id, xoffset, yoffset)
-local mxshift, myshift = unpack(map_data[map_id].mget_shift)
+local map_shift = Vec:new(map_data[map_id].mget_shift)
 for y=0, 15 do
 for x=0, 15 do
-pset(x + xoffset, y + yoffset, placable_tile_location(x + mxshift, y + myshift) and map_draw_data.other or map_draw_data.path)
+pset(x + xoffset, y + yoffset, placable_tile_location(Vec:new(x, y)+map_shift) and map_draw_data.other or map_draw_data.path)
 end
 end
 end
@@ -1040,9 +1039,8 @@ for y=0, 15 do
 grid[y]={}
 for x=0, 15 do 
 grid[y][x] = "empty"
-local mx = x + map_data[loaded_map].mget_shift[1]
-local my = y + map_data[loaded_map].mget_shift[2]
-if (not placable_tile_location(mx, my)) grid[y][x] = "path" 
+local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
 end
 end
 music(0)
@@ -1089,11 +1087,11 @@ menus[1].enable=true
 return
 end
 if btnp(❎) then 
-local dx, dy = Vec.unpack(selector.position / 8)
-if is_there_something_at(towers, dx, dy) then 
-refund_tower_at(dx,dy)
+local position = selector.position/8
+if is_in_table(position, towers, true) then 
+refund_tower_at(position)
 else
-place_tower(dx,dy)
+place_tower(position)
 end
 end
 selector.position += Vec:new(controls()) * 8

@@ -7,10 +7,6 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
   ?text,dx,dy,text_color
 end
 
-function print_tower_cost(cost, dx, dy)
-  print_with_outline("C"..cost, dx, dy, (cost > coins) and 8 or 7, 0)
-end
-
 -- Utility
 function controls()
   if btnp(⬆️) then return 0, -1
@@ -31,18 +27,18 @@ function increase_enemy_health(enemy_data)
   }
 end
 
-function is_in_table(val, table)
+function is_in_table(val, table, is_entity)
   for i, obj in pairs(table) do
-    if (val.x == obj.x and val.y == obj.y) return true, i 
+    if is_entity then 
+      if (val == obj.position) return true, i 
+    else
+      if (val == obj) return true, i 
+    end
   end
 end
 
-function is_there_something_at(table, dx, dy)
-  return is_in_table(Vec:new(dx, dy), table) and true or false
-end
-
-function placable_tile_location(x, y)
-  return fget(mget(x, y), map_meta_data.non_path_flag_id)
+function placable_tile_location(coord)
+  return fget(mget(coord.x, coord.y), map_meta_data.non_path_flag_id)
 end
 
 function add_enemy_at_to_table(pos, table)
@@ -74,12 +70,11 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
   end
 end
 
-function parse_direction(direction)
-  local dx, dy = Vec.unpack(direction)
-  if (dx > 0) return 90
-  if (dx < 0) return 270
-  if (dy > 0) return 180
-  if (dy < 0) return 0
+function parse_direction(dir)
+  if (dir.x > 0) return 90
+  if (dir.x < 0) return 270
+  if (dir.y > 0) return 180
+  if (dir.y < 0) return 0
 end
 
 function parse_frontal_bounds(radius, position)

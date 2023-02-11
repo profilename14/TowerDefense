@@ -1,7 +1,7 @@
 Tower = {}
-function Tower:new(dx, dy, tower_template_data, direction)
+function Tower:new(pos, tower_template_data, direction)
   obj = { 
-    position = Vec:new(dx, dy),
+    position = pos,
     dmg = tower_template_data.damage,
     radius = tower_template_data.radius, 
     attack_delay = tower_template_data.attack_delay,
@@ -84,25 +84,25 @@ function Tower:draw()
   )
 end
 
-function place_tower(x, y)
+function place_tower(position)
   -- check if there is a tower here
-  if (grid[y][x] == "tower") return false
+  if (grid[position.y][position.x] == "tower") return false
   -- check if player has the money
   if (coins < tower_templates[selected_menu_tower_id].cost) return false
   -- spawn the tower
   local tower_type = tower_templates[selected_menu_tower_id].type 
-  if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
-  add(towers, Tower:new(x, y, tower_templates[selected_menu_tower_id], direction))
+  if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+  add(towers, Tower:new(position, tower_templates[selected_menu_tower_id], direction))
   coins -= tower_templates[selected_menu_tower_id].cost
-  grid[y][x] = "tower"
+  grid[position.y][position.x] = "tower"
   return true
 end
 
-function refund_tower_at(dx, dy)
+function refund_tower_at(position)
   for _, tower in pairs(towers) do
-    if tower.x == dx and tower.y == dy then
-      grid[dy][dx] = "empty"
-      if (tower.type == "floor") grid[dy][dx] = "path"
+    if tower.position == position then
+      grid[position.y][position.x] = "empty"
+      if (tower.type == "floor") grid[position.y][position.x] = "path"
       coins += tower.cost \ 2
       del(animators, tower.animator) 
       del(towers, tower)

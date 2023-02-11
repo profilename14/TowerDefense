@@ -11,10 +11,11 @@ function game_draw_loop()
   -- selector
   if not shop_enable then 
     if not enemies_active and incoming_hint ~= nil then 
-      local dx, dy = unpack(map_data[loaded_map].enemy_spawn_location)
-      local dir = map_data[loaded_map].movement_direction
+      local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
+      local dir = Vec:new(map_data[loaded_map].movement_direction)
       for i=1, #incoming_hint do 
-        Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
+        local position = (spawn_location + dir * (i-1))*8
+        Animator.draw(incoming_hint[i], Vec.unpack(position))
       end
     end
     spr(selector.sprite_index, Vec.unpack(selector.position))
@@ -30,7 +31,7 @@ function game_draw_loop()
       print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
     end
   else 
-    if is_there_something_at(towers, Vec.unpack(selector.position/8)) then
+    if is_in_table(selector.position/8, towers, true) then
       print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
     else
       print_with_outline(
@@ -41,10 +42,10 @@ function game_draw_loop()
 end
 
 function draw_map_overview(map_id, xoffset, yoffset)
-  local mxshift, myshift = unpack(map_data[map_id].mget_shift)
+  local map_shift = Vec:new(map_data[map_id].mget_shift)
   for y=0, 15 do
     for x=0, 15 do
-      pset(x + xoffset, y + yoffset, placable_tile_location(x + mxshift, y + myshift) and map_draw_data.other or map_draw_data.path)
+      pset(x + xoffset, y + yoffset, placable_tile_location(Vec:new(x, y)+map_shift) and map_draw_data.other or map_draw_data.path)
     end
   end
 end

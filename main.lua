@@ -61,9 +61,8 @@ function load_game(map_id)
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      local mx = x + map_data[loaded_map].mget_shift[1]
-      local my = y + map_data[loaded_map].mget_shift[2]
-      if (not placable_tile_location(mx, my)) grid[y][x] = "path" 
+      local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+      if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
     end
   end
   music(0)
@@ -116,11 +115,11 @@ function game_loop()
     return
   end
   if btnp(❎) then 
-    local dx, dy = Vec.unpack(selector.position / 8)
-    if is_there_something_at(towers, dx, dy) then 
-      refund_tower_at(dx, dy)
+    local position = selector.position/8
+    if is_in_table(position, towers, true) then 
+      refund_tower_at(position)
     else
-      place_tower(dx, dy)
+      place_tower(position)
     end
   end
 

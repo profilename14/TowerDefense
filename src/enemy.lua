@@ -1,7 +1,6 @@
 Enemy = {}
 function Enemy:new(location, enemy_data)
   obj = { 
-    -- x = location[1], y = location[2],
     position = Vec:new(location),
     hp = enemy_data.hp, 
     step_delay = enemy_data.step_delay,
@@ -47,8 +46,6 @@ end
 function Enemy:draw()
   if (self.hp <= 0) return
   local px, py, n = Enemy.get_pixel_location(self)
-  printh(Vec.to_str(n))
-  printh(Vec.to_str(self.position))
   local dir = normalize(n-self.position)
   draw_sprite_rotated(self.gfx, px, py, 8, parse_direction(dir))
 end
@@ -125,7 +122,7 @@ end
 function spawn_enemy()
   while enemies_remaining > 0 do 
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
-    if (is_there_something_at(enemies, unpack(map_data[loaded_map].enemy_spawn_location))) goto spawn_enemy_continue
+    if (is_in_table(Vec:new(map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
     if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
     enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
     add(enemies, Enemy:new(map_data[loaded_map].enemy_spawn_location, enemy_data_from_template))
