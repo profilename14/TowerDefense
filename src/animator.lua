@@ -28,7 +28,7 @@ end
 function Animator:finished()
   return self.animation_frame >= #self.data
 end
-function Animator:draw(dx, dy, direction)
+function Animator:draw(dx, dy)
   local x,y=dx,dy 
   -- if positions were given to the animation array
   if self.data[self.animation_frame].offset then 

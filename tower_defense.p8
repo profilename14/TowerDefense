@@ -7,7 +7,6 @@ get_active_menu().enable=false
 shop_enable=false
 end
 function display_tower_info(tower_id, position, text_color)
-local color = {7, 0}
 local offset = Vec:new(-1, -31)
 local tower_details = tower_templates[tower_id]
 local texts = {
@@ -28,12 +27,12 @@ text_color
 print_with_outline(
 tower_details.prefix..": "..tower_details.damage,
 combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 14))},
-color
+{7,0}
 ))
 print_with_outline(
 "cost: "..tower_details.cost, 
 combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 21))},
-color
+{(coins >= tower_details.cost) and 3 or 8, 0}
 ))
 spr(
 tower_details.icon_data,
@@ -754,7 +753,7 @@ end
 function Animator:finished()
 return self.animation_frame >= #self.data
 end
-function Animator:draw(dx, dy, direction)
+function Animator:draw(dx, dy)
 local x,y=dx,dy 
 if self.data[self.animation_frame].offset then 
 x+=self.data[self.animation_frame].offset[1]
