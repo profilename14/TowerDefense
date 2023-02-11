@@ -140,7 +140,7 @@ function game_loop()
       start_next_wave = false
       wave_cor = cocreate(spawn_enemy)
     end
-    if wave_cor and costatus(wave_cor) != 'dead' then
+    if wave_cor and costatus(wave_cor) ~= 'dead' then
       coresume(wave_cor)
     else
       wave_cor = nil
