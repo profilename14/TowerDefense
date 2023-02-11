@@ -29,8 +29,6 @@ function game_draw_loop()
     else
       print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
     end
-    -- draw_shop_cost()
-    -- draw_shop_dmg()
   else 
     if is_there_something_at(selector.x / 8, selector.y / 8, towers) then
       print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
@@ -47,23 +45,6 @@ function draw_map_overview(map_id, xoffset, yoffset)
   for y=0, 15 do
     for x=0, 15 do
       pset(x + xoffset, y + yoffset, placable_tile_location(x + mxshift, y + myshift) and map_draw_data.other or map_draw_data.path)
-    end
-  end
-end
-
-function draw_shop_cost()
-  for i=1, #tower_templates do
-    print_tower_cost(tower_templates[i].cost, shop_ui_data.x[i] - 4, shop_ui_data.y[1] - 6)
-  end
-end
-
-function draw_shop_dmg()
-  for i=1, #tower_templates do
-    local type = tower_templates[i].type
-    if type == "tack" or type == "rail" then 
-      print_with_outline("D"..tower_templates[i].damage, shop_ui_data.x[i] - 4, shop_ui_data.y[1], 8, 0)
-    else 
-      print_with_outline("T"..tower_templates[i].damage, shop_ui_data.x[i] - 4, shop_ui_data.y[1], 12, 0)
     end
   end
 end

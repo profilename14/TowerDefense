@@ -50,10 +50,10 @@ function Menu:draw()
   local base_pos_x = self.x+10
   if self.ticks < self.max_ticks then 
     if self.dir > 0 then 
-      local lx, ly = menu_scroll(self.x, 12, 10, self.y, 0, 7, 17, self.dir, rate)
+      local lx, ly = menu_scroll(self.x, 12, 10, self.y, 7, self.dir, rate)
       print_with_outline(self.content[top].text, lx, ly, unpack(self.content[top].color))
     elseif self.dir < 0 then 
-      local lx, ly = menu_scroll(self.x, 12, 10, self.y, 17, 27, 37, self.dir, rate)
+      local lx, ly = menu_scroll(self.x, 12, 10, self.y, 27, self.dir, rate)
       print_with_outline(self.content[bottom].text, lx, ly, unpack(self.content[bottom].color))
     end 
   else
@@ -61,7 +61,7 @@ function Menu:draw()
     print_with_outline(self.content[bottom].text, base_pos_x, self.y+27, unpack(self.content[bottom].color))
   end
 
-  local lmx, lmy = menu_scroll(self.x, 10, 12, self.y, 7, 17, 27, self.dir, rate)
+  local lmx, lmy = menu_scroll(self.x, 10, 12, self.y, 17, self.dir, rate)
   print_with_outline(self.content[self.pos].text, lmx, lmy, unpack(self.content[self.pos].color))
 
 end
@@ -96,13 +96,14 @@ function Menu:invoke()
   end
 end
 
-function menu_scroll(x, dx1, dx2, y, dy1, dy2, dy3, dir, rate)
+function menu_scroll(x, dx1, dx2, y, dy, dir, rate)
+  local dy1, dy3 = dy-10, dy+10
   local lx = lerp(x+dx1, x+dx2, rate)
-  local ly = y + dy2
+  local ly = y + dy
   if dir < 0 then 
-    ly = lerp(y + dy1, y + dy2, rate)
+    ly = lerp(y + dy1, ly, rate)
   elseif dir > 0 then 
-    ly = lerp(y + dy3, y + dy2, rate)
+    ly = lerp(y + dy3, ly, rate)
   end
   return lx, ly
 end

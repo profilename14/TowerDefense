@@ -12,12 +12,6 @@ function print_tower_cost(cost, dx, dy)
 end
 
 -- Utility
-function dist(posA, posB) 
-  local x = posA.x - posB.x
-  local y = posA.y - posB.y
-  return sqrt(x * x + y * y)
-end
-
 function normalize(val)
   return flr(mid(val, -1, 1))
 end
@@ -43,11 +37,6 @@ function increase_enemy_health(enemy_data)
     reward = enemy_data.reward,
     damage = enemy_data.damage
   }
-end
-
-function move_ui_selector(sel, dx, shift, offset, delta)
-  sel.pos = (sel.pos + ((dx < 0) and -shift or shift)) % #shop_ui_data.x
-  sel.x = shop_ui_data.x[sel.pos + offset]-delta
 end
 
 function is_in_table(val, table)
@@ -107,18 +96,6 @@ end
 
 function unpack_to_coord(vec1)
   return {x=vec1[1], y=vec1[2]}
-end
-
-function refund_tower_at(dx, dy)
-  for _, tower in pairs(towers) do
-    if tower.x == dx and tower.y == dy then
-      grid[dy][dx] = "empty"
-      if (tower.type == "floor") grid[dy][dx] = "path"
-      coins += tower.cost \ 2
-      del(animators, tower.animator) 
-      del(towers, tower)
-    end
-  end
 end
 
 function parse_frontal_bounds(radius, dx, dy)

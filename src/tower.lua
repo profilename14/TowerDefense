@@ -96,3 +96,15 @@ function place_tower(x, y)
   grid[y][x] = "tower"
   return true
 end
+
+function refund_tower_at(dx, dy)
+  for _, tower in pairs(towers) do
+    if tower.x == dx and tower.y == dy then
+      grid[dy][dx] = "empty"
+      if (tower.type == "floor") grid[dy][dx] = "path"
+      coins += tower.cost \ 2
+      del(animators, tower.animator) 
+      del(towers, tower)
+    end
+  end
+end
