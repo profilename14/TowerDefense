@@ -8,7 +8,7 @@ shop_enable=false
 end
 function display_tower_info(tower_id, position, text_color)
 local color = {7, 0}
-local offset = Vec:new(0, -30)
+local offset = Vec:new(-1, -31)
 local tower_details = tower_templates[tower_id]
 local texts = {
 {text=tower_details.name},
@@ -17,7 +17,7 @@ local texts = {
 BorderRect.resize(
 tower_stats_background_rect,
 position+offset,
-Vec:new(longest_menu_str(texts)*5+4,38
+Vec:new(longest_menu_str(texts)*5+24,27
 ))
 BorderRect.draw(tower_stats_background_rect)
 print_with_outline(
@@ -27,13 +27,19 @@ text_color
 ))
 print_with_outline(
 tower_details.prefix..": "..tower_details.damage,
-combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 9))},
+combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 14))},
 color
 ))
 print_with_outline(
 "cost: "..tower_details.cost, 
-combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 16))},
+combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 21))},
 color
+))
+spr(
+tower_details.icon_data,
+combine_and_unpack({
+Vec.unpack(tower_stats_background_rect.position+Vec:new(longest_menu_str(texts)*5+4,6))
+},{2,2}
 ))
 end
 function start_round()
@@ -409,11 +415,6 @@ nil,
 }
 function reset_game()
 selector = {
-position=Vec:new(64,64),
-sprite_index=1,
-size=1
-}
-sell_selector = {
 position=Vec:new(64,64),
 sprite_index=1,
 size=1
