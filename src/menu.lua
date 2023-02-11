@@ -17,7 +17,10 @@ function Menu:new(menu_name, previous_menu, dx, dy, selector_data, up_arrow_data
     text = text_color,
     -- internals
     pos = 1,
-    enable = false
+    enable = false,
+    ticks = 5,
+    max_ticks = 5,
+    dir = 0
   }
   setmetatable(obj, self)
   self.__index = self
@@ -43,9 +46,24 @@ function Menu:draw()
     Animator.draw(self.down_arrow, self.width/2, self.height-self.thickness)
   end
 
-  print_with_outline(self.content[top].text, self.x+10, self.y+7, unpack(self.content[top].color))
-  print_with_outline(self.content[self.pos].text, self.x+12, self.y+17, unpack(self.content[self.pos].color))
-  print_with_outline(self.content[bottom].text, self.x+10, self.y+27, unpack(self.content[bottom].color))
+  local rate = self.ticks / self.max_ticks
+  local base_pos_x = self.x+10
+  if self.ticks < self.max_ticks then 
+    if self.dir > 0 then 
+      local lx, ly = menu_scroll(self.x, 12, 10, self.y, 0, 7, 17, self.dir, rate)
+      print_with_outline(self.content[top].text, lx, ly, unpack(self.content[top].color))
+    elseif self.dir < 0 then 
+      local lx, ly = menu_scroll(self.x, 12, 10, self.y, 17, 27, 37, self.dir, rate)
+      print_with_outline(self.content[bottom].text, lx, ly, unpack(self.content[bottom].color))
+    end 
+  else
+    print_with_outline(self.content[top].text, base_pos_x, self.y+7, unpack(self.content[top].color))
+    print_with_outline(self.content[bottom].text, base_pos_x, self.y+27, unpack(self.content[bottom].color))
+  end
+
+  local lmx, lmy = menu_scroll(self.x, 10, 12, self.y, 7, 17, 27, self.dir, rate)
+  print_with_outline(self.content[self.pos].text, lmx, lmy, unpack(self.content[self.pos].color))
+
 end
 function Menu:update()
   if (not self.enable) return
@@ -54,14 +72,20 @@ function Menu:update()
     Animator.update(self.up_arrow)
     Animator.update(self.down_arrow)
   end
+  if (self.ticks >= self.max_ticks) return
+  self.ticks += 1
 end
 function Menu:move()
   if (not self.enable) return
+  if (self.ticks < self.max_ticks) return
+
   local _, dy = controls()
   if (dy == 0) return
   self.pos += dy 
+  self.dir = dy
   if (self.pos < 1) self.pos = #self.content 
   if (self.pos > #self.content) self.pos = 1
+  self.ticks = 0
 end
 function Menu:invoke()
   if (self.content[self.pos].callback == nil) return
@@ -70,4 +94,15 @@ function Menu:invoke()
   else
     self.content[self.pos].callback()
   end
+end
+
+function menu_scroll(x, dx1, dx2, y, dy1, dy2, dy3, dir, rate)
+  local lx = lerp(x+dx1, x+dx2, rate)
+  local ly = y + dy2
+  if dir < 0 then 
+    ly = lerp(y + dy1, y + dy2, rate)
+  elseif dir > 0 then 
+    ly = lerp(y + dy3, y + dy2, rate)
+  end
+  return lx, ly
 end
