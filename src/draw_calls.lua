@@ -32,7 +32,7 @@ function game_draw_loop()
     end
   else 
     if is_in_table(selector.position/8, towers, true) then
-      print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
+      print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
     else
       print_with_outline(
         "❎ buy & place "..tower_templates[selected_menu_tower_id].name.."\n🅾️ open menu", 

@@ -5,6 +5,37 @@ function choose_tower(id)
   shop_enable = false
 end
 
+function display_tower_info(tower_id, position, text_color)
+  local color = {7, 0}
+  local offset = Vec:new(0, -30)
+  local tower_details = tower_templates[tower_id]
+  local texts = {
+    {text = tower_details.name}, 
+    {text = tower_details.prefix..": "..tower_details.damage}
+  }
+  BorderRect.resize(
+    tower_stats_background_rect,
+    position + offset, 
+    Vec:new(longest_menu_str(texts)*5 + 4,38
+  ))
+  BorderRect.draw(tower_stats_background_rect)
+  print_with_outline(
+    tower_details.name,
+    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 2))},
+    text_color
+  ))
+  print_with_outline(
+    tower_details.prefix..": "..tower_details.damage,
+    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 9))},
+    color
+  ))
+  print_with_outline(
+    "cost: "..tower_details.cost, 
+    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 16))},
+    color
+  ))
+end
+
 -- Enemy Related
 function start_round()
   if not start_next_wave and #enemies == 0 then

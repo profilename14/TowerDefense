@@ -19,3 +19,7 @@ function BorderRect:draw()
   )
   rectfill(self.position.x, self.position.y, self.size.x, self.size.y, self.base)
 end
+function BorderRect:resize(position_, size_)
+  if (self.position ~= position_) self.position = position_
+  if (self.size ~= size_ + position_) self.size = size_ + position_ 
+end

@@ -146,6 +146,7 @@ tower_templates = {
   {
     name = "sword circle",
     damage = 2,
+    prefix = "damage",
     radius = 1,
     animation = animation_data.blade_circle,
     cost = 25,
@@ -157,6 +158,7 @@ tower_templates = {
   { 
     name = "lightning lance",
     damage = 5,
+    prefix = "damage",
     radius = 5,
     animation = animation_data.lightning_lance,
     cost = 55,
@@ -168,6 +170,7 @@ tower_templates = {
   {
     name = "hale howitzer",
     damage = 5, -- freeze delay; ! not damage
+    prefix = "delay",
     radius = 2,
     animation = animation_data.hale_howitzer, 
     cost = 25,
@@ -179,6 +182,7 @@ tower_templates = {
   { 
     name = "fire pit",
     damage = 3, -- fire tick duration
+    prefix = "duration",
     radius = 0,
     animation = animation_data.fire_pit, 
     cost = 25,
@@ -283,6 +287,7 @@ menu_data = {
         end
       }
     },
+    nil,
     5, 8, 7, 3
   },
   {
@@ -297,6 +302,7 @@ menu_data = {
       {text = "hale howitzer", color = {12, 7}, callback = choose_tower, args = {3}},
       {text = "fire pit", color = {9, 8}, callback = choose_tower, args = {4}}
     },
+    display_tower_info,
     5, 8, 7, 3
   },
   {
@@ -315,6 +321,7 @@ menu_data = {
         end
       }
     },
+    nil,
     5, 8, 7, 3
   }
 }

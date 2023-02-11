@@ -6,6 +6,36 @@ selected_menu_tower_id=id
 get_active_menu().enable=false
 shop_enable=false
 end
+function display_tower_info(tower_id, position, text_color)
+local color = {7, 0}
+local offset = Vec:new(0, -30)
+local tower_details = tower_templates[tower_id]
+local texts = {
+{text=tower_details.name},
+{text = tower_details.prefix..": "..tower_details.damage}
+}
+BorderRect.resize(
+tower_stats_background_rect,
+position+offset,
+Vec:new(longest_menu_str(texts)*5+4,38
+))
+BorderRect.draw(tower_stats_background_rect)
+print_with_outline(
+tower_details.name,
+combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 2))},
+text_color
+))
+print_with_outline(
+tower_details.prefix..": "..tower_details.damage,
+combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 9))},
+color
+))
+print_with_outline(
+"cost: "..tower_details.cost, 
+combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 16))},
+color
+))
+end
 function start_round()
 if not start_next_wave and #enemies == 0 then
 start_next_wave=true
@@ -189,6 +219,7 @@ tower_templates={
 {
 name = "sword circle",
 damage=2,
+prefix = "damage",
 radius=1,
 animation=animation_data.blade_circle,
 cost=25,
@@ -200,6 +231,7 @@ disable_icon_rotation=true
 {
 name = "lightning lance",
 damage=5,
+prefix = "damage",
 radius=5,
 animation=animation_data.lightning_lance,
 cost=55,
@@ -211,6 +243,7 @@ disable_icon_rotation=false
 {
 name = "hale howitzer",
 damage=5,--freezedelay;!notdamage
+prefix = "delay",
 radius=2,
 animation=animation_data.hale_howitzer,
 cost=25,
@@ -222,6 +255,7 @@ disable_icon_rotation=false
 {
 name = "fire pit",
 damage=3,--firetickduration
+prefix = "duration",
 radius=0,
 animation=animation_data.fire_pit,
 cost=25,
@@ -326,6 +360,7 @@ direction={direction[2]*-1,direction[1]}
 end
 }
 },
+nil,
 5,8,7,3
 },
 {
@@ -340,6 +375,7 @@ animation_data.down_arrow,
 {text = "hale howitzer", color = {12, 7}, callback = choose_tower, args = {3}},
 {text = "fire pit", color = {9, 8}, callback = choose_tower, args = {4}}
 },
+display_tower_info,
 5,8,7,3
 },
 {
@@ -358,6 +394,7 @@ map_menu_enable=true
 end
 }
 },
+nil,
 5,8,7,3
 }
 }
@@ -744,8 +781,16 @@ self.border
 )
 rectfill(self.position.x,self.position.y,self.size.x,self.size.y,self.base)
 end
+function BorderRect:resize(position_, size_)
+if (self.position ~= position_) self.position = position_
+if (self.size ~= size_ + position_) self.size = size_ + position_ 
+end
 Menu={}
-function Menu:new(menu_name, previous_menu, dx, dy, selector_data, up_arrow_data, down_arrow_data, menu_content, base_color, border_color, text_color, menu_thickness)
+function Menu:new(
+menu_name,previous_menu,dx,dy,
+selector_data, up_arrow_data, down_arrow_data, 
+menu_content,menu_info_draw_call,
+base_color, border_color, text_color, menu_thickness)
 obj={
 name=menu_name,
 prev=previous_menu,
@@ -754,6 +799,7 @@ selector = Animator:new(selector_data, true),
 up_arrow = Animator:new(up_arrow_data, true),
 down_arrow = Animator:new(down_arrow_data, true),
 content=menu_content,
+content_draw=menu_info_draw_call,
 rect = BorderRect:new(
 Vec:new(dx,dy),
 Vec:new(10+5*longest_menu_str(menu_content),38),
@@ -777,6 +823,7 @@ if (not self.enable) return
 local top, bottom = self.pos-1, self.pos+1
 if (top < 1) top = #self.content 
 if (bottom > #self.content) bottom = 1
+if (self.content_draw) self.content_draw(self.pos, self.position, self.content[self.pos].color)
 BorderRect.draw(self.rect)
 Animator.draw(self.selector, Vec.unpack(self.position + Vec:new(2, 15)))
 if #self.content > 3 then
@@ -968,7 +1015,7 @@ self.__tostring = function(vec)
 return "("..vec.x..", "..vec.y..")"
 end
 self.__concat = function(vec, other)
-return (type(vec) == "table") and Vec.__tostring(vec)..other or Vec.__tostring(other)..vec
+return (type(vec) == "table") and Vec.__tostring(vec)..other or vec..Vec.__tostring(other)
 end
 return obj
 end
@@ -1016,7 +1063,7 @@ print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
 end
 else
 if is_in_table(selector.position/8, towers, true) then
-print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
+print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
 else
 print_with_outline(
 "❎ buy & place "..tower_templates[selected_menu_tower_id].name.."\n🅾️ open menu", 
@@ -1081,6 +1128,7 @@ menus={}
 for i, menu_dat in pairs(menu_data) do
 add(menus,Menu:new(unpack(menu_dat)))
 end
+tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
 end
 function map_loop()
 if btnp(❎) then 

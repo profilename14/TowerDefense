@@ -27,7 +27,7 @@ function Vec:new(dx, dy)
     return "("..vec.x..", "..vec.y..")"
   end
   self.__concat = function(vec, other)
-    return (type(vec) == "table") and Vec.__tostring(vec)..other or Vec.__tostring(other)..vec
+    return (type(vec) == "table") and Vec.__tostring(vec)..other or vec..Vec.__tostring(other)
   end
   return obj
 end

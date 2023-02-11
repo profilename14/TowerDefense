@@ -1,5 +1,9 @@
 Menu = {}
-function Menu:new(menu_name, previous_menu, dx, dy, selector_data, up_arrow_data, down_arrow_data, menu_content, base_color, border_color, text_color, menu_thickness)
+function Menu:new(
+  menu_name, previous_menu, dx, dy, 
+  selector_data, up_arrow_data, down_arrow_data, 
+  menu_content, menu_info_draw_call, 
+  base_color, border_color, text_color, menu_thickness)
   obj = {
     name = menu_name,
     prev = previous_menu,
@@ -8,6 +12,7 @@ function Menu:new(menu_name, previous_menu, dx, dy, selector_data, up_arrow_data
     up_arrow = Animator:new(up_arrow_data, true),
     down_arrow = Animator:new(down_arrow_data, true),
     content = menu_content,
+    content_draw = menu_info_draw_call,
     rect = BorderRect:new(
       Vec:new(dx, dy), 
       Vec:new(10 + 5*longest_menu_str(menu_content), 38),
@@ -34,7 +39,8 @@ function Menu:draw()
   local top, bottom = self.pos-1, self.pos+1
   if (top < 1) top = #self.content 
   if (bottom > #self.content) bottom = 1
-  
+
+  if (self.content_draw) self.content_draw(self.pos, self.position, self.content[self.pos].color)
   BorderRect.draw(self.rect)
 
   Animator.draw(self.selector, Vec.unpack(self.position + Vec:new(2, 15)))
