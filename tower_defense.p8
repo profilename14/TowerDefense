@@ -464,6 +464,32 @@ animators = {}
 music(-1)
 selected_menu_tower_id=1
 end
+function load_game(map_id)
+auto_start_wave=false
+wave_round=0
+freeplay_rounds=0
+loaded_map=map_id
+pathing=parse_path()
+for i=1, 3 do
+add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+end
+for y=0, 15 do 
+grid[y]={}
+for x=0, 15 do 
+grid[y][x] = "empty"
+local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
+end
+end
+music(0)
+menus={}
+for i, menu_dat in pairs(menu_data) do
+add(menus,Menu:new(unpack(menu_dat)))
+end
+tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
+tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
+sell_selector = Animator:new(animation_data.sell)
+end
 Enemy={}
 function Enemy:new(location, enemy_data)
 obj={
@@ -934,6 +960,160 @@ ly=lerp(position.y+dy3,ly,rate)
 end
 return {lx, ly}
 end
+function _init()
+reset_game()
+end
+function _draw()
+cls()
+if map_menu_enable then map_draw_loop() else game_draw_loop() end
+end
+function _update()
+if map_menu_enable then 
+map_loop()
+else
+if (player_health <= 0) reset_game()
+if shop_enable then shop_loop() else game_loop() end
+end
+end
+function game_draw_loop()
+map(unpack(map_data[loaded_map].mget_shift))
+foreach(towers, Tower.draw)
+foreach(enemies, Enemy.draw)
+foreach(particles, Particle.draw)
+if (shop_enable) foreach(menus, Menu.draw)
+if not shop_enable then 
+if not enemies_active and incoming_hint ~= nil then 
+local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
+local dir = Vec:new(map_data[loaded_map].movement_direction)
+for i=1, #incoming_hint do 
+local position = (spawn_location + dir * (i-1))*8
+Animator.draw(incoming_hint[i], Vec.unpack(position))
+end
+end
+end
+print_with_outline("scrap: "..coins, 0, 1, 7, 0)
+print_with_outline("♥ "..player_health, 103, 1, 8, 0)
+if shop_enable and get_active_menu() then
+print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
+if get_active_menu().prev then
+print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
+else
+print_with_outline("❎ select\n🅾️ close menu", 1, 115, 7, 0)
+end
+else
+if is_in_table(selector.position/8, towers, true) then
+Animator.update(sell_selector)
+Animator.draw(sell_selector, Vec.unpack(selector.position))
+print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
+else
+spr(selector.sprite_index, Vec.unpack(selector.position))
+Animator.reset(sell_selector)
+local position = selector.position/8
+local tower_details = tower_templates[selected_menu_tower_id]
+local text, color = "❎ buy & place "..tower_details.name, 7
+if tower_details.cost > coins then
+text = "can't afford "..tower_details.name
+color = 8
+elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
+text = "can't place "..tower_details.name.." here"
+color = 8
+end
+print_with_outline(text, 1, 115, color, 0)
+print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+end
+end
+end
+function map_draw_loop()
+for i=1, #map_data do
+draw_map_overview(i,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16)
+end
+print_with_outline("choose a map to play", 25, 1, 7, 0)
+local len = #map_data[map_selector.pos + 1].name
+print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
+draw_selector(map_selector)
+end
+function draw_map_overview(map_id, xoffset, yoffset)
+local map_shift = Vec:new(map_data[map_id].mget_shift)
+for y=0, 15 do
+for x=0, 15 do
+pset(x + xoffset, y + yoffset, placable_tile_location(Vec:new(x, y)+map_shift) and map_draw_data.other or map_draw_data.path)
+end
+end
+end
+function draw_selector(sel)
+spr(sel.sprite_index,sel.x,sel.y,sel.size,sel.size)
+end
+function map_loop()
+if btnp(❎) then 
+load_game(map_selector.pos + 1)
+map_menu_enable=false
+return
+end
+local dx, dy = controls()
+if dx < 0 then 
+map_selector.pos = (map_selector.pos - 1) % #map_data
+map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
+elseif dx > 0 then 
+map_selector.pos = (map_selector.pos + 1) % #map_data
+map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
+end
+end
+function shop_loop()
+foreach(menus, Menu.update)
+if btnp(🅾️) then -- disable shop
+if get_active_menu().prev == nil then 
+shop_enable=false
+menus[1].enable=false
+return
+else
+swap_menu_context(get_active_menu().prev)
+end
+end
+if btnp(❎) then 
+Menu.invoke(get_active_menu())
+end
+foreach(menus, Menu.move)
+end
+function game_loop()
+if (auto_start_wave) start_round()
+if btnp(🅾️) then
+shop_enable=true
+menus[1].enable=true
+return
+end
+if btnp(❎) then 
+local position = selector.position/8
+if is_in_table(position, towers, true) then 
+refund_tower_at(position)
+else
+place_tower(position)
+end
+end
+selector.position += Vec:new(controls()) * 8
+Vec.clamp(selector.position, 0, 120)
+if enemies_active then 
+foreach(enemies, update_enemy_position)
+foreach(towers, Tower.attack)
+if start_next_wave then 
+start_next_wave=false
+wave_cor = cocreate(spawn_enemy)
+end
+if wave_cor and costatus(wave_cor) ~= 'dead' then
+coresume(wave_cor)
+else
+wave_cor = nil
+end
+end
+foreach(particles, Particle.tick)
+foreach(animators, Animator.update)
+if (not enemies_active and incoming_hint) foreach(incoming_hint, Animator.update)
+foreach(enemies, kill_enemy)
+foreach(particles, destroy_particle)
+if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
+enemies_active=false
+sfx(sfx_data.round_complete)
+end
+end
 function print_with_outline(text, dx, dy, text_color, outline_color)
 ?text,dx-1,dy,outline_color
 ?text,dx+1,dy
@@ -1070,187 +1250,6 @@ if type(start) == "table" then
 return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
 else
 return start + (last - start) * rate
-end
-end
-function game_draw_loop()
-map(unpack(map_data[loaded_map].mget_shift))
-foreach(towers, Tower.draw)
-foreach(enemies, Enemy.draw)
-foreach(particles, Particle.draw)
-if (shop_enable) foreach(menus, Menu.draw)
-if not shop_enable then 
-if not enemies_active and incoming_hint ~= nil then 
-local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
-local dir = Vec:new(map_data[loaded_map].movement_direction)
-for i=1, #incoming_hint do 
-local position = (spawn_location + dir * (i-1))*8
-Animator.draw(incoming_hint[i], Vec.unpack(position))
-end
-end
-end
-print_with_outline("scrap: "..coins, 0, 1, 7, 0)
-print_with_outline("♥ "..player_health, 103, 1, 8, 0)
-if shop_enable and get_active_menu() then
-print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
-if get_active_menu().prev then
-print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
-else
-print_with_outline("❎ select\n🅾️ close menu", 1, 115, 7, 0)
-end
-else
-if is_in_table(selector.position/8, towers, true) then
-Animator.update(sell_selector)
-Animator.draw(sell_selector, Vec.unpack(selector.position))
-print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
-else
-spr(selector.sprite_index, Vec.unpack(selector.position))
-Animator.reset(sell_selector)
-local position = selector.position/8
-local tower_details = tower_templates[selected_menu_tower_id]
-local text, color = "❎ buy & place "..tower_details.name, 7
-if tower_details.cost > coins then
-text = "can't afford "..tower_details.name
-color = 8
-elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
-text = "can't place "..tower_details.name.." here"
-color = 8
-end
-print_with_outline(text, 1, 115, color, 0)
-print_with_outline("🅾️ open menu", 1, 122, 7, 0)
-end
-end
-end
-function draw_map_overview(map_id, xoffset, yoffset)
-local map_shift = Vec:new(map_data[map_id].mget_shift)
-for y=0, 15 do
-for x=0, 15 do
-pset(x + xoffset, y + yoffset, placable_tile_location(Vec:new(x, y)+map_shift) and map_draw_data.other or map_draw_data.path)
-end
-end
-end
-function draw_selector(sel)
-spr(sel.sprite_index,sel.x,sel.y,sel.size,sel.size)
-end
-function _init()
-reset_game()
-end
-function _draw()
-cls()
-if map_menu_enable then 
-for i=1, #map_data do
-draw_map_overview(i,shop_ui_data.x[i]-16,shop_ui_data.y[1]-16)
-end
-print_with_outline("choose a map to play", 25, 1, 7, 0)
-local len = #map_data[map_selector.pos + 1].name
-print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
-draw_selector(map_selector)
-else
-game_draw_loop()
-end
-end
-function _update()
-if map_menu_enable then 
-map_loop()
-else
-if (player_health <= 0) reset_game()
-if shop_enable then shop_loop() else game_loop() end
-end
-end
-function load_game(map_id)
-auto_start_wave=false
-wave_round=0
-freeplay_rounds=0
-loaded_map=map_id
-pathing=parse_path()
-for i=1, 3 do
-add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
-end
-for y=0, 15 do 
-grid[y]={}
-for x=0, 15 do 
-grid[y][x] = "empty"
-local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
-if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
-end
-end
-music(0)
-menus={}
-for i, menu_dat in pairs(menu_data) do
-add(menus,Menu:new(unpack(menu_dat)))
-end
-tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
-tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
-sell_selector = Animator:new(animation_data.sell)
-end
-function map_loop()
-if btnp(❎) then 
-load_game(map_selector.pos + 1)
-map_menu_enable=false
-return
-end
-local dx, dy = controls()
-if dx < 0 then 
-map_selector.pos = (map_selector.pos - 1) % #map_data
-map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
-elseif dx > 0 then 
-map_selector.pos = (map_selector.pos + 1) % #map_data
-map_selector.x = shop_ui_data.x[map_selector.pos + 1]-20
-end
-end
-function shop_loop()
-foreach(menus, Menu.update)
-if btnp(🅾️) then -- disable shop
-if get_active_menu().prev == nil then 
-shop_enable=false
-menus[1].enable=false
-return
-else
-swap_menu_context(get_active_menu().prev)
-end
-end
-if btnp(❎) then 
-Menu.invoke(get_active_menu())
-end
-foreach(menus, Menu.move)
-end
-function game_loop()
-if (auto_start_wave) start_round()
-if btnp(🅾️) then
-shop_enable=true
-menus[1].enable=true
-return
-end
-if btnp(❎) then 
-local position = selector.position/8
-if is_in_table(position, towers, true) then 
-refund_tower_at(position)
-else
-place_tower(position)
-end
-end
-selector.position += Vec:new(controls()) * 8
-Vec.clamp(selector.position, 0, 120)
-if enemies_active then 
-foreach(enemies, update_enemy_position)
-foreach(towers, Tower.attack)
-if start_next_wave then 
-start_next_wave=false
-wave_cor = cocreate(spawn_enemy)
-end
-if wave_cor and costatus(wave_cor) ~= 'dead' then
-coresume(wave_cor)
-else
-wave_cor = nil
-end
-end
-foreach(particles, Particle.tick)
-foreach(animators, Animator.update)
-if (not enemies_active and incoming_hint) foreach(incoming_hint, Animator.update)
-foreach(enemies, kill_enemy)
-foreach(particles, destroy_particle)
-if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
-enemies_active=false
-sfx(sfx_data.round_complete)
 end
 end
 __gfx__

@@ -53,6 +53,16 @@ function game_draw_loop()
   end
 end
 
+function map_draw_loop()
+  for i=1, #map_data do
+    draw_map_overview(i, shop_ui_data.x[i]-16, shop_ui_data.y[1]-16)
+  end
+  print_with_outline("choose a map to play", 25, 1, 7, 0)
+  local len = #map_data[map_selector.pos + 1].name
+  print_with_outline(map_data[map_selector.pos + 1].name, 128/2-(len*2), 108, 7, 0)
+  draw_selector(map_selector)
+end
+
 function draw_map_overview(map_id, xoffset, yoffset)
   local map_shift = Vec:new(map_data[map_id].mget_shift)
   for y=0, 15 do

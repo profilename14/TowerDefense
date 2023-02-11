@@ -335,6 +335,7 @@ menu_data = {
   }
 }
 
+-- Game
 function reset_game()
   -- Game Data -- Modify at will
   selector = {
@@ -371,4 +372,31 @@ function reset_game()
   animators = {}
   music(-1)
   selected_menu_tower_id = 1
+end
+
+function load_game(map_id)
+  auto_start_wave = false
+  wave_round = 0
+  freeplay_rounds = 0
+  loaded_map = map_id
+  pathing = parse_path()
+  for i=1, 3 do
+    add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+  end
+  for y=0, 15 do 
+    grid[y] = {}
+    for x=0, 15 do 
+      grid[y][x] = "empty"
+      local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+      if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
+    end
+  end
+  music(0)
+  menus = {}
+  for i, menu_dat in pairs(menu_data) do
+    add(menus, Menu:new(unpack(menu_dat)))
+  end
+  tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
+  tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
+  sell_selector = Animator:new(animation_data.sell)
 end
