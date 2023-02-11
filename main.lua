@@ -14,6 +14,7 @@
 
 -- Utility/Helper Functions
 #include src/helpers.lua
+#include src/vec.lua
 
 -- Draw Calls
 #include src/draw_calls.lua
@@ -53,10 +54,6 @@ function load_game(map_id)
   freeplay_rounds = 0
   loaded_map = map_id
   pathing = parse_path()
-  shop_selector.x = shop_ui_data.x[shop_selector.pos + 1]-20
-  shop_selector.y = shop_ui_data.y[1]-20
-  option_selector.x = shop_ui_data.x[1]-16
-  option_selector.y = 32
   for i=1, 3 do
     add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
   end
@@ -119,18 +116,16 @@ function game_loop()
     return
   end
   if btnp(❎) then 
-    local dx = selector.x / 8
-    local dy = selector.y / 8
-    if is_there_something_at(dx, dy, towers) then 
+    local dx, dy = Vec.unpack(selector.position / 8)
+    if is_there_something_at(towers, dx, dy) then 
       refund_tower_at(dx, dy)
     else
       place_tower(dx, dy)
     end
   end
 
-  local dx, dy = controls()
-  selector.x = mid(selector.x + dx * 8, 0, 120)
-  selector.y = mid(selector.y + dy * 8, 0, 120)
+  selector.position += Vec:new(controls()) * 8
+  Vec.clamp(selector.position, 0, 120)
 
   -- update objs
   if enemies_active then 

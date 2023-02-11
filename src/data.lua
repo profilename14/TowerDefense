@@ -322,26 +322,16 @@ menu_data = {
 function reset_game()
   -- Game Data -- Modify at will
   selector = {
-    x = 64, y = 64,
+    position = Vec:new(64, 64),
     sprite_index = 1,
     size = 1
   }
-  shop_selector = {
-    sprite_index = 128,
-    size = 3,
-    pos = 0
-  }
   map_selector = {
-    x = shop_ui_data.x[shop_selector.pos + 1]-20,
+    x = shop_ui_data.x[1]-20,
     y = shop_ui_data.y[1]-20,
     sprite_index = 128,
     size = 3,
     pos = 0
-  }
-  option_selector = {
-    sprite_index = 2,
-    size = 1,
-    pos = 1
   }
   coins = 50
   player_health = 100

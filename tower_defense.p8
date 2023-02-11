@@ -363,26 +363,16 @@ end
 }
 function reset_game()
 selector = {
-x=64,y=64,
+position=Vec:new(64,64),
 sprite_index=1,
 size=1
 }
-shop_selector = {
-sprite_index=128,
-size=3,
-pos=0
-}
 map_selector = {
-x = shop_ui_data.x[shop_selector.pos + 1]-20,
+x=shop_ui_data.x[1]-20,
 y=shop_ui_data.y[1]-20,
 sprite_index=128,
 size=3,
 pos=0
-}
-option_selector = {
-sprite_index=2,
-size=1,
-pos=1
 }
 coins=50
 player_health=100
@@ -409,7 +399,7 @@ end
 Enemy={}
 function Enemy:new(location, enemy_data)
 obj={
-x=location[1],y=location[2],
+position=Vec:new(location),
 hp=enemy_data.hp,
 step_delay=enemy_data.step_delay,
 current_step=0,
@@ -441,19 +431,20 @@ self.is_frozen=false
 return true
 end
 function Enemy:get_pixel_location()
-local n, prev = pathing[self.pos], unpack_to_coord(map_data[loaded_map].enemy_spawn_location)
+local n, prev = pathing[self.pos], Vec:new(map_data[loaded_map].enemy_spawn_location)
 if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
-local px, py = self.x * 8, self.y * 8
+local px, py = Vec.unpack(self.position * 8)
 if not self.is_frozen then 
-px=lerp(prev.x*8,n.x*8,self.current_step/self.step_delay)
-py=lerp(prev.y*8,n.y*8,self.current_step/self.step_delay)
+px,py=lerp(prev*8,n*8,self.current_step/self.step_delay)
 end
 return px, py, n
 end
 function Enemy:draw()
 if (self.hp <= 0) return
 local px, py, n = Enemy.get_pixel_location(self)
-local dir = {normalize(n.x - self.x), normalize(n.y - self.y)}
+printh(Vec.to_str(n))
+printh(Vec.to_str(self.position))
+local dir = normalize(n-self.position)
 draw_sprite_rotated(self.gfx,px,py,8,parse_direction(dir))
 end
 function kill_enemy(enemy)
@@ -463,75 +454,67 @@ del(enemies,enemy)
 end
 function update_enemy_position(enemy)
 if (not Enemy.step(enemy)) return
-enemy.x=pathing[enemy.pos].x
-enemy.y=pathing[enemy.pos].y
+enemy.position=pathing[enemy.pos]
 enemy.pos+=1
 if (enemy.pos < #pathing + 1) return
 player_health-=enemy.damage
 del(enemies,enemy)
 end
 function parse_path()
-local map_shift = map_data[loaded_map].mget_shift
-local map_enemy_spawn_location = map_data[loaded_map].enemy_spawn_location
+local map_shift = Vec:new(map_data[loaded_map].mget_shift)
+local map_enemy_spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
 local path_tiles = {}
 for iy=0, 15 do
 for ix=0, 15 do
-local map_cord = vec2_add(pack(ix, iy), map_shift)
-if fget(mget(unpack(map_cord)), map_meta_data.path_flag_id) then 
-add(path_tiles, unpack_to_coord(map_cord))
+local map_cord = Vec:new(ix, iy) + map_shift
+if fget(mget(Vec.unpack(map_cord)), map_meta_data.path_flag_id) then 
+add(path_tiles, map_cord)
 end
 end
 end
 local path = {}
-local dir = unpack_to_coord(map_data[loaded_map].movement_direction)
-local ending = unpack_to_coord(vec2_add(map_data[loaded_map].enemy_end_location, map_shift))
-local cur = {
-x = map_enemy_spawn_location[1] + map_shift[1] + dir.x, 
-y = map_enemy_spawn_location[2] + map_shift[2] + dir.y
-}
-while not (cur.x == ending.x and cur.y == ending.y) do 
-local north = {x=cur.x, y=cur.y-1}
-local south = {x=cur.x, y=cur.y+1}
-local west = {x=cur.x-1, y=cur.y}
-local east = {x=cur.x+1, y=cur.y}
+local dir = Vec:new(map_data[loaded_map].movement_direction)
+local ending = Vec:new(map_data[loaded_map].enemy_end_location) + map_shift
+local cur = map_enemy_spawn_location + map_shift + dir
+while cur ~= ending do 
+local north = Vec:new(cur.x, cur.y-1)
+local south = Vec:new(cur.x, cur.y+1)
+local west = Vec:new(cur.x-1, cur.y)
+local east = Vec:new(cur.x+1, cur.y)
 local state = false
-local direction = nil
+local direct = nil
 if dir.x == 1 then -- east 
-state, direction = check_direction(east, {north, south}, path_tiles, path)
+state, direct = check_direction(east, {north, south}, path_tiles, path)
 elseif dir.x == -1 then -- west
-state, direction = check_direction(west, {north, south}, path_tiles, path)
+state, direct = check_direction(west, {north, south}, path_tiles, path)
 elseif dir.y == 1 then -- south
-state,direction=check_direction(south,{west,east},path_tiles,path)
+state,direct=check_direction(south,{west,east},path_tiles,path)
 elseif dir.y == -1 then -- north
-state, direction = check_direction(north, {west, east}, path_tiles, path)
+state, direct = check_direction(north, {west, east}, path_tiles, path)
 end
-assert(state, "Failed to find path at: "..cur.x..", "..cur.y.." in direction: "..dir.x..", "..dir.y.." end: "..ending.x..", "..ending.y)
+assert(state, "Failed to find path at: "..Vec.to_str(cur).." in direction: "..Vec.to_str(dir).." end: "..Vec.to_str(ending))
 if state then 
-dir = {x=normalize(direction.x-cur.x), y=normalize(direction.y-cur.y)}
-cur={x=direction.x,y=direction.y}
+dir = normalize(direct - cur)
+cur=direct
 else
 end
 end
 return path
 end
-function check_direction(direction, fail_directions, path_tiles, path)
-if (direction == nil) return false, nil
-local state, index = is_in_table(direction, path_tiles)
+function check_direction(direct, fail_directions, path_tiles, path)
+if (direct == nil) return
+local state, index = is_in_table(direct, path_tiles)
 if state then
-local tile = {
-x = path_tiles[index].x - map_data[loaded_map].mget_shift[1],
-y = path_tiles[index].y - map_data[loaded_map].mget_shift[2]
-}
-add(path,tile)
+add(path, path_tiles[index] - Vec:new(map_data[loaded_map].mget_shift))
 else
 return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path)
 end
-return true, direction
+return true, direct
 end
 function spawn_enemy()
 while enemies_remaining > 0 do 
 enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
-if (is_there_something_at(unpack(map_data[loaded_map].enemy_spawn_location), enemies)) goto spawn_enemy_continue
+if (is_there_something_at(enemies, unpack(map_data[loaded_map].enemy_spawn_location))) goto spawn_enemy_continue
 if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
 enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
 add(enemies,Enemy:new(map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
@@ -543,14 +526,14 @@ end
 Tower={}
 function Tower:new(dx, dy, tower_template_data, direction)
 obj={
-x=dx,y=dy,
+position=Vec:new(dx,dy),
 dmg=tower_template_data.damage,
 radius=tower_template_data.radius,
 attack_delay=tower_template_data.attack_delay,
 current_attack_ticks=0,
 cost=tower_template_data.cost,
 type=tower_template_data.type,
-dir=direction,
+dir=Vec:new(direction),
 animator = Animator:new(tower_template_data.animation, true)
 }
 add(animators, obj.animator)
@@ -569,27 +552,27 @@ elseif self.type == "frontal" then
 Tower.freeze_enemies(self,Tower.frontal_collision(self))
 elseif self.type == "floor" then 
 local hits = {}
-add_enemy_at_to_table(self.x,self.y,hits)
+add_enemy_at_to_table(self.position,hits)
 foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
 end
 end
 function Tower:raycast()
-if (self.dir[1] == 0 and self.dir[2] == 0) return nil
+if (self.dir == Vec:new(0, 0)) return nil
 local hits = {}
 for i=1, self.radius do 
-add_enemy_at_to_table(self.x+i*self.dir[1],self.y+i*self.dir[2],hits)
+add_enemy_at_to_table(self.position+self.dir*i,hits)
 end
-if (#hits > 0) raycast_spawn(self.x, self.y, self.radius, self.dir, animation_data.spark)
+if (#hits > 0) raycast_spawn(self.position.x, self.position.y, self.radius, self.dir, animation_data.spark)
 return hits
 end
 function Tower:nova_collision()
 local hits = {}
 for y=-self.radius, self.radius do
 for x=-self.radius, self.radius do
-if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
+if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) nova_spawn(self.x, self.y, self.radius, animation_data.blade)
+if (#hits > 0) nova_spawn(self.position.x, self.position.y, self.radius, animation_data.blade)
 return hits
 end
 function Tower:frontal_collision()
@@ -597,10 +580,10 @@ local hits = {}
 local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(self.radius, unpack(self.dir))
 for y=fy, fly, iy do
 for x=fx, flx, ix do
-if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
+if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) frontal_spawn(self.x, self.y, self.radius, self.dir, animation_data.frost)
+if (#hits > 0) frontal_spawn(self.position.x, self.position.y, self.radius, self.dir, animation_data.frost)
 return hits
 end
 function Tower:apply_damage(targets)
@@ -617,9 +600,10 @@ end
 end
 end
 function Tower:draw()
+local p = self.position * 8
 draw_sprite_rotated(
 Animator.get_sprite(self.animator),
-self.x*8, self.y*8, self.animator.sprite_size,
+p.x, p.y, self.animator.sprite_size,
 parse_direction(self.dir)
 )
 end
@@ -632,6 +616,17 @@ add(towers,Tower:new(x,y,tower_templates[selected_menu_tower_id],direction))
 coins-=tower_templates[selected_menu_tower_id].cost
 grid[y][x] = "tower"
 return true
+end
+function refund_tower_at(dx, dy)
+for _, tower in pairs(towers) do
+if tower.x == dx and tower.y == dy then
+grid[dy][dx] = "empty"
+if (tower.type == "floor") grid[dy][dx] = "path"
+coins+=tower.cost\2
+del(animators, tower.animator) 
+del(towers,tower)
+end
+end
 end
 Particle={}
 function Particle:new(dx, dy, pixel_perfect, animator_)
@@ -839,17 +834,6 @@ end
 function print_tower_cost(cost, dx, dy)
 print_with_outline("C"..cost, dx, dy, (cost > coins) and 8 or 7, 0)
 end
-function dist(posA, posB) 
-local x = posA.x - posB.x
-local y = posA.y - posB.y
-return sqrt(x * x + y * y)
-end
-function normalize(val)
-return flr(mid(val, -1, 1))
-end
-function lerp(start, last, rate)
-return start + (last - start) * rate
-end
 function controls()
 if btnp(⬆️) then return 0, -1
 elseif btnp(⬇️) then return 0, 1
@@ -867,24 +851,20 @@ reward=enemy_data.reward,
 damage=enemy_data.damage
 }
 end
-function move_ui_selector(sel, dx, shift, offset, delta)
-sel.pos = (sel.pos + ((dx < 0) and -shift or shift)) % #shop_ui_data.x
-sel.x=shop_ui_data.x[sel.pos+offset]-delta
-end
 function is_in_table(val, table)
 for i, obj in pairs(table) do
 if (val.x == obj.x and val.y == obj.y) return true, i 
 end
 end
-function is_there_something_at(dx, dy, table)
-return is_in_table(unpack_to_coord(pack(dx, dy)), table) and true or false
+function is_there_something_at(table, dx, dy)
+return is_in_table(Vec:new(dx, dy), table) and true or false
 end
 function placable_tile_location(x, y)
 return fget(mget(x, y), map_meta_data.non_path_flag_id)
 end
-function add_enemy_at_to_table(dx, dy, table)
+function add_enemy_at_to_table(pos, table)
 for _, enemy in pairs(enemies) do
-if (enemy.x == dx and enemy.y == dy) then
+if enemy.position == pos then
 add(table,enemy)
 return
 end
@@ -909,28 +889,11 @@ end
 end
 end
 function parse_direction(direction)
-local dx, dy = unpack(direction)
+local dx, dy = Vec.unpack(direction)
 if (dx > 0) return 90
 if (dx < 0) return 270
 if (dy > 0) return 180
 if (dy < 0) return 0
-end
-function vec2_add(vec1, vec2)
-return {vec1[1] + vec2[1], vec1[2] + vec2[2]}
-end
-function unpack_to_coord(vec1)
-return {x=vec1[1], y=vec1[2]}
-end
-function refund_tower_at(dx, dy)
-for _, tower in pairs(towers) do
-if tower.x == dx and tower.y == dy then
-grid[dy][dx] = "empty"
-if (tower.type == "floor") grid[dy][dx] = "path"
-coins+=tower.cost\2
-del(animators, tower.animator) 
-del(towers,tower)
-end
-end
 end
 function parse_frontal_bounds(radius, dx, dy)
 local fx, fy, flx, fly, ix, iy = -1, 1, 1, radius, 1, 1
@@ -942,6 +905,57 @@ elseif dy < 0 then -- north
 fx,fy,flx,fly,iy=-1,-1,1,-radius,-1
 end
 return fx, fy, flx, fly, ix, iy
+end
+Vec={}
+function Vec:new(dx, dy)
+local obj = nil
+if type(dx) == "table" then 
+obj={x=dx[1],y=dx[2]}
+else
+obj={x=dx,y=dy}
+end
+setmetatable(obj,self)
+self.__index=self
+self.__add = function(a, b)
+return Vec:new(a.x+b.x,a.y+b.y)
+end
+self.__sub = function(a, b)
+return Vec:new(a.x-b.x,a.y-b.y)
+end
+self.__mul = function(a, scalar)
+return Vec:new(a.x*scalar,a.y*scalar)
+end
+self.__div = function(a, scalar)
+return Vec:new(a.x/scalar,a.y/scalar)
+end
+self.__eq = function(a, b)
+return (a.x==b.x and a.y==b.y)
+end
+return obj
+end
+function Vec:unpack()
+return self.x, self.y
+end
+function Vec:clamp(min, max)
+self.x=mid(self.x,min,max)
+self.y=mid(self.y,min,max)
+end
+function Vec:to_str()
+return "("..self.x..", "..self.y..")"
+end
+function normalize(val)
+if type(val) == "table" then 
+return Vec:new(normalize(val.x), normalize(val.y))
+else
+return flr(mid(val, -1, 1))
+end
+end
+function lerp(start, last, rate)
+if type(start) == "table" then 
+return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
+else
+return start + (last - start) * rate
+end
 end
 function game_draw_loop()
 map(unpack(map_data[loaded_map].mget_shift))
@@ -957,7 +971,7 @@ for i=1, #incoming_hint do
 Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
 end
 end
-draw_selector(selector) 
+spr(selector.sprite_index, Vec.unpack(selector.position))
 end
 print_with_outline("scrap: "..coins, 0, 1, 7, 0)
 print_with_outline("♥ "..player_health, 103, 1, 8, 0)
@@ -969,7 +983,7 @@ else
 print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
 end
 else
-if is_there_something_at(selector.x / 8, selector.y / 8, towers) then
+if is_there_something_at(towers, Vec.unpack(selector.position/8)) then
 print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
 else
 print_with_outline(
@@ -983,21 +997,6 @@ local mxshift, myshift = unpack(map_data[map_id].mget_shift)
 for y=0, 15 do
 for x=0, 15 do
 pset(x + xoffset, y + yoffset, placable_tile_location(x + mxshift, y + myshift) and map_draw_data.other or map_draw_data.path)
-end
-end
-end
-function draw_shop_cost()
-for i=1, #tower_templates do
-print_tower_cost(tower_templates[i].cost,shop_ui_data.x[i]-4,shop_ui_data.y[1]-6)
-end
-end
-function draw_shop_dmg()
-for i=1, #tower_templates do
-local type = tower_templates[i].type
-if type == "tack" or type == "rail" then 
-print_with_outline("D"..tower_templates[i].damage, shop_ui_data.x[i] - 4, shop_ui_data.y[1], 8, 0)
-else
-print_with_outline("T"..tower_templates[i].damage, shop_ui_data.x[i] - 4, shop_ui_data.y[1], 12, 0)
 end
 end
 end
@@ -1034,10 +1033,6 @@ wave_round=0
 freeplay_rounds=0
 loaded_map=map_id
 pathing=parse_path()
-shop_selector.x = shop_ui_data.x[shop_selector.pos + 1]-20
-shop_selector.y = shop_ui_data.y[1]-20
-option_selector.x = shop_ui_data.x[1]-16
-option_selector.y = 32
 for i=1, 3 do
 add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
 end
@@ -1094,17 +1089,15 @@ menus[1].enable=true
 return
 end
 if btnp(❎) then 
-local dx = selector.x / 8
-local dy = selector.y / 8
-if is_there_something_at(dx, dy, towers) then 
+local dx, dy = Vec.unpack(selector.position / 8)
+if is_there_something_at(towers, dx, dy) then 
 refund_tower_at(dx,dy)
 else
 place_tower(dx,dy)
 end
 end
-local dx, dy = controls()
-selector.x = mid(selector.x + dx * 8, 0, 120)
-selector.y = mid(selector.y + dy * 8, 0, 120)
+selector.position += Vec:new(controls()) * 8
+Vec.clamp(selector.position, 0, 120)
 if enemies_active then 
 foreach(enemies, update_enemy_position)
 foreach(towers, Tower.attack)
@@ -1112,7 +1105,7 @@ if start_next_wave then
 start_next_wave=false
 wave_cor = cocreate(spawn_enemy)
 end
-if wave_cor and costatus(wave_cor) != 'dead' then
+if wave_cor and costatus(wave_cor) ~= 'dead' then
 coresume(wave_cor)
 else
 wave_cor = nil

@@ -12,14 +12,6 @@ function print_tower_cost(cost, dx, dy)
 end
 
 -- Utility
-function normalize(val)
-  return flr(mid(val, -1, 1))
-end
-
-function lerp(start, last, rate)
-  return start + (last - start) * rate
-end
-
 function controls()
   if btnp(⬆️) then return 0, -1
   elseif btnp(⬇️) then return 0, 1
@@ -45,17 +37,17 @@ function is_in_table(val, table)
   end
 end
 
-function is_there_something_at(dx, dy, table)
-  return is_in_table(unpack_to_coord(pack(dx, dy)), table) and true or false
+function is_there_something_at(table, dx, dy)
+  return is_in_table(Vec:new(dx, dy), table) and true or false
 end
 
 function placable_tile_location(x, y)
   return fget(mget(x, y), map_meta_data.non_path_flag_id)
 end
 
-function add_enemy_at_to_table(dx, dy, table)
+function add_enemy_at_to_table(pos, table)
   for _, enemy in pairs(enemies) do
-    if (enemy.x == dx and enemy.y == dy) then
+    if enemy.position == pos then
       add(table, enemy)
       return
     end
@@ -83,19 +75,11 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
 end
 
 function parse_direction(direction)
-  local dx, dy = unpack(direction)
+  local dx, dy = Vec.unpack(direction)
   if (dx > 0) return 90
   if (dx < 0) return 270
   if (dy > 0) return 180
   if (dy < 0) return 0
-end
-
-function vec2_add(vec1, vec2)
-  return {vec1[1] + vec2[1], vec1[2] + vec2[2]}
-end
-
-function unpack_to_coord(vec1)
-  return {x=vec1[1], y=vec1[2]}
 end
 
 function parse_frontal_bounds(radius, dx, dy)

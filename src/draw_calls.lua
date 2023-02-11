@@ -17,7 +17,7 @@ function game_draw_loop()
         Animator.draw(incoming_hint[i], (dx + (i - 1) * dir[1])*8, (dy + (i - 1) * dir[2])*8)
       end
     end
-    draw_selector(selector) 
+    spr(selector.sprite_index, Vec.unpack(selector.position))
   end
   -- UI
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
@@ -30,7 +30,7 @@ function game_draw_loop()
       print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
     end
   else 
-    if is_there_something_at(selector.x / 8, selector.y / 8, towers) then
+    if is_there_something_at(towers, Vec.unpack(selector.position/8)) then
       print_with_outline("❎ sell | 🅾️ open menu", 1, 120, 7, 0)
     else
       print_with_outline(

@@ -1,14 +1,14 @@
 Tower = {}
 function Tower:new(dx, dy, tower_template_data, direction)
   obj = { 
-    x = dx, y = dy,
+    position = Vec:new(dx, dy),
     dmg = tower_template_data.damage,
     radius = tower_template_data.radius, 
     attack_delay = tower_template_data.attack_delay,
     current_attack_ticks = 0,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
-    dir = direction,
+    dir = Vec:new(direction),
     animator = Animator:new(tower_template_data.animation, true)
   }
   add(animators, obj.animator)
@@ -28,27 +28,27 @@ function Tower:attack()
     Tower.freeze_enemies(self, Tower.frontal_collision(self))
   elseif self.type == "floor" then 
     local hits = {}
-    add_enemy_at_to_table(self.x, self.y, hits)
+    add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
   end
 end
 function Tower:raycast()
-  if (self.dir[1] == 0 and self.dir[2] == 0) return nil
+  if (self.dir == Vec:new(0, 0)) return nil
   local hits = {}
   for i=1, self.radius do 
-    add_enemy_at_to_table(self.x + i * self.dir[1] , self.y + i * self.dir[2], hits)
+    add_enemy_at_to_table(self.position + self.dir * i, hits)
   end
-  if (#hits > 0) raycast_spawn(self.x, self.y, self.radius, self.dir, animation_data.spark)
+  if (#hits > 0) raycast_spawn(self.position.x, self.position.y, self.radius, self.dir, animation_data.spark)
   return hits
 end
 function Tower:nova_collision()
   local hits = {}
   for y=-self.radius, self.radius do
     for x=-self.radius, self.radius do
-      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
+      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
     end
   end
-  if (#hits > 0) nova_spawn(self.x, self.y, self.radius, animation_data.blade)
+  if (#hits > 0) nova_spawn(self.position.x, self.position.y, self.radius, animation_data.blade)
   return hits
 end
 function Tower:frontal_collision()
@@ -56,10 +56,10 @@ function Tower:frontal_collision()
   local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(self.radius, unpack(self.dir))
   for y=fy, fly, iy do
     for x=fx, flx, ix do
-      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.x + x, self.y + y, hits)
+      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
     end
   end
-  if (#hits > 0) frontal_spawn(self.x, self.y, self.radius, self.dir, animation_data.frost)
+  if (#hits > 0) frontal_spawn(self.position.x, self.position.y, self.radius, self.dir, animation_data.frost)
   return hits
 end
 function Tower:apply_damage(targets)
@@ -76,9 +76,10 @@ function Tower:freeze_enemies(targets)
   end
 end
 function Tower:draw()
+  local p = self.position * 8
   draw_sprite_rotated(
     Animator.get_sprite(self.animator),
-    self.x*8, self.y*8, self.animator.sprite_size,
+    p.x, p.y, self.animator.sprite_size,
     parse_direction(self.dir)
   )
 end
