@@ -10,7 +10,7 @@
 - Tokens: 4867
 - Files: 1
 
-### Ending [In Progress on Rework Branch]
-- Chars: 26636
-- Tokens: 5256
-- Files: 12
+### Ending [Finished (There may be bugs still)]
+- Chars: 30570
+- Tokens: 5863
+- Files: 14
