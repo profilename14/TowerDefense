@@ -29,8 +29,7 @@ function Vec:unpack()
   return self.x, self.y
 end
 function Vec:clamp(min, max)
-  self.x = mid(self.x, min, max)
-  self.y = mid(self.y, min, max)
+  self.x, self.y = mid(self.x, min, max), mid(self.y, min, max)
 end
 function Vec:to_str()
   return "("..self.x..", "..self.y..")"

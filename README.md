@@ -11,6 +11,6 @@
 - Files: 1
 
 ### Ending [In Progress on Rework Branch]
-- Chars: 23285
-- Tokens: 4663
-- Files: 9
+- Chars: 26636
+- Tokens: 5256
+- Files: 12
