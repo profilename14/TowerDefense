@@ -72,6 +72,7 @@ function load_game(map_id)
     add(menus, Menu:new(unpack(menu_dat)))
   end
   tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
+  sell_selector = Animator:new(animation_data.sell)
 end
 
 function map_loop()

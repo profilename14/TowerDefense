@@ -18,7 +18,6 @@ function game_draw_loop()
         Animator.draw(incoming_hint[i], Vec.unpack(position))
       end
     end
-    spr(selector.sprite_index, Vec.unpack(selector.position))
   end
   -- UI
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
@@ -32,8 +31,12 @@ function game_draw_loop()
     end
   else 
     if is_in_table(selector.position/8, towers, true) then
+      Animator.update(sell_selector)
+      Animator.draw(sell_selector, Vec.unpack(selector.position))
       print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
     else
+      spr(selector.sprite_index, Vec.unpack(selector.position))
+      Animator.reset(sell_selector)
       print_with_outline(
         "❎ buy & place "..tower_templates[selected_menu_tower_id].name.."\n🅾️ open menu", 
         1, 115, 7, 0)

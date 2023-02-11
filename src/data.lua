@@ -106,6 +106,15 @@ animation_data = {
       {sprite = 55, offset = {0, 1}},
     },
     ticks_per_frame = 3
+  },
+  sell = {
+    data = {
+      {sprite = 1},
+      {sprite = 56},
+      {sprite = 40},
+      {sprite = 24}
+    },
+    ticks_per_frame = 3
   }
 }
 map_data = {
@@ -336,7 +345,7 @@ function reset_game()
   map_selector = {
     x = shop_ui_data.x[1]-20,
     y = shop_ui_data.y[1]-20,
-    sprite_index = 128,
+    sprite_index = 64,
     size = 3,
     pos = 0
   }
