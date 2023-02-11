@@ -829,9 +829,6 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
 ?text,dx,dy+1
 ?text,dx,dy,text_color
 end
-function print_tower_cost(cost, dx, dy)
-print_with_outline("C"..cost, dx, dy, (cost > coins) and 8 or 7, 0)
-end
 function controls()
 if btnp(⬆️) then return 0, -1
 elseif btnp(⬇️) then return 0, 1
