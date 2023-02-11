@@ -22,12 +22,12 @@ function game_draw_loop()
   -- UI
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
-  if shop_enable then
+  if shop_enable and get_active_menu() then
     print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
-    if get_active_menu().prev == nil then
-      print_with_outline("❎ select\n🅾️ close menu", 1, 115, 7, 0)
-    else
+    if get_active_menu().prev then
       print_with_outline("❎ select\n🅾️ go back to previous menu", 1, 115, 7, 0)
+    else
+      print_with_outline("❎ select\n🅾️ close menu", 1, 115, 7, 0)
     end
   else 
     if is_in_table(selector.position/8, towers, true) then
@@ -37,9 +37,18 @@ function game_draw_loop()
     else
       spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)
-      print_with_outline(
-        "❎ buy & place "..tower_templates[selected_menu_tower_id].name.."\n🅾️ open menu", 
-        1, 115, 7, 0)
+      local position = selector.position/8
+      local tower_details = tower_templates[selected_menu_tower_id]
+      local text, color = "❎ buy & place "..tower_details.name, 7
+      if tower_details.cost > coins then
+        text = "can't afford "..tower_details.name
+        color = 8
+      elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
+        text = "can't place "..tower_details.name.." here"
+        color = 8
+      end
+      print_with_outline(text, 1, 115, color, 0)
+      print_with_outline("🅾️ open menu", 1, 122, 7, 0)
     end
   end
 end

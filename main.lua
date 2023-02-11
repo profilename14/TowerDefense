@@ -51,6 +51,7 @@ end
 
 -- Game
 function load_game(map_id)
+  auto_start_wave = false
   wave_round = 0
   freeplay_rounds = 0
   loaded_map = map_id
@@ -72,6 +73,7 @@ function load_game(map_id)
     add(menus, Menu:new(unpack(menu_dat)))
   end
   tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
+  tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(animation_data.sell)
 end
 
@@ -112,6 +114,8 @@ function shop_loop()
 end
 
 function game_loop()
+  if (auto_start_wave) start_round()
+
   if btnp(🅾️) then
     shop_enable = true
     menus[1].enable = true

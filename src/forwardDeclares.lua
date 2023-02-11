@@ -41,6 +41,26 @@ function display_tower_info(tower_id, position, text_color)
   ))
 end
 
+function display_tower_rotation(menu_pos, position)
+  local tower_details = tower_templates[selected_menu_tower_id]
+  local offset = Vec:new(0, -28)
+  BorderRect.reposition(tower_rotation_background_rect, position + offset)
+  BorderRect.draw(tower_rotation_background_rect)
+
+  local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
+
+  if tower_details.disable_icon_rotation then 
+    spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
+  else
+    draw_sprite_rotated(shop_ui_data.background, combine_and_unpack(
+      {Vec.unpack(position + offset)}, {24, parse_direction(Vec:new(direction))}
+    ))
+    draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
+      sprite_position, {16, parse_direction(Vec:new(direction))}
+    ))
+  end
+end
+
 -- Enemy Related
 function start_round()
   if not start_next_wave and #enemies == 0 then

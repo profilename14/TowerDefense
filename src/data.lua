@@ -204,7 +204,7 @@ tower_templates = {
 shop_ui_data = {
   x = {128 / 4 - 10, 128/2 - 10, 128 * 3 / 4 - 10, 128 - 10},
   y = {128 / 2},
-  background = 136,
+  background = 68,
   blank = 140
 }
 freeplay_stats = {
@@ -296,7 +296,7 @@ menu_data = {
         end
       }
     },
-    nil,
+    display_tower_rotation,
     5, 8, 7, 3
   },
   {

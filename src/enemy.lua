@@ -25,7 +25,7 @@ function Enemy:step()
     self.burning_tick -= 1
     self.hp -= 2
     local px, py, _ = Enemy.get_pixel_location(self)
-    add(particles, Particle:new(px, py, true, Animator:new(animation_data.burn, false)))
+    add(particles, Particle:new(Vec:new(px, py), true, Animator:new(animation_data.burn, false)))
   end
 
   if (not self.is_frozen) return true 

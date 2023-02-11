@@ -27,9 +27,9 @@ function destroy_particle(particle)
 end
 
 -- particle spawing
-function raycast_spawn(position, range, direction, data)
+function raycast_spawn(position, range, dir, data)
   for i=1, range do 
-    add(particles, Particle:new(position + direction * i, false, Animator:new(data, false)))
+    add(particles, Particle:new(position + dir * i, false, Animator:new(data, false)))
   end
 end
 
@@ -41,8 +41,8 @@ function nova_spawn(position, radius, data)
   end
 end
 
-function frontal_spawn(position, radius, direction, data)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, direction)
+function frontal_spawn(position, radius, dir, data)
+  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, dir)
   for y=fy, fly, iy do
     for x=fx, flx, ix do
       if (x ~= 0 or y ~= 0) add(particles, Particle:new(position + Vec:new(x, y), false, Animator:new(data, false)))
