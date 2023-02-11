@@ -1,0 +1,108 @@
+{
+  "Direction Button Function": {
+    "prefix": "dirfunc",
+    "body": [
+      "function controls()",
+      "\tif btn(⬆️) then",
+      "\t\treturn 0, -1",
+      "\telseif btn(⬇️) then",
+      "\t\treturn 0, 1",
+      "\telseif btn(⬅️) then",
+      "\t\treturn -1, 0",
+      "\telseif btn(➡️) then",
+      "\t\treturn 1, 0",
+      "\telse",
+      "\t\treturn 0, 0",
+      "\tend",
+      "end"
+    ]
+  },
+  "D-Pad Button Function": {
+    "prefix": "dpadfunc",
+    "body": [
+      "function controls()",
+      "\tif btnp(⬆️) then",
+      "\t\treturn 0, -1",
+      "\telseif btnp(⬇️) then",
+      "\t\treturn 0, 1",
+      "\telseif btnp(⬅️) then",
+      "\t\treturn -1, 0",
+      "\telseif btnp(➡️) then",
+      "\t\treturn 1, 0",
+      "\telse",
+      "\t\treturn 0, 0",
+      "\tend",
+      "end"
+    ]
+  },
+  "Class": {
+    "prefix": "class",
+    "body": [
+      "$1 = {}",
+      "function $1:new($2)",
+      "\tobj = {$0}",
+      "\tsetmetatable(obj, self)",
+      "\tself.__index = self",
+      "\treturn obj",
+      "end"
+    ]
+  },
+  "Enumerate": {
+    "prefix": ["enumerate", "forin"],
+    "body": ["for $1, $2 in pairs($3) do", "\t$0", "end"]
+  },
+  "Clamp": {
+    "prefix": ["clamp", "clm"],
+    "body": [
+      "function clamp(val, min_val, max_val)",
+      "\treturn min(max(min_val, val), max_val)",
+      "end"
+    ]
+  },
+  "Index Wrap": {
+    "prefix": "iwrap",
+    "body": "$1 = ($1 + ${0:1}) % $2"
+  },
+  "Draw Sprite": {
+    "prefix": "spr",
+    "body": "spr($1, $2, $3)"
+  },
+  "For Loop Grid": {
+    "prefix": ["forgrid", "fg", "fgrid"],
+    "body": [
+      "for y=${1:0}, $2 do",
+      "\tfor x=${1:0}, $3 do",
+      "\t\t$0",
+      "\tend",
+      "end"
+    ]
+  },
+  "Init": {
+    "prefix": "_init",
+    "body": ["function _init()", "\t$0", "end"]
+  },
+  "Update": {
+    "prefix": "_update",
+    "body": ["function _update()", "\t$0", "end"]
+  },
+  "Draw": {
+    "prefix": "_draw",
+    "body": ["function _draw()", "\t$0", "end"]
+  },
+  "ButtonX": {
+    "prefix": "ifX",
+    "body": ["if btnp(❎) then", "\t$0", "end"]
+  },
+  "ButtonXSingle": {
+    "prefix": "ifXs",
+    "body": "if (btnp(❎)) $0"
+  },
+  "ButtonO": {
+    "prefix": "ifO",
+    "body": ["if btnp(🅾️) then", "\t$0", "end"]
+  },
+  "ButtonOSingle": {
+    "prefix": "ifOs",
+    "body": "if (btnp(🅾️)) $0"
+  }
+}
