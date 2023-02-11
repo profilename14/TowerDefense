@@ -1,6 +1,8 @@
 -- Tower Defence v1.14.10
 -- By Jeren (Code), Jasper (Art & Sound), Jimmy (Art & Music)
 
+-- Forward Declaring Functions
+#include src/forwardDeclares.lua
 -- Game Data and Reset Data
 #include src/data.lua
 -- Classes
@@ -8,6 +10,7 @@
 #include src/tower.lua
 #include src/particle.lua
 #include src/animator.lua
+#include src/menu.lua
 
 -- Utility/Helper Functions
 #include src/helpers.lua
@@ -67,6 +70,10 @@ function load_game(map_id)
     end
   end
   music(0)
+  menus = {}
+  for i, menu_dat in pairs(menu_data) do
+    add(menus, Menu:new(unpack(menu_dat)))
+  end
 end
 
 function map_loop()
@@ -87,46 +94,28 @@ function map_loop()
 end
 
 function shop_loop()
+  foreach(menus, Menu.update)
+  
   if btnp(🅾️) then -- disable shop
-    shop_enable = false
-    return
-  end
-  if btnp(❎) then 
-    if option_enable then 
-      if option_selector.pos == 1 and not start_next_wave and #enemies == 0 then
-        start_next_wave = true
-        enemies_active = true
-        wave_round += 1
-        wave_round = min(wave_round, #wave_data)
-        if wave_round == #wave_data then 
-          freeplay_rounds += 1
-        end
-        enemies_remaining = #wave_data[wave_round]
-      elseif option_selector.pos == 3 then 
-        reset_game()
-        map_menu_enable = true
-      end
+    if get_active_menu().prev == nil then 
       shop_enable = false
+      menus[1].enable = false
       return
     else
-      direction = { direction[2] * -1, direction[1] }
+      swap_menu_context(get_active_menu().prev)
     end
   end
-
-  local dx, dy = controls()
-  if (dy ~= 0) option_enable = not option_enable
-  
-  if (dx == 0) return
-  if option_enable then
-    move_ui_selector(option_selector, dx, 2, 0, 16) 
-  else
-    move_ui_selector(shop_selector, dx, 1, 1, 20)
+  if btnp(❎) then 
+    Menu.invoke(get_active_menu())
   end
+
+  foreach(menus, Menu.move)
 end
 
 function game_loop()
   if btnp(🅾️) then
     shop_enable = true
+    menus[1].enable = true
     return
   end
   if btnp(❎) then 

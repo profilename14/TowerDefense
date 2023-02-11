@@ -87,12 +87,12 @@ function place_tower(x, y)
   -- check if there is a tower here
   if (grid[y][x] == "tower") return false
   -- check if player has the money
-  if (coins < tower_templates[shop_selector.pos + 1].cost) return false
+  if (coins < tower_templates[selected_menu_tower_id].cost) return false
   -- spawn the tower
-  local tower_type = tower_templates[shop_selector.pos + 1].type 
+  local tower_type = tower_templates[selected_menu_tower_id].type 
   if ((tower_type == "floor") ~= (grid[y][x] == "path")) return false 
-  add(towers, Tower:new(x, y, tower_templates[shop_selector.pos + 1], direction))
-  coins -= tower_templates[shop_selector.pos + 1].cost
+  add(towers, Tower:new(x, y, tower_templates[selected_menu_tower_id], direction))
+  coins -= tower_templates[selected_menu_tower_id].cost
   grid[y][x] = "tower"
   return true
 end

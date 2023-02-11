@@ -134,7 +134,6 @@ function spawn_enemy()
     if (is_there_something_at(unpack(map_data[loaded_map].enemy_spawn_location), enemies)) goto spawn_enemy_continue
     if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
     enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
-    printh(enemy_data_from_template.hp)
     add(enemies, Enemy:new(map_data[loaded_map].enemy_spawn_location, enemy_data_from_template))
     enemies_remaining -= 1
     ::spawn_enemy_continue:: 

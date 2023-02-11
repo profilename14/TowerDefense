@@ -40,7 +40,7 @@ class Compiler():
                     if not compiledData[-1].endswith("\n"):
                         compiledData[-1] += "\n"
                     buffer.append(compiledData)
-                elif line.count("function") > 0 and line.count("local") == 0:
+                elif line.lstrip().startswith("function"):
                     functionName: str = self._GetFunctionName(line)
                     if functionName in self.functions:
                         raise Exception(f"Function {functionName} exist in {self.functions[functionName]} and in {FunctionData(file, i)}")

@@ -35,10 +35,10 @@ animation_data = {
   },
   incoming_hint = {
     data = {
-      {sprite = 4, offset = {0, 0}},
-      {sprite = 4, offset = {1, 0}},
-      {sprite = 4, offset = {2, 0}},
-      {sprite = 4, offset = {1, 0}}
+      {sprite = 2, offset = {0, 0}},
+      {sprite = 2, offset = {1, 0}},
+      {sprite = 2, offset = {2, 0}},
+      {sprite = 2, offset = {1, 0}}
     },
     ticks_per_frame = 5
   },
@@ -77,6 +77,35 @@ animation_data = {
       {sprite = 125}
     },
     ticks_per_frame = 5, 
+  },
+  menu_selector = {
+    data = {
+      {sprite = 6, offset = {0, 0}},
+      {sprite = 7, offset = {-1, 0}},
+      {sprite = 8, offset = {-2, 0}},
+      {sprite = 9, offset = {-3, 0}},
+      {sprite = 8, offset = {-2, 0}},
+      {sprite = 7, offset = {-1, 0}},
+    },
+    ticks_per_frame = 3
+  },
+  up_arrow = {
+    data = {
+      {sprite = 54, offset = {0, 0}},
+      {sprite = 54, offset = {0, -1}},
+      {sprite = 54, offset = {0, -2}},
+      {sprite = 54, offset = {0, -1}},
+    },
+    ticks_per_frame = 3
+  },
+  down_arrow = {
+    data = {
+      {sprite = 55, offset = {0, 0}},
+      {sprite = 55, offset = {0, 1}},
+      {sprite = 55, offset = {0, 2}},
+      {sprite = 55, offset = {0, 1}},
+    },
+    ticks_per_frame = 3
   }
 }
 map_data = {
@@ -111,8 +140,7 @@ map_data = {
 }  
 map_meta_data = {
   path_flag_id = 0,
-  non_path_flag_id = 1,
-  map_func_static = {0, 0, 16, 16}
+  non_path_flag_id = 1
 }
 tower_templates = {
   {
@@ -175,42 +203,42 @@ enemy_templates = {
   {
     hp = 10,
     step_delay = 10,
-    sprite_index = 5,
+    sprite_index = 3,
     reward = 3,
     damage = 1
   },
   {
     hp = 10,
     step_delay = 8,
-    sprite_index = 6,
+    sprite_index = 4,
     reward = 5,
     damage = 2
   },
   {
     hp = 25,
     step_delay = 12,
-    sprite_index = 7,
+    sprite_index = 5,
     reward = 7,
     damage = 5
   },
   {
     hp = 20,
     step_delay = 9,
-    sprite_index = 5,
+    sprite_index = 3,
     reward = 3,
     damage = 4
   },
   {
     hp = 15,
     step_delay = 5,
-    sprite_index = 6,
+    sprite_index = 4,
     reward = 5,
     damage = 5
   },
   {
     hp = 70,
     step_delay = 13,
-    sprite_index = 7,
+    sprite_index = 5,
     reward = 7,
     damage = 10
   }
@@ -238,6 +266,57 @@ map_draw_data = {
 }
 sfx_data = {
   round_complete = 10
+}
+menu_data = {
+  {
+    "main", nil,
+    5, 70, 
+    animation_data.menu_selector,
+    animation_data.up_arrow,
+    animation_data.down_arrow,
+    {
+      {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
+      {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
+      {text = "rotate tower", color = {7, 0}, 
+        callback = function()
+          direction = { direction[2] * -1, direction[1] }
+        end
+      }
+    },
+    5, 8, 7, 3
+  },
+  {
+    "towers", "main",
+    5, 70, 
+    animation_data.menu_selector,
+    animation_data.up_arrow,
+    animation_data.down_arrow,
+    {
+      {text = "blade circle", color = {2, 13}, callback = choose_tower, args = {1}},
+      {text = "lightning lance", color = {10, 9}, callback = choose_tower, args = {2}},
+      {text = "hale howitzer", color = {12, 7}, callback = choose_tower, args = {3}},
+      {text = "fire pit", color = {9, 8}, callback = choose_tower, args = {4}}
+    },
+    5, 8, 7, 3
+  },
+  {
+    "options", "main",
+    5, 70, 
+    animation_data.menu_selector,
+    animation_data.up_arrow,
+    animation_data.down_arrow,
+    {
+      {text = "start round", color = {7, 0}, callback = start_round},
+      {text = "map select", color = {7, 0}, 
+        callback = function()
+          get_active_menu().enable = false
+          reset_game()
+          map_menu_enable = true
+        end
+      }
+    },
+    5, 8, 7, 3
+  }
 }
 
 function reset_game()
@@ -284,4 +363,6 @@ function reset_game()
   enemies = {}
   particles = {}
   animators = {}
+  music(-1)
+  selected_menu_tower_id = 1
 end
