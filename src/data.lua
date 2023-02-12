@@ -209,12 +209,7 @@ tower_templates = {
     disable_icon_rotation = true
   }
 }
-shop_ui_data = {
-  x = {128 / 4 - 10, 128/2 - 10, 128 * 3 / 4 - 10, 128 - 10},
-  y = {128 / 2},
-  background = 68,
-  blank = 140
-}
+tower_icon_background = 68
 freeplay_stats = {
   hp = 3,
   speed = 1,
@@ -280,10 +275,6 @@ wave_data = {
   {5, 5, 3, 3, 3, 5, 5, 5, 5, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5},
   {3, 3, 3, 3, 3, 3, 5, 2, 5, 2, 5, 2, 6, 6, 6},
   {4, 3, 4, 3, 4, 3, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5}
-}
-map_draw_data = {
-  path = 0,
-  other = 6
 }
 sfx_data = {
   round_complete = 10
@@ -369,13 +360,11 @@ function reset_game()
   coins = 50
   player_health = 100
   enemy_required_spawn_ticks = 10
-  tile_display = {attack=9, idle=8}
   -- Internal Data -- Don't modify
   enemies_remaining = 10
   enemy_current_spawn_tick = 0
   enemies_active = false
   shop_enable = false
-  option_enable = false
   map_menu_enable = true
   start_next_wave = false
   wave_cor = nil

@@ -50,7 +50,7 @@ local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
 if tower_details.disable_icon_rotation then 
 spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
 else
-draw_sprite_rotated(shop_ui_data.background, combine_and_unpack(
+draw_sprite_rotated(tower_icon_background, combine_and_unpack(
 {Vec.unpack(position+offset)},{24,parse_direction(Vec:new(direction))}
 ))
 draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
@@ -324,12 +324,7 @@ icon_data=22,
 disable_icon_rotation=true
 }
 }
-shop_ui_data={
-x={128/4-10,128/2-10,128*3/4-10,128-10},
-y={128/2},
-background=68,
-blank=140
-}
+tower_icon_background=68
 freeplay_stats={
 hp=3,
 speed=1,
@@ -395,10 +390,6 @@ wave_data={
 {5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},
 {3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},
 {4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}
-}
-map_draw_data={
-path=0,
-other=6
 }
 sfx_data={
 round_complete=10
@@ -481,12 +472,10 @@ size=1
 coins=50
 player_health=100
 enemy_required_spawn_ticks=10
-tile_display={attack=9,idle=8}
 enemies_remaining=10
 enemy_current_spawn_tick=0
 enemies_active=false
 shop_enable=false
-option_enable=false
 map_menu_enable=true
 start_next_wave=false
 wave_cor = nil
@@ -1043,17 +1032,11 @@ end
 end
 function map_draw_loop()
 local map_menu = get_menu("map")
-draw_map_shadow_filter()
+pal(palettes.dark_mode)
 map(unpack(map_data[map_menu.pos].mget_shift))
 pal()
 Menu.draw(map_menu)
 print_text_center("map select", 5, 7, 1)
-end
-function draw_map_shadow_filter()
-pal(palettes.dark_mode)
-end
-function draw_selector(sel)
-spr(sel.sprite_index,sel.x,sel.y,sel.size,sel.size)
 end
 function map_loop()
 local map_menu = get_menu("map")

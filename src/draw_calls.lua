@@ -55,18 +55,9 @@ end
 
 function map_draw_loop()
   local map_menu = get_menu("map")
-
-  draw_map_shadow_filter()
+  pal(palettes.dark_mode)
   map(unpack(map_data[map_menu.pos].mget_shift))
   pal()
   Menu.draw(map_menu)
   print_text_center("map select", 5, 7, 1)
-end
-
-function draw_map_shadow_filter()
-  pal(palettes.dark_mode)
-end
-
-function draw_selector(sel)
-  spr(sel.sprite_index, sel.x, sel.y, sel.size, sel.size)
 end

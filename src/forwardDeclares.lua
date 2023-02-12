@@ -52,7 +52,7 @@ function display_tower_rotation(menu_pos, position)
   if tower_details.disable_icon_rotation then 
     spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
   else
-    draw_sprite_rotated(shop_ui_data.background, combine_and_unpack(
+    draw_sprite_rotated(tower_icon_background, combine_and_unpack(
       {Vec.unpack(position + offset)}, {24, parse_direction(Vec:new(direction))}
     ))
     draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
