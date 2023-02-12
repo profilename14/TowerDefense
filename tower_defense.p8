@@ -8,7 +8,7 @@ shop_enable=false
 end
 function display_tower_info(tower_id, position, text_color)
 local offset = Vec:new(-1, -31)
-local tower_details = tower_templates[tower_id]
+local tower_details = global_table_data.tower_templates[tower_id]
 local texts = {
 {text=tower_details.name},
 {text = tower_details.prefix..": "..tower_details.damage}
@@ -42,7 +42,7 @@ Vec.unpack(tower_stats_background_rect.position+Vec:new(longest_menu_str(texts)*
 ))
 end
 function display_tower_rotation(menu_pos, position)
-local tower_details = tower_templates[selected_menu_tower_id]
+local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
 local offset = Vec:new(0, -28)
 BorderRect.reposition(tower_rotation_background_rect, position + offset)
 BorderRect.draw(tower_rotation_background_rect)
@@ -114,7 +114,7 @@ end
 end
 music(0)
 end
-global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},enemy_templates={{hp=10,step_delay=10,sprite_index=3,reward=3,damage=1},{hp=10,step_delay=8,sprite_index=4,reward=5,damage=2},{hp=25,step_delay=12,sprite_index=5,reward=7,damage=5},{hp=20,step_delay=9,sprite_index=3,reward=3,damage=4},{hp=15,step_delay=5,sprite_index=4,reward=5,damage=5},{hp=70,step_delay=13,sprite_index=5,reward=7,damage=10}},wave_data={{1,1,1},{1,1,1,1,1,1},{2,1,2,1,2,1,1},{1,2,2,1,2,2,1,2,2,2},{3,3,3,3,2,2,2,2,3,2,3,1},{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}}"
+global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},tower_templates={{name=sword circle,damage=2,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=10,icon_data=16,disable_icon_rotation=True},{name=lightning lance,damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=55,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False},{name=hale howitzer,damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=25,type=frontal,attack_delay=30,icon_data=20,disable_icon_rotation=False},{name=fire pit,damage=3,prefix=duration,radius=0,animation_key=fire_pit,cost=25,type=floor,attack_delay=15,icon_data=22,disable_icon_rotation=True}},enemy_templates={{hp=10,step_delay=10,sprite_index=3,reward=3,damage=1},{hp=10,step_delay=8,sprite_index=4,reward=5,damage=2},{hp=25,step_delay=12,sprite_index=5,reward=7,damage=5},{hp=20,step_delay=9,sprite_index=3,reward=3,damage=4},{hp=15,step_delay=5,sprite_index=4,reward=5,damage=5},{hp=70,step_delay=13,sprite_index=5,reward=7,damage=10}},wave_data={{1,1,1},{1,1,1,1,1,1},{2,1,2,1,2,1,1},{1,2,2,1,2,2,1,2,2,2},{3,3,3,3,2,2,2,2,3,2,3,1},{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}}"
 function reset_game()
 global_table_data=unpack_table(global_table_str)
 menu_data={
@@ -184,56 +184,6 @@ global_table_data.animation_data.down_arrow,
 },
 nil,
 5,8,7,3
-}
-}
-tower_templates={
-{
-name = "sword circle",
-damage=2,
-prefix = "damage",
-radius=1,
-animation=global_table_data.animation_data.blade_circle,
-cost=25,
-type = "tack",
-attack_delay=10,
-icon_data=16,
-disable_icon_rotation=true
-},
-{
-name = "lightning lance",
-damage=5,
-prefix = "damage",
-radius=5,
-animation=global_table_data.animation_data.lightning_lance,
-cost=55,
-type = "rail", 
-attack_delay=25,
-icon_data=18,
-disable_icon_rotation=false
-},
-{
-name = "hale howitzer",
-damage=5,--freezedelay;!notdamage
-prefix = "delay",
-radius=2,
-animation=global_table_data.animation_data.hale_howitzer,
-cost=25,
-type = "frontal", 
-attack_delay=30,
-icon_data=20,
-disable_icon_rotation=false
-},
-{
-name = "fire pit",
-damage=3,--firetickduration
-prefix = "duration",
-radius=0,
-animation=global_table_data.animation_data.fire_pit,
-cost=25,
-type = "floor", 
-attack_delay=15,
-icon_data=22,
-disable_icon_rotation=true
 }
 }
 selector = {
@@ -405,7 +355,7 @@ current_attack_ticks=0,
 cost=tower_template_data.cost,
 type=tower_template_data.type,
 dir=Vec:new(direction),
-animator = Animator:new(tower_template_data.animation, true)
+animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
 }
 add(animators, obj.animator)
 setmetatable(obj,self)
@@ -480,11 +430,11 @@ parse_direction(self.dir)
 end
 function place_tower(position)
 if (grid[position.y][position.x] == "tower") return false
-if (coins < tower_templates[selected_menu_tower_id].cost) return false
-local tower_type = tower_templates[selected_menu_tower_id].type 
+if (coins < global_table_data.tower_templates[selected_menu_tower_id].cost) return false
+local tower_type = global_table_data.tower_templates[selected_menu_tower_id].type 
 if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
-add(towers,Tower:new(position,tower_templates[selected_menu_tower_id],direction))
-coins-=tower_templates[selected_menu_tower_id].cost
+add(towers,Tower:new(position,global_table_data.tower_templates[selected_menu_tower_id],direction))
+coins-=global_table_data.tower_templates[selected_menu_tower_id].cost
 grid[position.y][position.x] = "tower"
 return true
 end
@@ -836,7 +786,7 @@ else
 spr(selector.sprite_index, Vec.unpack(selector.position))
 Animator.reset(sell_selector)
 local position = selector.position/8
-local tower_details = tower_templates[selected_menu_tower_id]
+local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
 local text, color = "❎ buy & place "..tower_details.name, 7
 if tower_details.cost > coins then
 text = "can't afford "..tower_details.name
@@ -1094,24 +1044,6 @@ end
 function str_contains_char(str, char)
 for i=1, #str do
 if (str[i] == char) return true
-end
-end
-function debug_print_table(table, prefix, log_to_file)
-for k, v in pairs(table) do 
-local key = tonum(k) and "["..k.."]" or k
-if type(v) == "table" then 
-printh(prefix.."["..type(v).."] "..key.." = {", log_to_file)
-debug_print_table(v, "__"..prefix, log_to_file)
-printh(prefix.."}", log_to_file)
-else
-printh(prefix.."["..type(v).."] "..key.." = "..v, log_to_file)
-end
-end
-end
-function debug_list(list, log_to_file)
-printh("--------------", log_to_file, true)
-for i, data in pairs(list) do
-printh("["..i.."] "..data, log_to_file)
 end
 end
 __gfx__

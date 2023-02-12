@@ -1,4 +1,5 @@
 /.vscode
 *.png
+*.txt
 /pico8_compiler/src/__pycache__
 /pico8_compiler/test

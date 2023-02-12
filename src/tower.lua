@@ -9,7 +9,7 @@ function Tower:new(pos, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = Vec:new(direction),
-    animator = Animator:new(tower_template_data.animation, true)
+    animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
   add(animators, obj.animator)
   setmetatable(obj, self)
@@ -88,12 +88,12 @@ function place_tower(position)
   -- check if there is a tower here
   if (grid[position.y][position.x] == "tower") return false
   -- check if player has the money
-  if (coins < tower_templates[selected_menu_tower_id].cost) return false
+  if (coins < global_table_data.tower_templates[selected_menu_tower_id].cost) return false
   -- spawn the tower
-  local tower_type = tower_templates[selected_menu_tower_id].type 
+  local tower_type = global_table_data.tower_templates[selected_menu_tower_id].type 
   if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
-  add(towers, Tower:new(position, tower_templates[selected_menu_tower_id], direction))
-  coins -= tower_templates[selected_menu_tower_id].cost
+  add(towers, Tower:new(position, global_table_data.tower_templates[selected_menu_tower_id], direction))
+  coins -= global_table_data.tower_templates[selected_menu_tower_id].cost
   grid[position.y][position.x] = "tower"
   return true
 end

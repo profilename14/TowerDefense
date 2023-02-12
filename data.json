@@ -16,6 +16,36 @@
     "path_flag_id": 0,
     "non_path_flag_id": 1
   },
+  "map_data": [
+    {
+      "name": "curves",
+      "mget_shift": [0, 0],
+      "enemy_spawn_location": [0, 1],
+      "enemy_end_location": [15, 11],
+      "movement_direction": [1, 0]
+    },
+    {
+      "name": "loop",
+      "mget_shift": [16, 0],
+      "enemy_spawn_location": [0, 1],
+      "enemy_end_location": [15, 11],
+      "movement_direction": [1, 0]
+    },
+    {
+      "name": "straight",
+      "mget_shift": [32, 0],
+      "enemy_spawn_location": [0, 1],
+      "enemy_end_location": [15, 2],
+      "movement_direction": [1, 0]
+    },
+    {
+      "name": "u-turn",
+      "mget_shift": [48, 0],
+      "enemy_spawn_location": [0, 1],
+      "enemy_end_location": [0, 6],
+      "movement_direction": [1, 0]
+    }
+  ],
   "animation_data": {
     "spark": {
       "data": [{ "sprite": 10 }, { "sprite": 11 }, { "sprite": 12 }],
@@ -111,34 +141,54 @@
       "ticks_per_frame": 3
     }
   },
-  "map_data": [
+  "tower_templates": [
     {
-      "name": "curves",
-      "mget_shift": [0, 0],
-      "enemy_spawn_location": [0, 1],
-      "enemy_end_location": [15, 11],
-      "movement_direction": [1, 0]
+      "name": "sword circle",
+      "damage": 2,
+      "prefix": "damage",
+      "radius": 1,
+      "animation_key": "blade_circle",
+      "cost": 25,
+      "type": "tack",
+      "attack_delay": 10,
+      "icon_data": 16,
+      "disable_icon_rotation": true
     },
     {
-      "name": "loop",
-      "mget_shift": [16, 0],
-      "enemy_spawn_location": [0, 1],
-      "enemy_end_location": [15, 11],
-      "movement_direction": [1, 0]
+      "name": "lightning lance",
+      "damage": 5,
+      "prefix": "damage",
+      "radius": 5,
+      "animation_key": "lightning_lance",
+      "cost": 55,
+      "type": "rail",
+      "attack_delay": 25,
+      "icon_data": 18,
+      "disable_icon_rotation": false
     },
     {
-      "name": "straight",
-      "mget_shift": [32, 0],
-      "enemy_spawn_location": [0, 1],
-      "enemy_end_location": [15, 2],
-      "movement_direction": [1, 0]
+      "name": "hale howitzer",
+      "damage": 5,
+      "prefix": "delay",
+      "radius": 2,
+      "animation_key": "hale_howitzer",
+      "cost": 25,
+      "type": "frontal",
+      "attack_delay": 30,
+      "icon_data": 20,
+      "disable_icon_rotation": false
     },
     {
-      "name": "u-turn",
-      "mget_shift": [48, 0],
-      "enemy_spawn_location": [0, 1],
-      "enemy_end_location": [0, 6],
-      "movement_direction": [1, 0]
+      "name": "fire pit",
+      "damage": 3,
+      "prefix": "duration",
+      "radius": 0,
+      "animation_key": "fire_pit",
+      "cost": 25,
+      "type": "floor",
+      "attack_delay": 15,
+      "icon_data": 22,
+      "disable_icon_rotation": true
     }
   ],
   "enemy_templates": [

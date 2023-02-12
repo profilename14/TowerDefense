@@ -37,7 +37,7 @@ function game_draw_loop()
       spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)
       local position = selector.position/8
-      local tower_details = tower_templates[selected_menu_tower_id]
+      local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
       local text, color = "❎ buy & place "..tower_details.name, 7
       if tower_details.cost > coins then
         text = "can't afford "..tower_details.name

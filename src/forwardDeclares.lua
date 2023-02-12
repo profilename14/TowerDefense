@@ -7,7 +7,7 @@ end
 
 function display_tower_info(tower_id, position, text_color)
   local offset = Vec:new(-1, -31)
-  local tower_details = tower_templates[tower_id]
+  local tower_details = global_table_data.tower_templates[tower_id]
   local texts = {
     {text = tower_details.name}, 
     {text = tower_details.prefix..": "..tower_details.damage}
@@ -42,7 +42,7 @@ function display_tower_info(tower_id, position, text_color)
 end
 
 function display_tower_rotation(menu_pos, position)
-  local tower_details = tower_templates[selected_menu_tower_id]
+  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
   local offset = Vec:new(0, -28)
   BorderRect.reposition(tower_rotation_background_rect, position + offset)
   BorderRect.draw(tower_rotation_background_rect)
