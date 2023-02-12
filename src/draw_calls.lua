@@ -9,14 +9,13 @@ function game_draw_loop()
   -- shop
   if (shop_enable) foreach(menus, Menu.draw)
   -- selector
-  if not shop_enable then 
-    if not enemies_active and incoming_hint ~= nil then 
-      local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
-      local dir = Vec:new(map_data[loaded_map].movement_direction)
-      for i=1, #incoming_hint do 
-        local position = (spawn_location + dir * (i-1))*8
-        Animator.draw(incoming_hint[i], Vec.unpack(position))
-      end
+  if not shop_enable and not enemies_active and incoming_hint ~= nil then 
+    for i=1, #incoming_hint do 
+      Animator.draw(incoming_hint[i], Vec.unpack(
+        (Vec:new(map_data[loaded_map].enemy_spawn_location) + 
+        Vec:new(map_data[loaded_map].movement_direction) * 
+        (i-1))*8
+      ))
     end
   end
   -- UI
