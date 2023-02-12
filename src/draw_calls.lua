@@ -1,5 +1,5 @@
 function game_draw_loop()
-  map(unpack(map_data[loaded_map].mget_shift))
+  map(unpack(global_table_data.map_data[loaded_map].mget_shift))
   -- towers
   foreach(towers, Tower.draw)
   -- enemies
@@ -12,8 +12,8 @@ function game_draw_loop()
   if not shop_enable and not enemies_active and incoming_hint ~= nil then 
     for i=1, #incoming_hint do 
       Animator.draw(incoming_hint[i], Vec.unpack(
-        (Vec:new(map_data[loaded_map].enemy_spawn_location) + 
-        Vec:new(map_data[loaded_map].movement_direction) * 
+        (Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location) + 
+        Vec:new(global_table_data.map_data[loaded_map].movement_direction) * 
         (i-1))*8
       ))
     end
@@ -55,7 +55,7 @@ end
 function map_draw_loop()
   local map_menu = get_menu("map")
   pal(global_table_data.palettes.dark_mode)
-  map(unpack(map_data[map_menu.pos].mget_shift))
+  map(unpack(global_table_data.map_data[map_menu.pos].mget_shift))
   pal()
   Menu.draw(map_menu)
   print_text_center("map select", 5, 7, 1)

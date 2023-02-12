@@ -63,11 +63,11 @@ if not start_next_wave and #enemies == 0 then
 start_next_wave=true
 enemies_active=true
 wave_round+=1
-wave_round=min(wave_round,#wave_data)
-if wave_round == #wave_data then 
+wave_round=min(wave_round,#global_table_data.wave_data)
+if wave_round == #global_table_data.wave_data then 
 freeplay_rounds+=1
 end
-enemies_remaining=#wave_data[wave_round]
+enemies_remaining=#global_table_data.wave_data[wave_round]
 get_active_menu().enable=false
 shop_enable=false
 end
@@ -102,239 +102,28 @@ freeplay_rounds=0
 loaded_map=map_id
 pathing=parse_path()
 for i=1, 3 do
-add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+add(incoming_hint, Animator:new(global_table_data.animation_data.incoming_hint, true))
 end
 for y=0, 15 do 
 grid[y]={}
 for x=0, 15 do 
 grid[y][x] = "empty"
-local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
 if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
 end
 end
 music(0)
 end
-global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1}"
-animation_data={
-spark={
-data={
-{sprite=10},
-{sprite=11},
-{sprite=12}
-},
-ticks_per_frame=2
-},
-blade={
-data={
-{sprite=13},
-{sprite=14},
-{sprite=15}
-},
-ticks_per_frame=2
-},
-frost={
-data={
-{sprite=48},
-{sprite=49},
-{sprite=50}
-},
-ticks_per_frame=2
-},
-burn={
-data={
-{sprite=51},
-{sprite=52},
-{sprite=53}
-},
-ticks_per_frame=2
-},
-incoming_hint={
-data={
-{sprite=2,offset={0,0}},
-{sprite=2,offset={1,0}},
-{sprite=2,offset={2,0}},
-{sprite=2,offset={1,0}}
-},
-ticks_per_frame=5
-},
-blade_circle={
-data={
-{sprite=76},
-{sprite=77},
-{sprite=78},
-{sprite=79},
-{sprite=78},
-{sprite=77}
-},
-ticks_per_frame=3
-},
-lightning_lance={
-data={
-{sprite=108},
-{sprite=109}
-},
-ticks_per_frame=5,
-},
-hale_howitzer={
-data={
-{sprite=92},
-{sprite=93}
-},
-ticks_per_frame=5,
-},
-fire_pit={
-data={
-{sprite=124},
-{sprite=125},
-{sprite=126},
-{sprite=127},
-{sprite=126},
-{sprite=125}
-},
-ticks_per_frame=5,
-},
-menu_selector = {
-data={
-{sprite=6,offset={0,0}},
-{sprite=7,offset={-1,0}},
-{sprite=8,offset={-2,0}},
-{sprite=9,offset={-3,0}},
-{sprite=8,offset={-2,0}},
-{sprite=7,offset={-1,0}},
-},
-ticks_per_frame=3
-},
-up_arrow={
-data={
-{sprite=54,offset={0,0}},
-{sprite=54,offset={0,-1}},
-{sprite=54,offset={0,-2}},
-{sprite=54,offset={0,-1}},
-},
-ticks_per_frame=3
-},
-down_arrow={
-data={
-{sprite=55,offset={0,0}},
-{sprite=55,offset={0,1}},
-{sprite=55,offset={0,2}},
-{sprite=55,offset={0,1}},
-},
-ticks_per_frame=3
-},
-sell={
-data={
-{sprite=1},
-{sprite=56},
-{sprite=40},
-{sprite=24}
-},
-ticks_per_frame=3
-}
-}
-map_data={
-{
-name = "curves",
-mget_shift = {0, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={15,11},
-movement_direction={1,0},
-},
-{
-name = "loop",
-mget_shift = {16, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={15,11},
-movement_direction={1,0},
-},
-{
-name = "straight",
-mget_shift = {32, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={15,2},
-movement_direction={1,0},
-},
-{
-name = "u-turn",
-mget_shift = {48, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={0,6},
-movement_direction={1,0},
-}
-}
-enemy_templates={
-{
-hp=10,
-step_delay=10,
-sprite_index=3,
-reward=3,
-damage=1
-},
-{
-hp=10,
-step_delay=8,
-sprite_index=4,
-reward=5,
-damage=2
-},
-{
-hp=25,
-step_delay=12,
-sprite_index=5,
-reward=7,
-damage=5
-},
-{
-hp=20,
-step_delay=9,
-sprite_index=3,
-reward=3,
-damage=4
-},
-{
-hp=15,
-step_delay=5,
-sprite_index=4,
-reward=5,
-damage=5
-},
-{
-hp=70,
-step_delay=13,
-sprite_index=5,
-reward=7,
-damage=10
-}
-}
-wave_data={
-{1,1,1},
-{1,1,1,1,1,1},
-{2,1,2,1,2,1,1},
-{1,2,2,1,2,2,1,2,2,2},
-{3,3,3,3,2,2,2,2,3,2,3,1},
-{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},
-{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},
-{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},
-{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},
-{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},
-{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},
-{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},
-{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},
-{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},
-{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}
-}
+global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},enemy_templates={{hp=10,step_delay=10,sprite_index=3,reward=3,damage=1},{hp=10,step_delay=8,sprite_index=4,reward=5,damage=2},{hp=25,step_delay=12,sprite_index=5,reward=7,damage=5},{hp=20,step_delay=9,sprite_index=3,reward=3,damage=4},{hp=15,step_delay=5,sprite_index=4,reward=5,damage=5},{hp=70,step_delay=13,sprite_index=5,reward=7,damage=10}},wave_data={{1,1,1},{1,1,1,1,1,1},{2,1,2,1,2,1,1},{1,2,2,1,2,2,1,2,2,2},{3,3,3,3,2,2,2,2,3,2,3,1},{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}}"
 function reset_game()
-printh("---------------------------")
 global_table_data=unpack_table(global_table_str)
-printh("", "table.txt", true)
-debug_print_table(global_table_data, "", "table.txt")
 menu_data={
 {
 "main", nil,
 5,70,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
+global_table_data.animation_data.menu_selector,
+global_table_data.animation_data.up_arrow,
+global_table_data.animation_data.down_arrow,
 {
 {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
 {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
@@ -350,9 +139,9 @@ display_tower_rotation,
 {
 "towers", "main",
 5,70,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
+global_table_data.animation_data.menu_selector,
+global_table_data.animation_data.up_arrow,
+global_table_data.animation_data.down_arrow,
 {
 {text = "blade circle", color = {2, 13}, callback = choose_tower, args = {1}},
 {text = "lightning lance", color = {10, 9}, callback = choose_tower, args = {2}},
@@ -365,9 +154,9 @@ display_tower_info,
 {
 "options", "main",
 5,70,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
+global_table_data.animation_data.menu_selector,
+global_table_data.animation_data.up_arrow,
+global_table_data.animation_data.down_arrow,
 {
 {text = "start round", color = {7, 0}, callback = start_round},
 {text = "map select", color = {7, 0}, 
@@ -384,9 +173,9 @@ nil,
 {
 "map", nil,
 5,84,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
+global_table_data.animation_data.menu_selector,
+global_table_data.animation_data.up_arrow,
+global_table_data.animation_data.down_arrow,
 {
 {text = "curves", color = {7, 0}, callback = load_game, args = {1}},
 {text = "loop", color = {7, 0}, callback = load_game, args = {2}},
@@ -403,7 +192,7 @@ name = "sword circle",
 damage=2,
 prefix = "damage",
 radius=1,
-animation=animation_data.blade_circle,
+animation=global_table_data.animation_data.blade_circle,
 cost=25,
 type = "tack",
 attack_delay=10,
@@ -415,7 +204,7 @@ name = "lightning lance",
 damage=5,
 prefix = "damage",
 radius=5,
-animation=animation_data.lightning_lance,
+animation=global_table_data.animation_data.lightning_lance,
 cost=55,
 type = "rail", 
 attack_delay=25,
@@ -427,7 +216,7 @@ name = "hale howitzer",
 damage=5,--freezedelay;!notdamage
 prefix = "delay",
 radius=2,
-animation=animation_data.hale_howitzer,
+animation=global_table_data.animation_data.hale_howitzer,
 cost=25,
 type = "frontal", 
 attack_delay=30,
@@ -439,7 +228,7 @@ name = "fire pit",
 damage=3,--firetickduration
 prefix = "duration",
 radius=0,
-animation=animation_data.fire_pit,
+animation=global_table_data.animation_data.fire_pit,
 cost=25,
 type = "floor", 
 attack_delay=15,
@@ -477,7 +266,7 @@ add(menus,Menu:new(unpack(menu_dat)))
 end
 tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
 tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
-sell_selector = Animator:new(animation_data.sell)
+sell_selector = Animator:new(global_table_data.animation_data.sell)
 get_menu("map").enable = true
 end
 Enemy={}
@@ -506,7 +295,7 @@ if self.burning_tick > 0 then
 self.burning_tick-=1
 self.hp-=2
 local px, py, _ = Enemy.get_pixel_location(self)
-add(particles, Particle:new(Vec:new(px, py), true, Animator:new(animation_data.burn, false)))
+add(particles, Particle:new(Vec:new(px, py), true, Animator:new(global_table_data.animation_data.burn, false)))
 end
 if (not self.is_frozen) return true 
 self.frozen_tick=max(self.frozen_tick-1,0)
@@ -515,7 +304,7 @@ self.is_frozen=false
 return true
 end
 function Enemy:get_pixel_location()
-local n, prev = pathing[self.pos], Vec:new(map_data[loaded_map].enemy_spawn_location)
+local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
 if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
 local px, py = Vec.unpack(self.position * 8)
 if not self.is_frozen then 
@@ -543,8 +332,8 @@ player_health-=enemy.damage
 del(enemies,enemy)
 end
 function parse_path()
-local map_shift = Vec:new(map_data[loaded_map].mget_shift)
-local map_enemy_spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
+local map_shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
+local map_enemy_spawn_location = Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
 local path_tiles = {}
 for iy=0, 15 do
 for ix=0, 15 do
@@ -555,8 +344,8 @@ end
 end
 end
 local path = {}
-local dir = Vec:new(map_data[loaded_map].movement_direction)
-local ending = Vec:new(map_data[loaded_map].enemy_end_location) + map_shift
+local dir = Vec:new(global_table_data.map_data[loaded_map].movement_direction)
+local ending = Vec:new(global_table_data.map_data[loaded_map].enemy_end_location) + map_shift
 local cur = map_enemy_spawn_location + map_shift + dir
 while cur ~= ending do 
 local north = Vec:new(cur.x, cur.y-1)
@@ -587,7 +376,7 @@ function check_direction(direct, fail_directions, path_tiles, path)
 if (direct == nil) return
 local state, index = is_in_table(direct, path_tiles)
 if state then
-add(path, path_tiles[index] - Vec:new(map_data[loaded_map].mget_shift))
+add(path, path_tiles[index] - Vec:new(global_table_data.map_data[loaded_map].mget_shift))
 else
 return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path)
 end
@@ -596,10 +385,10 @@ end
 function spawn_enemy()
 while enemies_remaining > 0 do 
 enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
-if (is_in_table(Vec:new(map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
+if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
 if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
-enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
-add(enemies,Enemy:new(map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
+enemy_data_from_template = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
+add(enemies,Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
 enemies_remaining-=1
 ::spawn_enemy_continue::
 yield()
@@ -644,7 +433,7 @@ local hits = {}
 for i=1, self.radius do 
 add_enemy_at_to_table(self.position+self.dir*i,hits)
 end
-if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, animation_data.spark)
+if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.spark)
 return hits
 end
 function Tower:nova_collision()
@@ -654,7 +443,7 @@ for x=-self.radius, self.radius do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) nova_spawn(self.position, self.radius, animation_data.blade)
+if (#hits > 0) nova_spawn(self.position, self.radius, global_table_data.animation_data.blade)
 return hits
 end
 function Tower:frontal_collision()
@@ -665,7 +454,7 @@ for x=fx, flx, ix do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, animation_data.frost)
+if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.frost)
 return hits
 end
 function Tower:apply_damage(targets)
@@ -1015,7 +804,7 @@ if shop_enable then shop_loop() else game_loop() end
 end
 end
 function game_draw_loop()
-map(unpack(map_data[loaded_map].mget_shift))
+map(unpack(global_table_data.map_data[loaded_map].mget_shift))
 foreach(towers, Tower.draw)
 foreach(enemies, Enemy.draw)
 foreach(particles, Particle.draw)
@@ -1023,8 +812,8 @@ if (shop_enable) foreach(menus, Menu.draw)
 if not shop_enable and not enemies_active and incoming_hint ~= nil then 
 for i=1, #incoming_hint do 
 Animator.draw(incoming_hint[i], Vec.unpack(
-(Vec:new(map_data[loaded_map].enemy_spawn_location)+
-Vec:new(map_data[loaded_map].movement_direction)*
+(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)+
+Vec:new(global_table_data.map_data[loaded_map].movement_direction)*
 (i-1))*8
 ))
 end
@@ -1064,7 +853,7 @@ end
 function map_draw_loop()
 local map_menu = get_menu("map")
 pal(global_table_data.palettes.dark_mode)
-map(unpack(map_data[map_menu.pos].mget_shift))
+map(unpack(global_table_data.map_data[map_menu.pos].mget_shift))
 pal()
 Menu.draw(map_menu)
 print_text_center("map select", 5, 7, 1)
@@ -1237,17 +1026,17 @@ stack+=1
 elseif str[i]=="}"then 
 stack-=1
 if(stack>0)goto unpack_table_continue
-insert_str_as_table_entry(sub(str,start,i),table)
+insert_key_val(sub(str,start,i),table)
 start=i+1
 if(i+2>#str)goto unpack_table_continue
 start+=1
 i+=1
 elseif stack==0 then
 if str[i]=="," then
-insert_str_as_table_entry(sub(str,start,i-1),table)
+insert_key_val(sub(str,start,i-1),table)
 start=i+1
 elseif i==#str then 
-insert_str_as_table_entry(sub(str,start),table)
+insert_key_val(sub(str,start),table)
 end
 end
 ::unpack_table_continue::
@@ -1255,74 +1044,74 @@ i+=1
 end
 return table
 end
-function insert_str_as_table_entry(str, table)
-local key,val
-for i=1,#str do
-if (str[i]~="=") goto insert_str_as_table_entry_continue
-key,val=sub(str,0,i-1),sub(str,i+1)
-if (val[1]~="{") goto insert_str_as_table_entry_continue 
-local sub_str=sub(val,2,#val-1)
-if not str_contains(val, "=") then 
-local internal_array = sub(val, 2, #val-1)
-if str_contains(internal_array, "{") then
-val,_=parse_nested_array(internal_array)
-else
-val=split(internal_array)
-end
-else
-val=unpack_table(sub_str)
-end
-break
-::insert_str_as_table_entry_continue::
-end
+function insert_key_val(str, table)
+local key, val = split_key_value_str(str)
 if key == nil then
 add(table,val)
-return
-end
-if val == "false" then 
-table[key]=false
-elseif val == "true" then 
-table[key]=true
 else
-table[key]=tonum(val) or val
+table[key]=parse_value(val)
 end
 end
-function str_contains(str, identifier)
-for i=1, #str do if (str[i] == identifier) return true end
+function convert_to_array_or_table(str)
+local internal = sub(str, 2, #str-1)
+if (str_contains_char(internal, "{")) return unpack_table(internal) 
+if (not str_contains_char(internal, "=")) return split(internal, ",", true) 
+return unpack_table(internal)
 end
-function parse_nested_array(str, pos)
-local array = {}
-local buffer = ""
-local i = 1
-while i <= #str do 
-if str[i] == "{" then
-local data, index = parse_nested_array(sub(str, i+1), i)
-add(array,data)
-i=index
-elseif str[i] == "}" then 
-local val = tonum(buffer) and tonum(buffer) or buffer
-add(array,val)
-return array, i + (pos and pos or 0)
-elseif str[i] == "," then 
-local val = tonum(buffer) and tonum(buffer) or buffer
-add(array,val)
-buffer = ""
-else
-buffer..=str[i]
+function convert_nested_array_to_table(str)
 end
-i+=1
+function split_key_value_str(str)
+local parts = split(str, "=")
+local key = tonum(parts[1]) or parts[1]
+if str[1] == "{" and str[-1] == "}" then 
+return nil, convert_to_array_or_table(str)
 end
-return array
+local val = sub(str, #(tostr(key))+2)
+if val[1] == "{" and val[-1] == "}" then 
+return key, convert_to_array_or_table(val)
+end
+return key, val
+end
+function parse_value(value)
+if value[1] == "{" and value[-1] == "}" then 
+return unpack_table(sub(value, 2, #value-1))
+elseif value == "true" then 
+return true 
+elseif value == "false" then 
+return false 
+elseif tonum(value) then 
+return tonum(value)
+end
+return value
+end
+function str_char_count(str, char)
+local count = 0
+for i=1, #str do
+if (str[i] == char) count += 1
+end
+return count
+end
+function str_contains_char(str, char)
+for i=1, #str do
+if (str[i] == char) return true
+end
 end
 function debug_print_table(table, prefix, log_to_file)
 for k, v in pairs(table) do 
+local key = tonum(k) and "["..k.."]" or k
 if type(v) == "table" then 
-printh(prefix.."["..type(v).."]"..k.." = {", log_to_file)
+printh(prefix.."["..type(v).."] "..key.." = {", log_to_file)
 debug_print_table(v, "__"..prefix, log_to_file)
 printh(prefix.."}", log_to_file)
 else
-printh(prefix.."["..type(v).."]"..k.." = "..v, log_to_file)
+printh(prefix.."["..type(v).."] "..key.." = "..v, log_to_file)
 end
+end
+end
+function debug_list(list, log_to_file)
+printh("--------------", log_to_file, true)
+for i, data in pairs(list) do
+printh("["..i.."] "..data, log_to_file)
 end
 end
 __gfx__

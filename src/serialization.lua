@@ -6,17 +6,17 @@ function unpack_table(str)
     elseif str[i]=="}"then 
       stack-=1
       if(stack>0)goto unpack_table_continue
-      insert_str_as_table_entry(sub(str,start,i),table)
+      insert_key_val(sub(str,start,i), table)
       start=i+1
       if(i+2>#str)goto unpack_table_continue
       start+=1
       i+=1
     elseif stack==0 then
       if str[i]=="," then
-        insert_str_as_table_entry(sub(str,start,i-1),table)
+        insert_key_val(sub(str,start,i-1), table)
         start=i+1
       elseif i==#str then 
-        insert_str_as_table_entry(sub(str,start),table)
+        insert_key_val(sub(str, start), table)
       end
     end
     ::unpack_table_continue::
@@ -25,66 +25,62 @@ function unpack_table(str)
   return table
 end
 
-function insert_str_as_table_entry(str, table)
-  local key,val
-  for i=1,#str do
-    if (str[i]~="=") goto insert_str_as_table_entry_continue
-    key,val=sub(str,0,i-1),sub(str,i+1)
-    if (val[1]~="{") goto insert_str_as_table_entry_continue 
-    local sub_str=sub(val,2,#val-1)
-    if not str_contains(val, "=") then 
-      local internal_array = sub(val, 2, #val-1)
-      if str_contains(internal_array, "{") then
-        val, _ = parse_nested_array(internal_array)
-      else
-        val = split(internal_array)
-      end
-    else
-      val = unpack_table(sub_str)
-    end
-    break 
-    ::insert_str_as_table_entry_continue::
-  end
-
+function insert_key_val(str, table)
+  local key, val = split_key_value_str(str)
   if key == nil then
     add(table, val)
-    return
-  end
-
-  if val == "false" then 
-    table[key] = false
-  elseif val == "true" then 
-    table[key] = true
-  else
-    table[key]=tonum(val) or val
+  else  
+    table[key] = parse_value(val)
   end
 end
 
-function str_contains(str, identifier)
-  for i=1, #str do if (str[i] == identifier) return true end
+function convert_to_array_or_table(str)
+  local internal = sub(str, 2, #str-1)
+  if (str_contains_char(internal, "{")) return unpack_table(internal) 
+  if (not str_contains_char(internal, "=")) return split(internal, ",", true) 
+  return unpack_table(internal)
 end
 
-function parse_nested_array(str, pos)
-  local array = {}
-  local buffer = ""
-  local i = 1
-  while i <= #str do 
-    if str[i] == "{" then
-      local data, index = parse_nested_array(sub(str, i+1), i)
-      add(array, data)
-      i = index
-    elseif str[i] == "}" then 
-      local val = tonum(buffer) and tonum(buffer) or buffer
-      add(array, val)
-      return array, i + (pos and pos or 0)
-    elseif str[i] == "," then 
-      local val = tonum(buffer) and tonum(buffer) or buffer
-      add(array, val)
-      buffer = ""
-    else
-      buffer ..= str[i]
-    end
-    i += 1
+function convert_nested_array_to_table(str)
+
+end
+
+function split_key_value_str(str)
+  local parts = split(str, "=")
+  local key = tonum(parts[1]) or parts[1]
+  if str[1] == "{" and str[-1] == "}" then 
+    return nil, convert_to_array_or_table(str)
   end
-  return array
+  local val = sub(str, #(tostr(key))+2)
+  if val[1] == "{" and val[-1] == "}" then 
+    return key, convert_to_array_or_table(val)
+  end
+  return key, val
+end
+
+function parse_value(value)
+  if value[1] == "{" and value[-1] == "}" then 
+    return unpack_table(sub(value, 2, #value-1))
+  elseif value == "true" then 
+    return true 
+  elseif value == "false" then 
+    return false 
+  elseif tonum(value) then 
+    return tonum(value)
+  end
+  return value
+end
+
+function str_char_count(str, char)
+  local count = 0
+  for i=1, #str do
+    if (str[i] == char) count += 1
+  end
+  return count
+end
+
+function str_contains_char(str, char)
+  for i=1, #str do
+    if (str[i] == char) return true
+  end
 end

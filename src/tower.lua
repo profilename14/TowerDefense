@@ -38,7 +38,7 @@ function Tower:raycast()
   for i=1, self.radius do 
     add_enemy_at_to_table(self.position + self.dir * i, hits)
   end
-  if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, animation_data.spark)
+  if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.spark)
   return hits
 end
 function Tower:nova_collision()
@@ -48,7 +48,7 @@ function Tower:nova_collision()
       if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
     end
   end
-  if (#hits > 0) nova_spawn(self.position, self.radius, animation_data.blade)
+  if (#hits > 0) nova_spawn(self.position, self.radius, global_table_data.animation_data.blade)
   return hits
 end
 function Tower:frontal_collision()
@@ -59,7 +59,7 @@ function Tower:frontal_collision()
       if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
     end
   end
-  if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, animation_data.frost)
+  if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.frost)
   return hits
 end
 function Tower:apply_damage(targets)

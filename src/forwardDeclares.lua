@@ -67,11 +67,11 @@ function start_round()
     start_next_wave = true
     enemies_active = true
     wave_round += 1
-    wave_round = min(wave_round, #wave_data)
-    if wave_round == #wave_data then 
+    wave_round = min(wave_round, #global_table_data.wave_data)
+    if wave_round == #global_table_data.wave_data then 
       freeplay_rounds += 1
     end
-    enemies_remaining = #wave_data[wave_round]
+    enemies_remaining = #global_table_data.wave_data[wave_round]
     get_active_menu().enable = false
     shop_enable = false
   end
@@ -113,13 +113,13 @@ function load_game(map_id)
   loaded_map = map_id
   pathing = parse_path()
   for i=1, 3 do
-    add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+    add(incoming_hint, Animator:new(global_table_data.animation_data.incoming_hint, true))
   end
   for y=0, 15 do 
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+      local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
       if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
     end
   end

@@ -6,7 +6,7 @@ class Stitcher():
         self.hazards = set({
             "function", "if", "for", "while", "return",
             "[[", "]]", "local", "pico-8 cartridge // http://www.pico-8.com", 
-            "version 39", '" "', "and", "or", '"'
+            "version 39", '" "', "and", "or", '"', "goto"
         })
         pass
 
