@@ -9,9 +9,6 @@ function reset_game()
     {
       "main", nil,
       5, 70, 
-      global_table_data.animation_data.menu_selector,
-      global_table_data.animation_data.up_arrow,
-      global_table_data.animation_data.down_arrow,
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
         {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
@@ -27,9 +24,6 @@ function reset_game()
     {
       "towers", "main",
       5, 70, 
-      global_table_data.animation_data.menu_selector,
-      global_table_data.animation_data.up_arrow,
-      global_table_data.animation_data.down_arrow,
       {
         {text = "blade circle", color = {2, 13}, callback = choose_tower, args = {1}},
         {text = "lightning lance", color = {10, 9}, callback = choose_tower, args = {2}},
@@ -42,9 +36,6 @@ function reset_game()
     {
       "options", "main",
       5, 70, 
-      global_table_data.animation_data.menu_selector,
-      global_table_data.animation_data.up_arrow,
-      global_table_data.animation_data.down_arrow,
       {
         {text = "start round", color = {7, 0}, callback = start_round},
         {text = "map select", color = {7, 0}, 
@@ -61,9 +52,6 @@ function reset_game()
     {
       "map", nil,
       5, 84, 
-      global_table_data.animation_data.menu_selector,
-      global_table_data.animation_data.up_arrow,
-      global_table_data.animation_data.down_arrow,
       {
         {text = "curves", color = {7, 0}, callback = load_game, args = {1}},
         {text = "loop", color = {7, 0}, callback = load_game, args = {2}},
