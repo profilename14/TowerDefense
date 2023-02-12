@@ -7,7 +7,7 @@ end
 
 function display_tower_info(tower_id, position, text_color)
   local offset = Vec:new(-1, -31)
-  local tower_details = tower_templates[tower_id]
+  local tower_details = global_table_data.tower_templates[tower_id]
   local texts = {
     {text = tower_details.name}, 
     {text = tower_details.prefix..": "..tower_details.damage}
@@ -42,7 +42,7 @@ function display_tower_info(tower_id, position, text_color)
 end
 
 function display_tower_rotation(menu_pos, position)
-  local tower_details = tower_templates[selected_menu_tower_id]
+  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
   local offset = Vec:new(0, -28)
   BorderRect.reposition(tower_rotation_background_rect, position + offset)
   BorderRect.draw(tower_rotation_background_rect)
@@ -52,7 +52,7 @@ function display_tower_rotation(menu_pos, position)
   if tower_details.disable_icon_rotation then 
     spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
   else
-    draw_sprite_rotated(shop_ui_data.background, combine_and_unpack(
+    draw_sprite_rotated(global_table_data.tower_icon_background, combine_and_unpack(
       {Vec.unpack(position + offset)}, {24, parse_direction(Vec:new(direction))}
     ))
     draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
@@ -67,11 +67,11 @@ function start_round()
     start_next_wave = true
     enemies_active = true
     wave_round += 1
-    wave_round = min(wave_round, #wave_data)
-    if wave_round == #wave_data then 
+    wave_round = min(wave_round, #global_table_data.wave_data)
+    if wave_round == #global_table_data.wave_data then 
       freeplay_rounds += 1
     end
-    enemies_remaining = #wave_data[wave_round]
+    enemies_remaining = #global_table_data.wave_data[wave_round]
     get_active_menu().enable = false
     shop_enable = false
   end
@@ -113,13 +113,13 @@ function load_game(map_id)
   loaded_map = map_id
   pathing = parse_path()
   for i=1, 3 do
-    add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+    add(incoming_hint, Animator:new(global_table_data.animation_data.incoming_hint, true))
   end
   for y=0, 15 do 
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+      local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
       if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
     end
   end

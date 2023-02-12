@@ -11,6 +11,6 @@
 - Files: 1
 
 ### Ending [Finished (There may be bugs still)]
-- Chars: 30570
-- Tokens: 5863
-- Files: 14
+- Chars: 31805
+- Tokens: 5107
+- Files: 15 (16 including debug.lua)

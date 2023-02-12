@@ -74,6 +74,6 @@ function game_loop()
   foreach(particles, destroy_particle)
   if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
     enemies_active = false 
-    sfx(sfx_data.round_complete)
+    sfx(global_table_data.sfx_data.round_complete)
   end
 end

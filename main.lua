@@ -12,6 +12,7 @@
 #include src/animator.lua
 #include src/borderRect.lua
 #include src/menu.lua
+#include src/vec.lua
 
 -- Pico8
 function _init()
@@ -38,4 +39,5 @@ end
 #include src/updateLoops.lua
 -- Utility/Helper Functions
 #include src/helpers.lua
-#include src/vec.lua
+#include src/serialization.lua
+-- #include src/debug.lua

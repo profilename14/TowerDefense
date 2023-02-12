@@ -8,7 +8,7 @@ shop_enable=false
 end
 function display_tower_info(tower_id, position, text_color)
 local offset = Vec:new(-1, -31)
-local tower_details = tower_templates[tower_id]
+local tower_details = global_table_data.tower_templates[tower_id]
 local texts = {
 {text=tower_details.name},
 {text = tower_details.prefix..": "..tower_details.damage}
@@ -42,7 +42,7 @@ Vec.unpack(tower_stats_background_rect.position+Vec:new(longest_menu_str(texts)*
 ))
 end
 function display_tower_rotation(menu_pos, position)
-local tower_details = tower_templates[selected_menu_tower_id]
+local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
 local offset = Vec:new(0, -28)
 BorderRect.reposition(tower_rotation_background_rect, position + offset)
 BorderRect.draw(tower_rotation_background_rect)
@@ -50,7 +50,7 @@ local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
 if tower_details.disable_icon_rotation then 
 spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
 else
-draw_sprite_rotated(shop_ui_data.background, combine_and_unpack(
+draw_sprite_rotated(global_table_data.tower_icon_background, combine_and_unpack(
 {Vec.unpack(position+offset)},{24,parse_direction(Vec:new(direction))}
 ))
 draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
@@ -63,11 +63,11 @@ if not start_next_wave and #enemies == 0 then
 start_next_wave=true
 enemies_active=true
 wave_round+=1
-wave_round=min(wave_round,#wave_data)
-if wave_round == #wave_data then 
+wave_round=min(wave_round,#global_table_data.wave_data)
+if wave_round == #global_table_data.wave_data then 
 freeplay_rounds+=1
 end
-enemies_remaining=#wave_data[wave_round]
+enemies_remaining=#global_table_data.wave_data[wave_round]
 get_active_menu().enable=false
 shop_enable=false
 end
@@ -102,314 +102,25 @@ freeplay_rounds=0
 loaded_map=map_id
 pathing=parse_path()
 for i=1, 3 do
-add(incoming_hint, Animator:new(animation_data.incoming_hint, true))
+add(incoming_hint, Animator:new(global_table_data.animation_data.incoming_hint, true))
 end
 for y=0, 15 do 
 grid[y]={}
 for x=0, 15 do 
 grid[y][x] = "empty"
-local map_coords = Vec:new(x, y) + Vec:new(map_data[loaded_map].mget_shift)
+local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
 if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
 end
 end
 music(0)
 end
-transparent_color_id = 0
-animation_data={
-spark={
-data={
-{sprite=10},
-{sprite=11},
-{sprite=12}
-},
-ticks_per_frame=2
-},
-blade={
-data={
-{sprite=13},
-{sprite=14},
-{sprite=15}
-},
-ticks_per_frame=2
-},
-frost={
-data={
-{sprite=48},
-{sprite=49},
-{sprite=50}
-},
-ticks_per_frame=2
-},
-burn={
-data={
-{sprite=51},
-{sprite=52},
-{sprite=53}
-},
-ticks_per_frame=2
-},
-incoming_hint={
-data={
-{sprite=2,offset={0,0}},
-{sprite=2,offset={1,0}},
-{sprite=2,offset={2,0}},
-{sprite=2,offset={1,0}}
-},
-ticks_per_frame=5
-},
-blade_circle={
-data={
-{sprite=76},
-{sprite=77},
-{sprite=78},
-{sprite=79},
-{sprite=78},
-{sprite=77}
-},
-ticks_per_frame=3
-},
-lightning_lance={
-data={
-{sprite=108},
-{sprite=109}
-},
-ticks_per_frame=5,
-},
-hale_howitzer={
-data={
-{sprite=92},
-{sprite=93}
-},
-ticks_per_frame=5,
-},
-fire_pit={
-data={
-{sprite=124},
-{sprite=125},
-{sprite=126},
-{sprite=127},
-{sprite=126},
-{sprite=125}
-},
-ticks_per_frame=5,
-},
-menu_selector = {
-data={
-{sprite=6,offset={0,0}},
-{sprite=7,offset={-1,0}},
-{sprite=8,offset={-2,0}},
-{sprite=9,offset={-3,0}},
-{sprite=8,offset={-2,0}},
-{sprite=7,offset={-1,0}},
-},
-ticks_per_frame=3
-},
-up_arrow={
-data={
-{sprite=54,offset={0,0}},
-{sprite=54,offset={0,-1}},
-{sprite=54,offset={0,-2}},
-{sprite=54,offset={0,-1}},
-},
-ticks_per_frame=3
-},
-down_arrow={
-data={
-{sprite=55,offset={0,0}},
-{sprite=55,offset={0,1}},
-{sprite=55,offset={0,2}},
-{sprite=55,offset={0,1}},
-},
-ticks_per_frame=3
-},
-sell={
-data={
-{sprite=1},
-{sprite=56},
-{sprite=40},
-{sprite=24}
-},
-ticks_per_frame=3
-}
-}
-map_data={
-{
-name = "curves",
-mget_shift = {0, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={15,11},
-movement_direction={1,0},
-},
-{
-name = "loop",
-mget_shift = {16, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={15,11},
-movement_direction={1,0},
-},
-{
-name = "straight",
-mget_shift = {32, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={15,2},
-movement_direction={1,0},
-},
-{
-name = "u-turn",
-mget_shift = {48, 0},
-enemy_spawn_location={0,1},
-enemy_end_location={0,6},
-movement_direction={1,0},
-}
-}
-palettes={
-dark_mode={
-[1]=0,
-[5]=1,
-[6]=5,
-[7]=6
-}
-}
-map_meta_data={
-path_flag_id=0,
-non_path_flag_id=1
-}
-tower_templates={
-{
-name = "sword circle",
-damage=2,
-prefix = "damage",
-radius=1,
-animation=animation_data.blade_circle,
-cost=25,
-type = "tack",
-attack_delay=10,
-icon_data=16,
-disable_icon_rotation=true
-},
-{
-name = "lightning lance",
-damage=5,
-prefix = "damage",
-radius=5,
-animation=animation_data.lightning_lance,
-cost=55,
-type = "rail", 
-attack_delay=25,
-icon_data=18,
-disable_icon_rotation=false
-},
-{
-name = "hale howitzer",
-damage=5,--freezedelay;!notdamage
-prefix = "delay",
-radius=2,
-animation=animation_data.hale_howitzer,
-cost=25,
-type = "frontal", 
-attack_delay=30,
-icon_data=20,
-disable_icon_rotation=false
-},
-{
-name = "fire pit",
-damage=3,--firetickduration
-prefix = "duration",
-radius=0,
-animation=animation_data.fire_pit,
-cost=25,
-type = "floor", 
-attack_delay=15,
-icon_data=22,
-disable_icon_rotation=true
-}
-}
-shop_ui_data={
-x={128/4-10,128/2-10,128*3/4-10,128-10},
-y={128/2},
-background=68,
-blank=140
-}
-freeplay_stats={
-hp=3,
-speed=1,
-min_step_delay=3
-}
-enemy_templates={
-{
-hp=10,
-step_delay=10,
-sprite_index=3,
-reward=3,
-damage=1
-},
-{
-hp=10,
-step_delay=8,
-sprite_index=4,
-reward=5,
-damage=2
-},
-{
-hp=25,
-step_delay=12,
-sprite_index=5,
-reward=7,
-damage=5
-},
-{
-hp=20,
-step_delay=9,
-sprite_index=3,
-reward=3,
-damage=4
-},
-{
-hp=15,
-step_delay=5,
-sprite_index=4,
-reward=5,
-damage=5
-},
-{
-hp=70,
-step_delay=13,
-sprite_index=5,
-reward=7,
-damage=10
-}
-}
-wave_data={
-{1,1,1},
-{1,1,1,1,1,1},
-{2,1,2,1,2,1,1},
-{1,2,2,1,2,2,1,2,2,2},
-{3,3,3,3,2,2,2,2,3,2,3,1},
-{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},
-{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},
-{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},
-{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},
-{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},
-{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},
-{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},
-{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},
-{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},
-{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}
-}
-map_draw_data={
-path=0,
-other=6
-}
-sfx_data={
-round_complete=10
-}
+global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},tower_templates={{name=sword circle,damage=2,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=10,icon_data=16,disable_icon_rotation=True},{name=lightning lance,damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=55,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False},{name=hale howitzer,damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=25,type=frontal,attack_delay=30,icon_data=20,disable_icon_rotation=False},{name=fire pit,damage=3,prefix=duration,radius=0,animation_key=fire_pit,cost=25,type=floor,attack_delay=15,icon_data=22,disable_icon_rotation=True}},enemy_templates={{hp=10,step_delay=10,sprite_index=3,reward=3,damage=1},{hp=10,step_delay=8,sprite_index=4,reward=5,damage=2},{hp=25,step_delay=12,sprite_index=5,reward=7,damage=5},{hp=20,step_delay=9,sprite_index=3,reward=3,damage=4},{hp=15,step_delay=5,sprite_index=4,reward=5,damage=5},{hp=70,step_delay=13,sprite_index=5,reward=7,damage=10}},wave_data={{1,1,1},{1,1,1,1,1,1},{2,1,2,1,2,1,1},{1,2,2,1,2,2,1,2,2,2},{3,3,3,3,2,2,2,2,3,2,3,1},{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}}"
+function reset_game()
+global_table_data=unpack_table(global_table_str)
 menu_data={
 {
 "main", nil,
 5,70,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
 {
 {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
 {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
@@ -425,9 +136,6 @@ display_tower_rotation,
 {
 "towers", "main",
 5,70,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
 {
 {text = "blade circle", color = {2, 13}, callback = choose_tower, args = {1}},
 {text = "lightning lance", color = {10, 9}, callback = choose_tower, args = {2}},
@@ -440,9 +148,6 @@ display_tower_info,
 {
 "options", "main",
 5,70,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
 {
 {text = "start round", color = {7, 0}, callback = start_round},
 {text = "map select", color = {7, 0}, 
@@ -459,9 +164,6 @@ nil,
 {
 "map", nil,
 5,84,
-animation_data.menu_selector,
-animation_data.up_arrow,
-animation_data.down_arrow,
 {
 {text = "curves", color = {7, 0}, callback = load_game, args = {1}},
 {text = "loop", color = {7, 0}, callback = load_game, args = {2}},
@@ -472,7 +174,6 @@ nil,
 5,8,7,3
 }
 }
-function reset_game()
 selector = {
 position=Vec:new(64,64),
 sprite_index=1,
@@ -481,12 +182,10 @@ size=1
 coins=50
 player_health=100
 enemy_required_spawn_ticks=10
-tile_display={attack=9,idle=8}
 enemies_remaining=10
 enemy_current_spawn_tick=0
 enemies_active=false
 shop_enable=false
-option_enable=false
 map_menu_enable=true
 start_next_wave=false
 wave_cor = nil
@@ -505,7 +204,7 @@ add(menus,Menu:new(unpack(menu_dat)))
 end
 tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
 tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
-sell_selector = Animator:new(animation_data.sell)
+sell_selector = Animator:new(global_table_data.animation_data.sell)
 get_menu("map").enable = true
 end
 Enemy={}
@@ -534,7 +233,7 @@ if self.burning_tick > 0 then
 self.burning_tick-=1
 self.hp-=2
 local px, py, _ = Enemy.get_pixel_location(self)
-add(particles, Particle:new(Vec:new(px, py), true, Animator:new(animation_data.burn, false)))
+add(particles, Particle:new(Vec:new(px, py), true, Animator:new(global_table_data.animation_data.burn, false)))
 end
 if (not self.is_frozen) return true 
 self.frozen_tick=max(self.frozen_tick-1,0)
@@ -543,7 +242,7 @@ self.is_frozen=false
 return true
 end
 function Enemy:get_pixel_location()
-local n, prev = pathing[self.pos], Vec:new(map_data[loaded_map].enemy_spawn_location)
+local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
 if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
 local px, py = Vec.unpack(self.position * 8)
 if not self.is_frozen then 
@@ -571,20 +270,20 @@ player_health-=enemy.damage
 del(enemies,enemy)
 end
 function parse_path()
-local map_shift = Vec:new(map_data[loaded_map].mget_shift)
-local map_enemy_spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
+local map_shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
+local map_enemy_spawn_location = Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
 local path_tiles = {}
 for iy=0, 15 do
 for ix=0, 15 do
 local map_cord = Vec:new(ix, iy) + map_shift
-if fget(mget(Vec.unpack(map_cord)), map_meta_data.path_flag_id) then 
+if fget(mget(Vec.unpack(map_cord)), global_table_data.map_meta_data.path_flag_id) then 
 add(path_tiles, map_cord)
 end
 end
 end
 local path = {}
-local dir = Vec:new(map_data[loaded_map].movement_direction)
-local ending = Vec:new(map_data[loaded_map].enemy_end_location) + map_shift
+local dir = Vec:new(global_table_data.map_data[loaded_map].movement_direction)
+local ending = Vec:new(global_table_data.map_data[loaded_map].enemy_end_location) + map_shift
 local cur = map_enemy_spawn_location + map_shift + dir
 while cur ~= ending do 
 local north = Vec:new(cur.x, cur.y-1)
@@ -615,7 +314,7 @@ function check_direction(direct, fail_directions, path_tiles, path)
 if (direct == nil) return
 local state, index = is_in_table(direct, path_tiles)
 if state then
-add(path, path_tiles[index] - Vec:new(map_data[loaded_map].mget_shift))
+add(path, path_tiles[index] - Vec:new(global_table_data.map_data[loaded_map].mget_shift))
 else
 return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path)
 end
@@ -624,10 +323,10 @@ end
 function spawn_enemy()
 while enemies_remaining > 0 do 
 enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
-if (is_in_table(Vec:new(map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
+if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
 if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
-enemy_data_from_template = increase_enemy_health(enemy_templates[wave_data[wave_round][enemies_remaining]])
-add(enemies,Enemy:new(map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
+enemy_data_from_template = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
+add(enemies,Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
 enemies_remaining-=1
 ::spawn_enemy_continue::
 yield()
@@ -644,7 +343,7 @@ current_attack_ticks=0,
 cost=tower_template_data.cost,
 type=tower_template_data.type,
 dir=Vec:new(direction),
-animator = Animator:new(tower_template_data.animation, true)
+animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
 }
 add(animators, obj.animator)
 setmetatable(obj,self)
@@ -672,7 +371,7 @@ local hits = {}
 for i=1, self.radius do 
 add_enemy_at_to_table(self.position+self.dir*i,hits)
 end
-if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, animation_data.spark)
+if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.spark)
 return hits
 end
 function Tower:nova_collision()
@@ -682,7 +381,7 @@ for x=-self.radius, self.radius do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) nova_spawn(self.position, self.radius, animation_data.blade)
+if (#hits > 0) nova_spawn(self.position, self.radius, global_table_data.animation_data.blade)
 return hits
 end
 function Tower:frontal_collision()
@@ -693,7 +392,7 @@ for x=fx, flx, ix do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, animation_data.frost)
+if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.frost)
 return hits
 end
 function Tower:apply_damage(targets)
@@ -719,11 +418,11 @@ parse_direction(self.dir)
 end
 function place_tower(position)
 if (grid[position.y][position.x] == "tower") return false
-if (coins < tower_templates[selected_menu_tower_id].cost) return false
-local tower_type = tower_templates[selected_menu_tower_id].type 
+if (coins < global_table_data.tower_templates[selected_menu_tower_id].cost) return false
+local tower_type = global_table_data.tower_templates[selected_menu_tower_id].type 
 if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
-add(towers,Tower:new(position,tower_templates[selected_menu_tower_id],direction))
-coins-=tower_templates[selected_menu_tower_id].cost
+add(towers,Tower:new(position,global_table_data.tower_templates[selected_menu_tower_id],direction))
+coins-=global_table_data.tower_templates[selected_menu_tower_id].cost
 grid[position.y][position.x] = "tower"
 return true
 end
@@ -869,16 +568,15 @@ end
 Menu={}
 function Menu:new(
 menu_name,previous_menu,dx,dy,
-selector_data, up_arrow_data, down_arrow_data, 
 menu_content,menu_info_draw_call,
 base_color, border_color, text_color, menu_thickness)
 obj={
 name=menu_name,
 prev=previous_menu,
 position=Vec:new(dx,dy),
-selector = Animator:new(selector_data, true),
-up_arrow = Animator:new(up_arrow_data, true),
-down_arrow = Animator:new(down_arrow_data, true),
+selector = Animator:new(global_table_data.animation_data.menu_selector, true),
+up_arrow = Animator:new(global_table_data.animation_data.up_arrow, true),
+down_arrow = Animator:new(global_table_data.animation_data.down_arrow, true),
 content=menu_content,
 content_draw=menu_info_draw_call,
 rect = BorderRect:new(
@@ -978,6 +676,55 @@ ly=lerp(position.y+dy3,ly,rate)
 end
 return {lx, ly}
 end
+Vec={}
+function Vec:new(dx, dy)
+local obj = nil
+if type(dx) == "table" then 
+obj={x=dx[1],y=dx[2]}
+else
+obj={x=dx,y=dy}
+end
+setmetatable(obj,self)
+self.__index=self
+self.__add = function(a, b)
+return Vec:new(a.x+b.x,a.y+b.y)
+end
+self.__sub = function(a, b)
+return Vec:new(a.x-b.x,a.y-b.y)
+end
+self.__mul = function(a, scalar)
+return Vec:new(a.x*scalar,a.y*scalar)
+end
+self.__div = function(a, scalar)
+return Vec:new(a.x/scalar,a.y/scalar)
+end
+self.__eq = function(a, b)
+return (a.x==b.x and a.y==b.y)
+end
+self.__tostring = function(vec)
+return "("..vec.x..", "..vec.y..")"
+end
+self.__concat = function(vec, other)
+return (type(vec) == "table") and Vec.__tostring(vec)..other or vec..Vec.__tostring(other)
+end
+return obj
+end
+function Vec:unpack()
+return self.x, self.y
+end
+function Vec:clamp(min, max)
+self.x,self.y=mid(self.x,min,max),mid(self.y,min,max)
+end
+function normalize(val)
+return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
+end
+function lerp(start, last, rate)
+if type(start) == "table" then 
+return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
+else
+return start + (last - start) * rate
+end
+end
 function _init()
 reset_game()
 end
@@ -994,19 +741,18 @@ if shop_enable then shop_loop() else game_loop() end
 end
 end
 function game_draw_loop()
-map(unpack(map_data[loaded_map].mget_shift))
+map(unpack(global_table_data.map_data[loaded_map].mget_shift))
 foreach(towers, Tower.draw)
 foreach(enemies, Enemy.draw)
 foreach(particles, Particle.draw)
 if (shop_enable) foreach(menus, Menu.draw)
-if not shop_enable then 
-if not enemies_active and incoming_hint ~= nil then 
-local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
-local dir = Vec:new(map_data[loaded_map].movement_direction)
+if not shop_enable and not enemies_active and incoming_hint ~= nil then 
 for i=1, #incoming_hint do 
-local position = (spawn_location + dir * (i-1))*8
-Animator.draw(incoming_hint[i], Vec.unpack(position))
-end
+Animator.draw(incoming_hint[i], Vec.unpack(
+(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)+
+Vec:new(global_table_data.map_data[loaded_map].movement_direction)*
+(i-1))*8
+))
 end
 end
 print_with_outline("scrap: "..coins, 0, 1, 7, 0)
@@ -1027,7 +773,7 @@ else
 spr(selector.sprite_index, Vec.unpack(selector.position))
 Animator.reset(sell_selector)
 local position = selector.position/8
-local tower_details = tower_templates[selected_menu_tower_id]
+local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
 local text, color = "❎ buy & place "..tower_details.name, 7
 if tower_details.cost > coins then
 text = "can't afford "..tower_details.name
@@ -1043,17 +789,11 @@ end
 end
 function map_draw_loop()
 local map_menu = get_menu("map")
-draw_map_shadow_filter()
-map(unpack(map_data[map_menu.pos].mget_shift))
+pal(global_table_data.palettes.dark_mode)
+map(unpack(global_table_data.map_data[map_menu.pos].mget_shift))
 pal()
 Menu.draw(map_menu)
 print_text_center("map select", 5, 7, 1)
-end
-function draw_map_shadow_filter()
-pal(palettes.dark_mode)
-end
-function draw_selector(sel)
-spr(sel.sprite_index,sel.x,sel.y,sel.size,sel.size)
 end
 function map_loop()
 local map_menu = get_menu("map")
@@ -1119,7 +859,7 @@ foreach(enemies, kill_enemy)
 foreach(particles, destroy_particle)
 if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
 enemies_active=false
-sfx(sfx_data.round_complete)
+sfx(global_table_data.sfx_data.round_complete)
 end
 end
 function print_with_outline(text, dx, dy, text_color, outline_color)
@@ -1143,8 +883,8 @@ return 0, 0
 end
 function increase_enemy_health(enemy_data)
 return {
-hp=enemy_data.hp+freeplay_stats.hp*freeplay_rounds,
-step_delay=max(enemy_data.step_delay-freeplay_stats.speed*freeplay_rounds,freeplay_stats.min_step_delay),
+hp=enemy_data.hp+global_table_data.freeplay_stats.hp*freeplay_rounds,
+step_delay=max(enemy_data.step_delay-global_table_data.freeplay_stats.speed*freeplay_rounds,global_table_data.freeplay_stats.min_step_delay),
 sprite_index=enemy_data.sprite_index,
 reward=enemy_data.reward,
 damage=enemy_data.damage
@@ -1160,7 +900,7 @@ end
 end
 end
 function placable_tile_location(coord)
-return fget(mget(coord.x, coord.y), map_meta_data.non_path_flag_id)
+return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(pos, table)
 for _, enemy in pairs(enemies) do
@@ -1181,7 +921,7 @@ local xx = flr(dx*cosine-dy*sine+shift)
 local yy = flr(dx*sine+dy*cosine+shift)
 if xx >= 0 and xx < size and yy >= 0 and yy <= size then
 local id = sget(sx+xx, sy+yy)
-if id ~= transparent_color_id or is_opaque then 
+if id ~= global_table_data.palettes.transparent_color_id or is_opaque then 
 pset(x+mx,y+my,id)
 end
 end
@@ -1215,53 +955,71 @@ add(data,dat)
 end
 return unpack(data)
 end
-Vec={}
-function Vec:new(dx, dy)
-local obj = nil
-if type(dx) == "table" then 
-obj={x=dx[1],y=dx[2]}
+function unpack_table(str)
+local table,start,stack,i={},1,0,1
+while i <= #str do
+if str[i]=="{" then 
+stack+=1
+elseif str[i]=="}"then 
+stack-=1
+if(stack>0)goto unpack_table_continue
+insert_key_val(sub(str,start,i),table)
+start=i+1
+if(i+2>#str)goto unpack_table_continue
+start+=1
+i+=1
+elseif stack==0 then
+if str[i]=="," then
+insert_key_val(sub(str,start,i-1),table)
+start=i+1
+elseif i==#str then 
+insert_key_val(sub(str,start),table)
+end
+end
+::unpack_table_continue::
+i+=1
+end
+return table
+end
+function insert_key_val(str, table)
+local key, val = split_key_value_str(str)
+if key == nil then
+add(table,val)
 else
-obj={x=dx,y=dy}
-end
-setmetatable(obj,self)
-self.__index=self
-self.__add = function(a, b)
-return Vec:new(a.x+b.x,a.y+b.y)
-end
-self.__sub = function(a, b)
-return Vec:new(a.x-b.x,a.y-b.y)
-end
-self.__mul = function(a, scalar)
-return Vec:new(a.x*scalar,a.y*scalar)
-end
-self.__div = function(a, scalar)
-return Vec:new(a.x/scalar,a.y/scalar)
-end
-self.__eq = function(a, b)
-return (a.x==b.x and a.y==b.y)
-end
-self.__tostring = function(vec)
-return "("..vec.x..", "..vec.y..")"
-end
-self.__concat = function(vec, other)
-return (type(vec) == "table") and Vec.__tostring(vec)..other or vec..Vec.__tostring(other)
-end
-return obj
-end
-function Vec:unpack()
-return self.x, self.y
-end
-function Vec:clamp(min, max)
-self.x,self.y=mid(self.x,min,max),mid(self.y,min,max)
-end
-function normalize(val)
-return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
-end
-function lerp(start, last, rate)
-if type(start) == "table" then 
-return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
+local value
+if val[1] == "{" and val[-1] == "}" then 
+value=unpack_table(sub(val,2,#val-1))
+elseif val == "true" then 
+value=true
+elseif val == "false" then 
+value=false
 else
-return start + (last - start) * rate
+value = tonum(val) or val
+end
+table[key]=value
+end
+end
+function convert_to_array_or_table(str)
+local internal = sub(str, 2, #str-1)
+if (str_contains_char(internal, "{")) return unpack_table(internal) 
+if (not str_contains_char(internal, "=")) return split(internal, ",", true) 
+return unpack_table(internal)
+end
+function split_key_value_str(str)
+local parts = split(str, "=")
+local key = tonum(parts[1]) or parts[1]
+if str[1] == "{" and str[-1] == "}" then 
+return nil, convert_to_array_or_table(str)
+end
+local val = sub(str, #(tostr(key))+2)
+if val[1] == "{" and val[-1] == "}" then 
+return key, convert_to_array_or_table(val)
+end
+return key, val
+end
+function str_contains_char(str, char)
+for i=1, #str do
+if (str[i] == char) return true
 end
 end
 __gfx__
