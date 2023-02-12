@@ -30,7 +30,17 @@ function insert_key_val(str, table)
   if key == nil then
     add(table, val)
   else  
-    table[key] = parse_value(val)
+    local value
+    if val[1] == "{" and val[-1] == "}" then 
+      value = unpack_table(sub(val, 2, #val-1))
+    elseif val == "true" then 
+      value = true 
+    elseif val == "false" then 
+      value = false 
+    else
+      value = tonum(val) or val
+    end
+    table[key] = value
   end
 end
 
@@ -39,10 +49,6 @@ function convert_to_array_or_table(str)
   if (str_contains_char(internal, "{")) return unpack_table(internal) 
   if (not str_contains_char(internal, "=")) return split(internal, ",", true) 
   return unpack_table(internal)
-end
-
-function convert_nested_array_to_table(str)
-
 end
 
 function split_key_value_str(str)
@@ -56,27 +62,6 @@ function split_key_value_str(str)
     return key, convert_to_array_or_table(val)
   end
   return key, val
-end
-
-function parse_value(value)
-  if value[1] == "{" and value[-1] == "}" then 
-    return unpack_table(sub(value, 2, #value-1))
-  elseif value == "true" then 
-    return true 
-  elseif value == "false" then 
-    return false 
-  elseif tonum(value) then 
-    return tonum(value)
-  end
-  return value
-end
-
-function str_char_count(str, char)
-  local count = 0
-  for i=1, #str do
-    if (str[i] == char) count += 1
-  end
-  return count
 end
 
 function str_contains_char(str, char)
