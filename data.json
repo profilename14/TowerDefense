@@ -1,0 +1,19 @@
+{
+  "tower_icon_background": 68,
+  "palettes": {
+    "transparent_color_id": 0,
+    "dark_mode": { "1": 0, "5": 1, "6": 5, "7": 6 }
+  },
+  "sfx_data": {
+    "round_complete": 10
+  },
+  "freeplay_stats": {
+    "hp": 3,
+    "speed": 1,
+    "min_step_delay": 3
+  },
+  "map_meta_data": {
+    "path_flag_id": 0,
+    "non_path_flag_id": 1
+  }
+}

@@ -54,7 +54,7 @@ end
 
 function map_draw_loop()
   local map_menu = get_menu("map")
-  pal(palettes.dark_mode)
+  pal(global_table_data.palettes.dark_mode)
   map(unpack(map_data[map_menu.pos].mget_shift))
   pal()
   Menu.draw(map_menu)

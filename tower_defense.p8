@@ -50,7 +50,7 @@ local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
 if tower_details.disable_icon_rotation then 
 spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
 else
-draw_sprite_rotated(tower_icon_background, combine_and_unpack(
+draw_sprite_rotated(global_table_data.tower_icon_background, combine_and_unpack(
 {Vec.unpack(position+offset)},{24,parse_direction(Vec:new(direction))}
 ))
 draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
@@ -114,7 +114,7 @@ end
 end
 music(0)
 end
-transparent_color_id = 0
+global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1}"
 animation_data={
 spark={
 data={
@@ -262,74 +262,6 @@ enemy_end_location={0,6},
 movement_direction={1,0},
 }
 }
-palettes={
-dark_mode={
-[1]=0,
-[5]=1,
-[6]=5,
-[7]=6
-}
-}
-map_meta_data={
-path_flag_id=0,
-non_path_flag_id=1
-}
-tower_templates={
-{
-name = "sword circle",
-damage=2,
-prefix = "damage",
-radius=1,
-animation=animation_data.blade_circle,
-cost=25,
-type = "tack",
-attack_delay=10,
-icon_data=16,
-disable_icon_rotation=true
-},
-{
-name = "lightning lance",
-damage=5,
-prefix = "damage",
-radius=5,
-animation=animation_data.lightning_lance,
-cost=55,
-type = "rail", 
-attack_delay=25,
-icon_data=18,
-disable_icon_rotation=false
-},
-{
-name = "hale howitzer",
-damage=5,--freezedelay;!notdamage
-prefix = "delay",
-radius=2,
-animation=animation_data.hale_howitzer,
-cost=25,
-type = "frontal", 
-attack_delay=30,
-icon_data=20,
-disable_icon_rotation=false
-},
-{
-name = "fire pit",
-damage=3,--firetickduration
-prefix = "duration",
-radius=0,
-animation=animation_data.fire_pit,
-cost=25,
-type = "floor", 
-attack_delay=15,
-icon_data=22,
-disable_icon_rotation=true
-}
-}
-tower_icon_background=68
-freeplay_stats={
-hp=3,
-speed=1,
-min_step_delay=3
-}
 enemy_templates={
 {
 hp=10,
@@ -391,9 +323,11 @@ wave_data={
 {3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},
 {4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}
 }
-sfx_data={
-round_complete=10
-}
+function reset_game()
+printh("---------------------------")
+global_table_data=unpack_table(global_table_str)
+printh("", "table.txt", true)
+debug_print_table(global_table_data, "", "table.txt")
 menu_data={
 {
 "main", nil,
@@ -463,7 +397,56 @@ nil,
 5,8,7,3
 }
 }
-function reset_game()
+tower_templates={
+{
+name = "sword circle",
+damage=2,
+prefix = "damage",
+radius=1,
+animation=animation_data.blade_circle,
+cost=25,
+type = "tack",
+attack_delay=10,
+icon_data=16,
+disable_icon_rotation=true
+},
+{
+name = "lightning lance",
+damage=5,
+prefix = "damage",
+radius=5,
+animation=animation_data.lightning_lance,
+cost=55,
+type = "rail", 
+attack_delay=25,
+icon_data=18,
+disable_icon_rotation=false
+},
+{
+name = "hale howitzer",
+damage=5,--freezedelay;!notdamage
+prefix = "delay",
+radius=2,
+animation=animation_data.hale_howitzer,
+cost=25,
+type = "frontal", 
+attack_delay=30,
+icon_data=20,
+disable_icon_rotation=false
+},
+{
+name = "fire pit",
+damage=3,--firetickduration
+prefix = "duration",
+radius=0,
+animation=animation_data.fire_pit,
+cost=25,
+type = "floor", 
+attack_delay=15,
+icon_data=22,
+disable_icon_rotation=true
+}
+}
 selector = {
 position=Vec:new(64,64),
 sprite_index=1,
@@ -566,7 +549,7 @@ local path_tiles = {}
 for iy=0, 15 do
 for ix=0, 15 do
 local map_cord = Vec:new(ix, iy) + map_shift
-if fget(mget(Vec.unpack(map_cord)), map_meta_data.path_flag_id) then 
+if fget(mget(Vec.unpack(map_cord)), global_table_data.map_meta_data.path_flag_id) then 
 add(path_tiles, map_cord)
 end
 end
@@ -967,6 +950,55 @@ ly=lerp(position.y+dy3,ly,rate)
 end
 return {lx, ly}
 end
+Vec={}
+function Vec:new(dx, dy)
+local obj = nil
+if type(dx) == "table" then 
+obj={x=dx[1],y=dx[2]}
+else
+obj={x=dx,y=dy}
+end
+setmetatable(obj,self)
+self.__index=self
+self.__add = function(a, b)
+return Vec:new(a.x+b.x,a.y+b.y)
+end
+self.__sub = function(a, b)
+return Vec:new(a.x-b.x,a.y-b.y)
+end
+self.__mul = function(a, scalar)
+return Vec:new(a.x*scalar,a.y*scalar)
+end
+self.__div = function(a, scalar)
+return Vec:new(a.x/scalar,a.y/scalar)
+end
+self.__eq = function(a, b)
+return (a.x==b.x and a.y==b.y)
+end
+self.__tostring = function(vec)
+return "("..vec.x..", "..vec.y..")"
+end
+self.__concat = function(vec, other)
+return (type(vec) == "table") and Vec.__tostring(vec)..other or vec..Vec.__tostring(other)
+end
+return obj
+end
+function Vec:unpack()
+return self.x, self.y
+end
+function Vec:clamp(min, max)
+self.x,self.y=mid(self.x,min,max),mid(self.y,min,max)
+end
+function normalize(val)
+return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
+end
+function lerp(start, last, rate)
+if type(start) == "table" then 
+return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
+else
+return start + (last - start) * rate
+end
+end
 function _init()
 reset_game()
 end
@@ -988,14 +1020,13 @@ foreach(towers, Tower.draw)
 foreach(enemies, Enemy.draw)
 foreach(particles, Particle.draw)
 if (shop_enable) foreach(menus, Menu.draw)
-if not shop_enable then 
-if not enemies_active and incoming_hint ~= nil then 
-local spawn_location = Vec:new(map_data[loaded_map].enemy_spawn_location)
-local dir = Vec:new(map_data[loaded_map].movement_direction)
+if not shop_enable and not enemies_active and incoming_hint ~= nil then 
 for i=1, #incoming_hint do 
-local position = (spawn_location + dir * (i-1))*8
-Animator.draw(incoming_hint[i], Vec.unpack(position))
-end
+Animator.draw(incoming_hint[i], Vec.unpack(
+(Vec:new(map_data[loaded_map].enemy_spawn_location)+
+Vec:new(map_data[loaded_map].movement_direction)*
+(i-1))*8
+))
 end
 end
 print_with_outline("scrap: "..coins, 0, 1, 7, 0)
@@ -1032,7 +1063,7 @@ end
 end
 function map_draw_loop()
 local map_menu = get_menu("map")
-pal(palettes.dark_mode)
+pal(global_table_data.palettes.dark_mode)
 map(unpack(map_data[map_menu.pos].mget_shift))
 pal()
 Menu.draw(map_menu)
@@ -1102,7 +1133,7 @@ foreach(enemies, kill_enemy)
 foreach(particles, destroy_particle)
 if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
 enemies_active=false
-sfx(sfx_data.round_complete)
+sfx(global_table_data.sfx_data.round_complete)
 end
 end
 function print_with_outline(text, dx, dy, text_color, outline_color)
@@ -1126,8 +1157,8 @@ return 0, 0
 end
 function increase_enemy_health(enemy_data)
 return {
-hp=enemy_data.hp+freeplay_stats.hp*freeplay_rounds,
-step_delay=max(enemy_data.step_delay-freeplay_stats.speed*freeplay_rounds,freeplay_stats.min_step_delay),
+hp=enemy_data.hp+global_table_data.freeplay_stats.hp*freeplay_rounds,
+step_delay=max(enemy_data.step_delay-global_table_data.freeplay_stats.speed*freeplay_rounds,global_table_data.freeplay_stats.min_step_delay),
 sprite_index=enemy_data.sprite_index,
 reward=enemy_data.reward,
 damage=enemy_data.damage
@@ -1143,7 +1174,7 @@ end
 end
 end
 function placable_tile_location(coord)
-return fget(mget(coord.x, coord.y), map_meta_data.non_path_flag_id)
+return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(pos, table)
 for _, enemy in pairs(enemies) do
@@ -1164,7 +1195,7 @@ local xx = flr(dx*cosine-dy*sine+shift)
 local yy = flr(dx*sine+dy*cosine+shift)
 if xx >= 0 and xx < size and yy >= 0 and yy <= size then
 local id = sget(sx+xx, sy+yy)
-if id ~= transparent_color_id or is_opaque then 
+if id ~= global_table_data.palettes.transparent_color_id or is_opaque then 
 pset(x+mx,y+my,id)
 end
 end
@@ -1198,53 +1229,100 @@ add(data,dat)
 end
 return unpack(data)
 end
-Vec={}
-function Vec:new(dx, dy)
-local obj = nil
-if type(dx) == "table" then 
-obj={x=dx[1],y=dx[2]}
+function unpack_table(str)
+local table,start,stack,i={},1,0,1
+while i <= #str do
+if str[i]=="{" then 
+stack+=1
+elseif str[i]=="}"then 
+stack-=1
+if(stack>0)goto unpack_table_continue
+insert_str_as_table_entry(sub(str,start,i),table)
+start=i+1
+if(i+2>#str)goto unpack_table_continue
+start+=1
+i+=1
+elseif stack==0 then
+if str[i]=="," then
+insert_str_as_table_entry(sub(str,start,i-1),table)
+start=i+1
+elseif i==#str then 
+insert_str_as_table_entry(sub(str,start),table)
+end
+end
+::unpack_table_continue::
+i+=1
+end
+return table
+end
+function insert_str_as_table_entry(str, table)
+local key,val
+for i=1,#str do
+if (str[i]~="=") goto insert_str_as_table_entry_continue
+key,val=sub(str,0,i-1),sub(str,i+1)
+if (val[1]~="{") goto insert_str_as_table_entry_continue 
+local sub_str=sub(val,2,#val-1)
+if not str_contains(val, "=") then 
+local internal_array = sub(val, 2, #val-1)
+if str_contains(internal_array, "{") then
+val,_=parse_nested_array(internal_array)
 else
-obj={x=dx,y=dy}
+val=split(internal_array)
 end
-setmetatable(obj,self)
-self.__index=self
-self.__add = function(a, b)
-return Vec:new(a.x+b.x,a.y+b.y)
-end
-self.__sub = function(a, b)
-return Vec:new(a.x-b.x,a.y-b.y)
-end
-self.__mul = function(a, scalar)
-return Vec:new(a.x*scalar,a.y*scalar)
-end
-self.__div = function(a, scalar)
-return Vec:new(a.x/scalar,a.y/scalar)
-end
-self.__eq = function(a, b)
-return (a.x==b.x and a.y==b.y)
-end
-self.__tostring = function(vec)
-return "("..vec.x..", "..vec.y..")"
-end
-self.__concat = function(vec, other)
-return (type(vec) == "table") and Vec.__tostring(vec)..other or vec..Vec.__tostring(other)
-end
-return obj
-end
-function Vec:unpack()
-return self.x, self.y
-end
-function Vec:clamp(min, max)
-self.x,self.y=mid(self.x,min,max),mid(self.y,min,max)
-end
-function normalize(val)
-return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
-end
-function lerp(start, last, rate)
-if type(start) == "table" then 
-return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
 else
-return start + (last - start) * rate
+val=unpack_table(sub_str)
+end
+break
+::insert_str_as_table_entry_continue::
+end
+if key == nil then
+add(table,val)
+return
+end
+if val == "false" then 
+table[key]=false
+elseif val == "true" then 
+table[key]=true
+else
+table[key]=tonum(val) or val
+end
+end
+function str_contains(str, identifier)
+for i=1, #str do if (str[i] == identifier) return true end
+end
+function parse_nested_array(str, pos)
+local array = {}
+local buffer = ""
+local i = 1
+while i <= #str do 
+if str[i] == "{" then
+local data, index = parse_nested_array(sub(str, i+1), i)
+add(array,data)
+i=index
+elseif str[i] == "}" then 
+local val = tonum(buffer) and tonum(buffer) or buffer
+add(array,val)
+return array, i + (pos and pos or 0)
+elseif str[i] == "," then 
+local val = tonum(buffer) and tonum(buffer) or buffer
+add(array,val)
+buffer = ""
+else
+buffer..=str[i]
+end
+i+=1
+end
+return array
+end
+function debug_print_table(table, prefix, log_to_file)
+for k, v in pairs(table) do 
+if type(v) == "table" then 
+printh(prefix.."["..type(v).."]"..k.." = {", log_to_file)
+debug_print_table(v, "__"..prefix, log_to_file)
+printh(prefix.."}", log_to_file)
+else
+printh(prefix.."["..type(v).."]"..k.." = "..v, log_to_file)
+end
 end
 end
 __gfx__

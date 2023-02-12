@@ -1,5 +1,5 @@
 -- Game Data -- Modify at will
-transparent_color_id = 0
+global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1}"
 animation_data = {
   spark = {
     data = { 
@@ -147,74 +147,6 @@ map_data = {
     movement_direction = {1, 0},
   }
 }
-palettes = {
-  dark_mode = {
-    [1] = 0,
-    [5] = 1,
-    [6] = 5,
-    [7] = 6
-  }
-}  
-map_meta_data = {
-  path_flag_id = 0,
-  non_path_flag_id = 1
-}
-tower_templates = {
-  {
-    name = "sword circle",
-    damage = 2,
-    prefix = "damage",
-    radius = 1,
-    animation = animation_data.blade_circle,
-    cost = 25,
-    type = "tack",
-    attack_delay = 10,
-    icon_data = 16,
-    disable_icon_rotation = true
-  },
-  { 
-    name = "lightning lance",
-    damage = 5,
-    prefix = "damage",
-    radius = 5,
-    animation = animation_data.lightning_lance,
-    cost = 55,
-    type = "rail", 
-    attack_delay = 25,
-    icon_data = 18,
-    disable_icon_rotation = false
-  },
-  {
-    name = "hale howitzer",
-    damage = 5, -- freeze delay; ! not damage
-    prefix = "delay",
-    radius = 2,
-    animation = animation_data.hale_howitzer, 
-    cost = 25,
-    type = "frontal", 
-    attack_delay = 30,
-    icon_data = 20,
-    disable_icon_rotation = false
-  },
-  { 
-    name = "fire pit",
-    damage = 3, -- fire tick duration
-    prefix = "duration",
-    radius = 0,
-    animation = animation_data.fire_pit, 
-    cost = 25,
-    type = "floor", 
-    attack_delay = 15,
-    icon_data = 22,
-    disable_icon_rotation = true
-  }
-}
-tower_icon_background = 68
-freeplay_stats = {
-  hp = 3,
-  speed = 1,
-  min_step_delay = 3
-}
 enemy_templates = {
   {
     hp = 10,
@@ -276,82 +208,134 @@ wave_data = {
   {3, 3, 3, 3, 3, 3, 5, 2, 5, 2, 5, 2, 6, 6, 6},
   {4, 3, 4, 3, 4, 3, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5}
 }
-sfx_data = {
-  round_complete = 10
-}
-menu_data = {
-  {
-    "main", nil,
-    5, 70, 
-    animation_data.menu_selector,
-    animation_data.up_arrow,
-    animation_data.down_arrow,
-    {
-      {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
-      {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
-      {text = "rotate tower", color = {7, 0}, 
-        callback = function()
-          direction = { direction[2] * -1, direction[1] }
-        end
-      }
-    },
-    display_tower_rotation,
-    5, 8, 7, 3
-  },
-  {
-    "towers", "main",
-    5, 70, 
-    animation_data.menu_selector,
-    animation_data.up_arrow,
-    animation_data.down_arrow,
-    {
-      {text = "blade circle", color = {2, 13}, callback = choose_tower, args = {1}},
-      {text = "lightning lance", color = {10, 9}, callback = choose_tower, args = {2}},
-      {text = "hale howitzer", color = {12, 7}, callback = choose_tower, args = {3}},
-      {text = "fire pit", color = {9, 8}, callback = choose_tower, args = {4}}
-    },
-    display_tower_info,
-    5, 8, 7, 3
-  },
-  {
-    "options", "main",
-    5, 70, 
-    animation_data.menu_selector,
-    animation_data.up_arrow,
-    animation_data.down_arrow,
-    {
-      {text = "start round", color = {7, 0}, callback = start_round},
-      {text = "map select", color = {7, 0}, 
-        callback = function()
-          get_active_menu().enable = false
-          reset_game()
-          map_menu_enable = true
-        end
-      }
-    },
-    nil,
-    5, 8, 7, 3
-  },
-  {
-    "map", nil,
-    5, 84, 
-    animation_data.menu_selector,
-    animation_data.up_arrow,
-    animation_data.down_arrow,
-    {
-      {text = "curves", color = {7, 0}, callback = load_game, args = {1}},
-      {text = "loop", color = {7, 0}, callback = load_game, args = {2}},
-      {text = "straight", color = {7, 0}, callback = load_game, args = {3}},
-      {text = "u-turn", color = {7, 0}, callback = load_game, args = {4}}
-    },
-    nil,
-    5, 8, 7, 3
-  }
-}
+
 
 -- Game
 function reset_game()
   -- Game Data -- Modify at will
+  printh("---------------------------")
+  global_table_data = unpack_table(global_table_str)
+  printh("", "table.txt", true)
+  debug_print_table(global_table_data, "", "table.txt")
+  menu_data = {
+    {
+      "main", nil,
+      5, 70, 
+      animation_data.menu_selector,
+      animation_data.up_arrow,
+      animation_data.down_arrow,
+      {
+        {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
+        {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
+        {text = "rotate tower", color = {7, 0}, 
+          callback = function()
+            direction = { direction[2] * -1, direction[1] }
+          end
+        }
+      },
+      display_tower_rotation,
+      5, 8, 7, 3
+    },
+    {
+      "towers", "main",
+      5, 70, 
+      animation_data.menu_selector,
+      animation_data.up_arrow,
+      animation_data.down_arrow,
+      {
+        {text = "blade circle", color = {2, 13}, callback = choose_tower, args = {1}},
+        {text = "lightning lance", color = {10, 9}, callback = choose_tower, args = {2}},
+        {text = "hale howitzer", color = {12, 7}, callback = choose_tower, args = {3}},
+        {text = "fire pit", color = {9, 8}, callback = choose_tower, args = {4}}
+      },
+      display_tower_info,
+      5, 8, 7, 3
+    },
+    {
+      "options", "main",
+      5, 70, 
+      animation_data.menu_selector,
+      animation_data.up_arrow,
+      animation_data.down_arrow,
+      {
+        {text = "start round", color = {7, 0}, callback = start_round},
+        {text = "map select", color = {7, 0}, 
+          callback = function()
+            get_active_menu().enable = false
+            reset_game()
+            map_menu_enable = true
+          end
+        }
+      },
+      nil,
+      5, 8, 7, 3
+    },
+    {
+      "map", nil,
+      5, 84, 
+      animation_data.menu_selector,
+      animation_data.up_arrow,
+      animation_data.down_arrow,
+      {
+        {text = "curves", color = {7, 0}, callback = load_game, args = {1}},
+        {text = "loop", color = {7, 0}, callback = load_game, args = {2}},
+        {text = "straight", color = {7, 0}, callback = load_game, args = {3}},
+        {text = "u-turn", color = {7, 0}, callback = load_game, args = {4}}
+      },
+      nil,
+      5, 8, 7, 3
+    }
+  }
+  tower_templates = {
+    {
+      name = "sword circle",
+      damage = 2,
+      prefix = "damage",
+      radius = 1,
+      animation = animation_data.blade_circle,
+      cost = 25,
+      type = "tack",
+      attack_delay = 10,
+      icon_data = 16,
+      disable_icon_rotation = true
+    },
+    { 
+      name = "lightning lance",
+      damage = 5,
+      prefix = "damage",
+      radius = 5,
+      animation = animation_data.lightning_lance,
+      cost = 55,
+      type = "rail", 
+      attack_delay = 25,
+      icon_data = 18,
+      disable_icon_rotation = false
+    },
+    {
+      name = "hale howitzer",
+      damage = 5, -- freeze delay; ! not damage
+      prefix = "delay",
+      radius = 2,
+      animation = animation_data.hale_howitzer, 
+      cost = 25,
+      type = "frontal", 
+      attack_delay = 30,
+      icon_data = 20,
+      disable_icon_rotation = false
+    },
+    { 
+      name = "fire pit",
+      damage = 3, -- fire tick duration
+      prefix = "duration",
+      radius = 0,
+      animation = animation_data.fire_pit, 
+      cost = 25,
+      type = "floor", 
+      attack_delay = 15,
+      icon_data = 22,
+      disable_icon_rotation = true
+    }
+  }
   selector = {
     position = Vec:new(64, 64),
     sprite_index = 1,

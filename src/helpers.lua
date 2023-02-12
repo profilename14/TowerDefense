@@ -24,8 +24,8 @@ end
 
 function increase_enemy_health(enemy_data)
   return {
-    hp = enemy_data.hp + freeplay_stats.hp * freeplay_rounds,
-    step_delay = max(enemy_data.step_delay - freeplay_stats.speed * freeplay_rounds, freeplay_stats.min_step_delay),
+    hp = enemy_data.hp + global_table_data.freeplay_stats.hp * freeplay_rounds,
+    step_delay = max(enemy_data.step_delay - global_table_data.freeplay_stats.speed * freeplay_rounds, global_table_data.freeplay_stats.min_step_delay),
     sprite_index = enemy_data.sprite_index,
     reward = enemy_data.reward,
     damage = enemy_data.damage
@@ -43,7 +43,7 @@ function is_in_table(val, table, is_entity)
 end
 
 function placable_tile_location(coord)
-  return fget(mget(coord.x, coord.y), map_meta_data.non_path_flag_id)
+  return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
 end
 
 function add_enemy_at_to_table(pos, table)
@@ -67,7 +67,7 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
       local yy = flr(dx*sine+dy*cosine+shift)
       if xx >= 0 and xx < size and yy >= 0 and yy <= size then
         local id = sget(sx+xx, sy+yy)
-        if id ~= transparent_color_id or is_opaque then 
+        if id ~= global_table_data.palettes.transparent_color_id or is_opaque then 
           pset(x+mx, y+my, id)
         end
       end
