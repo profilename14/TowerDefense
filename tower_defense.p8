@@ -174,26 +174,13 @@ size=1
 coins=50
 player_health=100
 enemy_required_spawn_ticks=10
-enemies_remaining=10
 enemy_current_spawn_tick=0
-enemies_active=false
-shop_enable=false
-map_menu_enable=true
-start_next_wave=false
-wave_cor = nil
-incoming_hint={}
+map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
 direction=Vec:new(0,-1)
-grid={}--16x16cellstates
-towers={}
-enemies={}
-particles={}
-animators = {}
+grid, towers, enemies, particles, animators, incoming_hint, menus = {}, {}, {}, {}, {}, {}, {}
 music(-1)
 selected_menu_tower_id=1
-menus={}
-for i, menu_dat in pairs(menu_data) do
-add(menus,Menu:new(unpack(menu_dat)))
-end
+for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
 tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
 tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
 sell_selector = Animator:new(global_table_data.animation_data.sell)
