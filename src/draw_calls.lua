@@ -41,14 +41,11 @@ function game_draw_loop()
     else
       spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)
-      local position = selector.position/8
-      local text, color = "❎ buy & place "..tower_details.name, 7
+      local position, text, color = selector.position/8, "❎ buy & place "..tower_details.name, 7
       if tower_details.cost > coins then
-        text = "can't afford "..tower_details.name
-        color = 8
+        text, color = "can't afford "..tower_details.name, 8
       elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
-        text = "can't place "..tower_details.name.." here"
-        color = 8
+        text, color = "can't place "..tower_details.name.." here", 8
       end
       print_with_outline(text, 1, 115, color, 0)
     end

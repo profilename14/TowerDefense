@@ -13,10 +13,11 @@ local texts = {
 {text=tower_details.name},
 {text = tower_details.prefix..": "..tower_details.damage}
 }
+local longest_str_len = longest_menu_str(texts)*5+4
 BorderRect.resize(
 tower_stats_background_rect,
 position_offset,
-Vec:new(longest_menu_str(texts)*5+24,27
+Vec:new(longest_str_len+20,27
 ))
 BorderRect.draw(tower_stats_background_rect)
 print_with_outline(
@@ -25,7 +26,7 @@ combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 2))},
 text_color
 ))
 print_with_outline(
-tower_details.prefix..": "..tower_details.damage,
+texts[2].text,
 combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 14))},
 {7,0}
 ))
@@ -36,9 +37,9 @@ combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 21))},
 ))
 spr(
 tower_details.icon_data,
-combine_and_unpack({
-Vec.unpack(tower_stats_background_rect.position+Vec:new(longest_menu_str(texts)*5+4,6))
-},{2,2}
+combine_and_unpack(
+{Vec.unpack(tower_stats_background_rect.position+Vec:new(longest_str_len,6))},
+{2,2}
 ))
 end
 function display_tower_rotation(menu_pos, position)
@@ -53,23 +54,17 @@ else
 draw_sprite_rotated(global_table_data.tower_icon_background,
 position_offset,24,parse_direction(direction)
 )
-draw_sprite_rotated(tower_details.icon_data,
-sprite_position,16,parse_direction(direction)
-)
+draw_sprite_rotated(tower_details.icon_data,sprite_position,16,parse_direction(direction))
 end
 end
 function start_round()
-if not start_next_wave and #enemies == 0 then
+if (start_next_wave or #enemies ~= 0) return
 start_next_wave,enemies_active=true,true
-wave_round+=1
-wave_round=min(wave_round,#global_table_data.wave_data)
-if wave_round == #global_table_data.wave_data then 
-freeplay_rounds+=1
-end
+wave_round=min(wave_round+1,#global_table_data.wave_data)
+if (wave_round == #global_table_data.wave_data) freeplay_rounds += 1
 enemies_remaining=#global_table_data.wave_data[wave_round]
 get_active_menu().enable=false
 shop_enable=false
-end
 end
 function get_active_menu()
 for _, menu in pairs(menus) do
@@ -243,9 +238,7 @@ function Enemy:get_pixel_location()
 local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
 if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
 local pos = self.position * 8
-if not self.is_frozen then 
-pos=lerp(prev*8,n*8,self.current_step/self.step_delay)
-end
+if (not self.is_frozen) pos = lerp(prev*8, n*8, self.current_step / self.step_delay)
 return pos, n
 end
 function Enemy:draw(is_shadows)
@@ -272,8 +265,9 @@ player_health-=enemy.damage
 del(enemies,enemy)
 end
 function parse_path()
-local map_shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-local map_enemy_spawn_location = Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
+local map_dat = global_table_data.map_data[loaded_map]
+local map_shift = Vec:new(map_dat.mget_shift)
+local map_enemy_spawn_location = Vec:new(map_dat.enemy_spawn_location)
 local path_tiles = {}
 for iy=0, 15 do
 for ix=0, 15 do
@@ -284,16 +278,12 @@ end
 end
 end
 local path = {}
-local dir = Vec:new(global_table_data.map_data[loaded_map].movement_direction)
-local ending = Vec:new(global_table_data.map_data[loaded_map].enemy_end_location) + map_shift
+local dir = Vec:new(map_dat.movement_direction)
+local ending = Vec:new(map_dat.enemy_end_location) + map_shift
 local cur = map_enemy_spawn_location + map_shift + dir
 while cur ~= ending do 
-local north = Vec:new(cur.x, cur.y-1)
-local south = Vec:new(cur.x, cur.y+1)
-local west = Vec:new(cur.x-1, cur.y)
-local east = Vec:new(cur.x+1, cur.y)
-local state = false
-local direct = nil
+local north,south,west,east = Vec:new(cur.x, cur.y-1),Vec:new(cur.x, cur.y+1),Vec:new(cur.x-1, cur.y),Vec:new(cur.x+1, cur.y)
+local state,direct = false
 if dir.x == 1 then -- east 
 state, direct = check_direction(east, {north, south}, path_tiles, path)
 elseif dir.x == -1 then -- west
@@ -369,7 +359,7 @@ foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
 end
 end
 function Tower:raycast()
-if (self.dir == Vec:new(0, 0)) return nil
+if (self.dir == Vec:new(0, 0)) return
 local hits = {}
 for i=1, self.radius do 
 add_enemy_at_to_table(self.position+self.dir*i,hits)
@@ -378,13 +368,13 @@ if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_
 return hits
 end
 function Tower:nova_collision()
-local hits = {}
-for y=-self.radius, self.radius do
-for x=-self.radius, self.radius do
+local hits, rad = {}, self.radius
+for y=-rad, rad do
+for x=-rad, rad do
 if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
 end
 end
-if (#hits > 0) nova_spawn(self.position, self.radius, global_table_data.animation_data.blade)
+if (#hits > 0) nova_spawn(self.position, rad, global_table_data.animation_data.blade)
 return hits
 end
 function Tower:frontal_collision()
@@ -412,19 +402,17 @@ end
 end
 end
 function Tower:draw()
-local p = self.position * 8
-local sprite = Animator.get_sprite(self.animator)
-local theta = parse_direction(self.dir)
+local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
 draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
 draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
 function place_tower(position)
 if (grid[position.y][position.x] == "tower") return false
-if (coins < global_table_data.tower_templates[selected_menu_tower_id].cost) return false
-local tower_type = global_table_data.tower_templates[selected_menu_tower_id].type 
-if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
-add(towers,Tower:new(position,global_table_data.tower_templates[selected_menu_tower_id],direction))
-coins-=global_table_data.tower_templates[selected_menu_tower_id].cost
+local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
+if (coins < tower_details.cost) return false
+if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+add(towers,Tower:new(position,tower_details,direction))
+coins-=tower_details.cost
 grid[position.y][position.x] = "tower"
 return true
 end
@@ -496,11 +484,9 @@ return Animator.update(self.animator)
 end
 function Particle:draw()
 if (Animator.finished(self.animator)) return 
-if self.is_pxl_perfect then 
-Animator.draw(self.animator, Vec.unpack(self.position))
-else
-Animator.draw(self.animator, Vec.unpack(self.position*8))
-end
+local pos = self.position
+if (not self.is_pxl_perfect) pos = pos * 8
+Animator.draw(self.animator, Vec.unpack(pos))
 end
 function destroy_particle(particle)
 if (not Animator.finished(particle.animator)) return
@@ -557,18 +543,12 @@ function Animator:finished()
 return self.animation_frame >= #self.data
 end
 function Animator:draw(dx, dy)
-local x,y=dx,dy 
-if self.data[self.animation_frame].offset then 
-x+=self.data[self.animation_frame].offset[1]
-y+=self.data[self.animation_frame].offset[2]
-end
+local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]
+if (frame.offset) position += Vec:new(frame.offset)
 if self.spin_enable then 
-draw_sprite_rotated(
-self.data[self.animation_frame].sprite,
-Vec:new(x,y),self.sprite_size,self.theta
-)
+draw_sprite_rotated(frame.sprite,position,self.sprite_size,self.theta)
 else
-spr(self.data[self.animation_frame].sprite,x,y)
+spr(Animator.get_sprite(self),Vec.unpack(position))
 end
 end
 function Animator:get_sprite()
@@ -812,14 +792,11 @@ print_with_outline("❎ sell", 1, 115, 7, 0)
 else
 spr(selector.sprite_index, Vec.unpack(selector.position))
 Animator.reset(sell_selector)
-local position = selector.position/8
-local text, color = "❎ buy & place "..tower_details.name, 7
+local position, text, color = selector.position/8, "❎ buy & place "..tower_details.name, 7
 if tower_details.cost > coins then
-text = "can't afford "..tower_details.name
-color = 8
+text, color = "can't afford "..tower_details.name, 8
 elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
-text = "can't place "..tower_details.name.." here"
-color = 8
+text, color = "can't place "..tower_details.name.." here", 8
 end
 print_with_outline(text, 1, 115, color, 0)
 end

@@ -39,9 +39,7 @@ function Enemy:get_pixel_location()
   local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
   if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
   local pos = self.position * 8
-  if not self.is_frozen then 
-    pos = lerp(prev*8, n*8, self.current_step / self.step_delay)
-  end
+  if (not self.is_frozen) pos = lerp(prev*8, n*8, self.current_step / self.step_delay)
   return pos, n
 end
 function Enemy:draw(is_shadows)
@@ -71,8 +69,9 @@ function update_enemy_position(enemy)
 end
 
 function parse_path()
-  local map_shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-  local map_enemy_spawn_location = Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
+  local map_dat = global_table_data.map_data[loaded_map]
+  local map_shift = Vec:new(map_dat.mget_shift)
+  local map_enemy_spawn_location = Vec:new(map_dat.enemy_spawn_location)
   local path_tiles = {}
   for iy=0, 15 do
     for ix=0, 15 do
@@ -84,16 +83,12 @@ function parse_path()
   end
 
   local path = {}
-  local dir = Vec:new(global_table_data.map_data[loaded_map].movement_direction)
-  local ending = Vec:new(global_table_data.map_data[loaded_map].enemy_end_location) + map_shift
+  local dir = Vec:new(map_dat.movement_direction)
+  local ending = Vec:new(map_dat.enemy_end_location) + map_shift
   local cur = map_enemy_spawn_location + map_shift + dir
   while cur ~= ending do 
-    local north = Vec:new(cur.x, cur.y-1)
-    local south = Vec:new(cur.x, cur.y+1)
-    local west = Vec:new(cur.x-1, cur.y)
-    local east = Vec:new(cur.x+1, cur.y)
-    local state = false
-    local direct = nil
+    local north,south,west,east = Vec:new(cur.x, cur.y-1),Vec:new(cur.x, cur.y+1),Vec:new(cur.x-1, cur.y),Vec:new(cur.x+1, cur.y)
+    local state,direct = false
     if dir.x == 1 then -- east 
       state, direct = check_direction(east, {north, south}, path_tiles, path)
     elseif dir.x == -1 then -- west

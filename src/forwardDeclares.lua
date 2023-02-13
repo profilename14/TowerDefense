@@ -12,10 +12,11 @@ function display_tower_info(tower_id, position, text_color)
     {text = tower_details.name}, 
     {text = tower_details.prefix..": "..tower_details.damage}
   }
+  local longest_str_len = longest_menu_str(texts)*5+4
   BorderRect.resize(
     tower_stats_background_rect,
     position_offset, 
-    Vec:new(longest_menu_str(texts)*5 + 24,27
+    Vec:new(longest_str_len + 20,27
   ))
   BorderRect.draw(tower_stats_background_rect)
   print_with_outline(
@@ -24,7 +25,7 @@ function display_tower_info(tower_id, position, text_color)
     text_color
   ))
   print_with_outline(
-    tower_details.prefix..": "..tower_details.damage,
+    texts[2].text,
     combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 14))},
     {7, 0}
   ))
@@ -35,9 +36,9 @@ function display_tower_info(tower_id, position, text_color)
   ))
   spr(
     tower_details.icon_data, 
-    combine_and_unpack({
-      Vec.unpack(tower_stats_background_rect.position + Vec:new(longest_menu_str(texts)*5 + 4, 6))
-    },{2, 2}
+    combine_and_unpack(
+      {Vec.unpack(tower_stats_background_rect.position + Vec:new(longest_str_len, 6))},
+      {2, 2}
   ))
 end
 
@@ -55,25 +56,19 @@ function display_tower_rotation(menu_pos, position)
     draw_sprite_rotated(global_table_data.tower_icon_background,
       position_offset, 24, parse_direction(direction)
     )
-    draw_sprite_rotated(tower_details.icon_data,
-      sprite_position, 16, parse_direction(direction)
-    )
+    draw_sprite_rotated(tower_details.icon_data, sprite_position, 16, parse_direction(direction))
   end
 end
 
 -- Enemy Related
 function start_round()
-  if not start_next_wave and #enemies == 0 then
-    start_next_wave,enemies_active = true,true
-    wave_round += 1
-    wave_round = min(wave_round, #global_table_data.wave_data)
-    if wave_round == #global_table_data.wave_data then 
-      freeplay_rounds += 1
-    end
-    enemies_remaining = #global_table_data.wave_data[wave_round]
-    get_active_menu().enable = false
-    shop_enable = false
-  end
+  if (start_next_wave or #enemies ~= 0) return
+  start_next_wave,enemies_active = true,true
+  wave_round = min(wave_round + 1, #global_table_data.wave_data)
+  if (wave_round == #global_table_data.wave_data) freeplay_rounds += 1
+  enemies_remaining = #global_table_data.wave_data[wave_round]
+  get_active_menu().enable = false
+  shop_enable = false
 end
 
 -- Menu Related

@@ -33,7 +33,7 @@ function Tower:attack()
   end
 end
 function Tower:raycast()
-  if (self.dir == Vec:new(0, 0)) return nil
+  if (self.dir == Vec:new(0, 0)) return
   local hits = {}
   for i=1, self.radius do 
     add_enemy_at_to_table(self.position + self.dir * i, hits)
@@ -42,13 +42,13 @@ function Tower:raycast()
   return hits
 end
 function Tower:nova_collision()
-  local hits = {}
-  for y=-self.radius, self.radius do
-    for x=-self.radius, self.radius do
+  local hits, rad = {}, self.radius
+  for y=-rad, rad do
+    for x=-rad, rad do
       if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
     end
   end
-  if (#hits > 0) nova_spawn(self.position, self.radius, global_table_data.animation_data.blade)
+  if (#hits > 0) nova_spawn(self.position, rad, global_table_data.animation_data.blade)
   return hits
 end
 function Tower:frontal_collision()
@@ -76,9 +76,7 @@ function Tower:freeze_enemies(targets)
   end
 end
 function Tower:draw()
-  local p = self.position * 8
-  local sprite = Animator.get_sprite(self.animator)
-  local theta = parse_direction(self.dir)
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -86,13 +84,13 @@ end
 function place_tower(position)
   -- check if there is a tower here
   if (grid[position.y][position.x] == "tower") return false
+  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
   -- check if player has the money
-  if (coins < global_table_data.tower_templates[selected_menu_tower_id].cost) return false
+  if (coins < tower_details.cost) return false
   -- spawn the tower
-  local tower_type = global_table_data.tower_templates[selected_menu_tower_id].type 
-  if ((tower_type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
-  add(towers, Tower:new(position, global_table_data.tower_templates[selected_menu_tower_id], direction))
-  coins -= global_table_data.tower_templates[selected_menu_tower_id].cost
+  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+  add(towers, Tower:new(position, tower_details, direction))
+  coins -= tower_details.cost
   grid[position.y][position.x] = "tower"
   return true
 end

@@ -14,11 +14,9 @@ function Particle:tick()
 end
 function Particle:draw()
   if (Animator.finished(self.animator)) return 
-  if self.is_pxl_perfect then 
-    Animator.draw(self.animator, Vec.unpack(self.position))
-  else
-    Animator.draw(self.animator, Vec.unpack(self.position*8))
-  end
+  local pos = self.position
+  if (not self.is_pxl_perfect) pos = pos * 8
+  Animator.draw(self.animator, Vec.unpack(pos))
 end
 
 function destroy_particle(particle)
