@@ -2,15 +2,7 @@ function game_draw_loop()
   map(unpack(global_table_data.map_data[loaded_map].mget_shift))
   -- tower attack hint overlay
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  if tower_details.type == "tack" then 
-    draw_nova_attack_overlay(tower_details)
-  elseif tower_details.type == "rail" then 
-    draw_ray_attack_overlay(tower_details)
-  elseif tower_details.type == "frontal" then 
-    draw_frontal_attack_overlay(tower_details)
-  elseif tower_details.type == "floor" then 
-    draw_floor_attack_overlay()
-  end
+  draw_tower_attack_overlay(tower_details)
   -- towers
   foreach(towers, Tower.draw)
   -- enemies

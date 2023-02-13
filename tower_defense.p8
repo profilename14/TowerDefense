@@ -437,53 +437,46 @@ del(towers,tower)
 end
 end
 end
-function draw_nova_attack_overlay(tower_details)
+function draw_tower_attack_overlay(tower_details)
 local pos = selector.position/8
-if (grid[pos.y][pos.x] ~= "empty") return
 palt(0,false)
 pal(global_table_data.palettes.attack_tile)
-for y=-tower_details.radius, tower_details.radius do
-for x=-tower_details.radius, tower_details.radius do
+local is_empty = grid[pos.y][pos.x] == "empty"
+if tower_details.type == "tack" and is_empty then 
+draw_nova_attack_overlay(tower_details.radius,pos)
+elseif tower_details.type == "rail" and is_empty then 
+draw_ray_attack_overlay(tower_details.radius,pos)
+elseif tower_details.type == "frontal" and is_empty then 
+draw_frontal_attack_overlay(tower_details.radius,pos)
+elseif tower_details.type == "floor" and grid[pos.y][pos.x] == "path" then 
+spr(mget(Vec.unpack(pos)),Vec.unpack(pos*8))
+end
+pal()
+end
+function draw_nova_attack_overlay(radius, pos)
+for y=-radius, radius do
+for x=-radius, radius do
 if x ~=0 or y ~= 0 then 
 local tile_position = pos+Vec:new(x, y)
 spr(mget(Vec.unpack(tile_position)),Vec.unpack(tile_position*8))
 end
 end
 end
-pal()
 end
-function draw_floor_attack_overlay()
-local pos = selector.position/8
-if (grid[pos.y][pos.x] ~= "path") return
-palt(0,false)
-pal(global_table_data.palettes.attack_tile)
-spr(mget(Vec.unpack(pos)),Vec.unpack(pos*8))
-pal()
-end
-function draw_ray_attack_overlay(tower_details)
-local pos = selector.position/8
-if (grid[pos.y][pos.x] ~= "empty") return
-palt(0,false)
-pal(global_table_data.palettes.attack_tile)
-for i=1, tower_details.radius do 
+function draw_ray_attack_overlay(radius, pos)
+for i=1, radius do 
 local tile_position = pos+Vec:new(direction)*i
 spr(mget(Vec.unpack(tile_position)),Vec.unpack(tile_position*8))
 end
-pal()
 end
-function draw_frontal_attack_overlay(tower_details)
-local pos = selector.position/8
-if (grid[pos.y][pos.x] ~= "empty") return
-palt(0,false)
-pal(global_table_data.palettes.attack_tile)
-local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(tower_details.radius, Vec:new(direction))
+function draw_frontal_attack_overlay(radius, pos)
+local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, Vec:new(direction))
 for y=fy, fly, iy do
 for x=fx, flx, ix do
 local tile_position = pos + Vec:new(x, y)
 spr(mget(Vec.unpack(tile_position)),Vec.unpack(tile_position*8))
 end
 end
-pal()
 end
 Particle={}
 function Particle:new(pos, pixel_perfect, animator_)
@@ -773,9 +766,7 @@ else
 return start + (last - start) * rate
 end
 end
-function _init()
-reset_game()
-end
+function _init() reset_game() end
 function _draw()
 cls()
 if map_menu_enable then map_draw_loop() else game_draw_loop() end
@@ -791,15 +782,7 @@ end
 function game_draw_loop()
 map(unpack(global_table_data.map_data[loaded_map].mget_shift))
 local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-if tower_details.type == "tack" then 
-draw_nova_attack_overlay(tower_details)
-elseif tower_details.type == "rail" then 
-draw_ray_attack_overlay(tower_details)
-elseif tower_details.type == "frontal" then 
-draw_frontal_attack_overlay(tower_details)
-elseif tower_details.type == "floor" then 
-draw_floor_attack_overlay()
-end
+draw_tower_attack_overlay(tower_details)
 foreach(towers, Tower.draw)
 foreach(enemies, Enemy.draw)
 foreach(particles, Particle.draw)

@@ -15,9 +15,7 @@
 #include src/vec.lua
 
 -- Pico8
-function _init()
-  reset_game()
-end
+function _init() reset_game() end
 
 function _draw()
   cls()
