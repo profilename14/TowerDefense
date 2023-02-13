@@ -35,7 +35,7 @@ function game_draw_loop()
     if is_in_table(selector.position/8, towers, true) then
       Animator.update(sell_selector)
       Animator.draw(sell_selector, Vec.unpack(selector.position))
-      print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
+      print_with_outline("❎ sell", 1, 115, 7, 0)
     else
       spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)
@@ -49,8 +49,8 @@ function game_draw_loop()
         color = 8
       end
       print_with_outline(text, 1, 115, color, 0)
-      print_with_outline("🅾️ open menu", 1, 122, 7, 0)
     end
+    print_with_outline("🅾️ open menu", 1, 122, 7, 0)
   end
 end
 
