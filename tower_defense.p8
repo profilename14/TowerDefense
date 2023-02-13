@@ -7,7 +7,7 @@ get_active_menu().enable=false
 shop_enable=false
 end
 function display_tower_info(tower_id, position, text_color)
-local offset = Vec:new(-1, -31)
+local position_offset = position + Vec:new(-1, -31)
 local tower_details = global_table_data.tower_templates[tower_id]
 local texts = {
 {text=tower_details.name},
@@ -15,23 +15,23 @@ local texts = {
 }
 BorderRect.resize(
 tower_stats_background_rect,
-position+offset,
+position_offset,
 Vec:new(longest_menu_str(texts)*5+24,27
 ))
 BorderRect.draw(tower_stats_background_rect)
 print_with_outline(
 tower_details.name,
-combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 2))},
+combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 2))},
 text_color
 ))
 print_with_outline(
 tower_details.prefix..": "..tower_details.damage,
-combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 14))},
+combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 14))},
 {7,0}
 ))
 print_with_outline(
 "cost: "..tower_details.cost, 
-combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 21))},
+combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 21))},
 {(coins >= tower_details.cost) and 3 or 8, 0}
 ))
 spr(
@@ -648,23 +648,21 @@ if (bottom > #self.content) bottom = 1
 if (self.content_draw) self.content_draw(self.pos, self.position, self.content[self.pos].color)
 BorderRect.draw(self.rect)
 Animator.draw(self.selector, Vec.unpack(self.position + Vec:new(2, 15)))
-if #self.content > 3 then
 Animator.draw(self.up_arrow, self.rect.size.x/2, self.position.y-self.rect.thickness)
 Animator.draw(self.down_arrow, self.rect.size.x/2, self.rect.size.y-self.rect.thickness)
-end
-local rate = self.ticks / self.max_ticks
 local base_pos_x = self.position.x+10
+local menu_scroll_data = {self.dir, self.ticks / self.max_ticks, self.position}
 if self.ticks < self.max_ticks then 
 if self.dir > 0 then 
 print_with_outline(
 self.content[top].text,
-combine_and_unpack(menu_scroll(12, 10, 7, self.dir, rate, self.position), 
+combine_and_unpack(menu_scroll(12, 10, 7, unpack(menu_scroll_data)), 
 self.content[top].color)
 )
 elseif self.dir < 0 then 
 print_with_outline(
 self.content[bottom].text,
-combine_and_unpack(menu_scroll(12, 10, 27, self.dir, rate, self.position), 
+combine_and_unpack(menu_scroll(12, 10, 27, unpack(menu_scroll_data)), 
 self.content[bottom].color)
 )
 end
@@ -674,17 +672,15 @@ print_with_outline(self.content[bottom].text, base_pos_x, self.position.y+27, un
 end
 print_with_outline(
 self.content[self.pos].text,
-combine_and_unpack(menu_scroll(10, 12, 17, self.dir, rate, self.position), 
+combine_and_unpack(menu_scroll(10, 12, 17, unpack(menu_scroll_data)), 
 self.content[self.pos].color)
 )
 end
 function Menu:update()
 if (not self.enable) return
 Animator.update(self.selector)
-if #self.content > 3 then
 Animator.update(self.up_arrow)
 Animator.update(self.down_arrow)
-end
 if (self.ticks >= self.max_ticks) return
 self.ticks+=1
 end
@@ -958,7 +954,7 @@ end
 function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
 local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
 local sine, cosine = sin(theta / 360), cos(theta / 360)
-local shift = flr(size*0.5) - 0.5
+local shift = size\2 - 0.5
 for mx=0, size-1 do 
 for my=0, size-1 do 
 local dx, dy = mx-shift, my-shift

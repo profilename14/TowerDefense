@@ -3,8 +3,8 @@ global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,da
 
 -- Game
 function reset_game()
-  -- Game Data -- Modify at will
   global_table_data = unpack_table(global_table_str)
+  -- Game Data -- Modify at will
   menu_data = {
     {
       "main", nil,

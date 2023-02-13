@@ -61,7 +61,7 @@ end
 function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
   local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
   local sine, cosine = sin(theta / 360), cos(theta / 360)
-  local shift = flr(size*0.5) - 0.5
+  local shift = size\2 - 0.5
   for mx=0, size-1 do 
     for my=0, size-1 do 
       local dx, dy = mx-shift, my-shift

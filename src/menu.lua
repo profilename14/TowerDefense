@@ -43,24 +43,22 @@ function Menu:draw()
   BorderRect.draw(self.rect)
 
   Animator.draw(self.selector, Vec.unpack(self.position + Vec:new(2, 15)))
-  if #self.content > 3 then
-    Animator.draw(self.up_arrow, self.rect.size.x/2, self.position.y-self.rect.thickness)
-    Animator.draw(self.down_arrow, self.rect.size.x/2, self.rect.size.y-self.rect.thickness)
-  end
+  Animator.draw(self.up_arrow, self.rect.size.x/2, self.position.y-self.rect.thickness)
+  Animator.draw(self.down_arrow, self.rect.size.x/2, self.rect.size.y-self.rect.thickness)
 
-  local rate = self.ticks / self.max_ticks
   local base_pos_x = self.position.x+10
+  local menu_scroll_data = {self.dir, self.ticks / self.max_ticks, self.position}
   if self.ticks < self.max_ticks then 
     if self.dir > 0 then 
       print_with_outline(
         self.content[top].text, 
-        combine_and_unpack(menu_scroll(12, 10, 7, self.dir, rate, self.position), 
+        combine_and_unpack(menu_scroll(12, 10, 7, unpack(menu_scroll_data)), 
         self.content[top].color)
       )
     elseif self.dir < 0 then 
       print_with_outline(
         self.content[bottom].text, 
-        combine_and_unpack(menu_scroll(12, 10, 27, self.dir, rate, self.position), 
+        combine_and_unpack(menu_scroll(12, 10, 27, unpack(menu_scroll_data)), 
         self.content[bottom].color)
       )
     end 
@@ -71,17 +69,15 @@ function Menu:draw()
 
   print_with_outline(
     self.content[self.pos].text, 
-    combine_and_unpack(menu_scroll(10, 12, 17, self.dir, rate, self.position), 
+    combine_and_unpack(menu_scroll(10, 12, 17, unpack(menu_scroll_data)), 
     self.content[self.pos].color)
   )
 end
 function Menu:update()
   if (not self.enable) return
   Animator.update(self.selector)
-  if #self.content > 3 then
-    Animator.update(self.up_arrow)
-    Animator.update(self.down_arrow)
-  end
+  Animator.update(self.up_arrow)
+  Animator.update(self.down_arrow)
   if (self.ticks >= self.max_ticks) return
   self.ticks += 1
 end

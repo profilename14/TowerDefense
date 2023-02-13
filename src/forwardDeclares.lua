@@ -6,7 +6,7 @@ function choose_tower(id)
 end
 
 function display_tower_info(tower_id, position, text_color)
-  local offset = Vec:new(-1, -31)
+  local position_offset = position + Vec:new(-1, -31)
   local tower_details = global_table_data.tower_templates[tower_id]
   local texts = {
     {text = tower_details.name}, 
@@ -14,23 +14,23 @@ function display_tower_info(tower_id, position, text_color)
   }
   BorderRect.resize(
     tower_stats_background_rect,
-    position + offset, 
+    position_offset, 
     Vec:new(longest_menu_str(texts)*5 + 24,27
   ))
   BorderRect.draw(tower_stats_background_rect)
   print_with_outline(
     tower_details.name,
-    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 2))},
+    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 2))},
     text_color
   ))
   print_with_outline(
     tower_details.prefix..": "..tower_details.damage,
-    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 14))},
+    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 14))},
     {7, 0}
   ))
   print_with_outline(
     "cost: "..tower_details.cost, 
-    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 21))},
+    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 21))},
     {(coins >= tower_details.cost) and 3 or 8, 0}
   ))
   spr(
