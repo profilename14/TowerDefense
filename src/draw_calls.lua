@@ -1,5 +1,16 @@
 function game_draw_loop()
   map(unpack(global_table_data.map_data[loaded_map].mget_shift))
+  -- tower attack hint overlay
+  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
+  if tower_details.type == "tack" then 
+    draw_nova_attack_overlay(tower_details)
+  elseif tower_details.type == "rail" then 
+    draw_ray_attack_overlay(tower_details)
+  elseif tower_details.type == "frontal" then 
+    draw_frontal_attack_overlay(tower_details)
+  elseif tower_details.type == "floor" then 
+    draw_floor_attack_overlay()
+  end
   -- towers
   foreach(towers, Tower.draw)
   -- enemies
@@ -37,7 +48,6 @@ function game_draw_loop()
       spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)
       local position = selector.position/8
-      local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
       local text, color = "❎ buy & place "..tower_details.name, 7
       if tower_details.cost > coins then
         text = "can't afford "..tower_details.name

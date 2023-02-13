@@ -2,7 +2,11 @@
   "tower_icon_background": 68,
   "palettes": {
     "transparent_color_id": 0,
-    "dark_mode": { "1": 0, "5": 1, "6": 5, "7": 6 }
+    "dark_mode": { "1": 0, "5": 1, "6": 5, "7": 6 },
+    "attack_tile": {
+      "0": 2,
+      "7": 14
+    }
   },
   "sfx_data": {
     "round_complete": 10

@@ -109,3 +109,56 @@ function refund_tower_at(position)
     end
   end
 end
+
+function draw_nova_attack_overlay(tower_details)
+  local pos = selector.position/8
+  if (grid[pos.y][pos.x] ~= "empty") return
+  palt(0, false)
+  pal(global_table_data.palettes.attack_tile)
+  for y=-tower_details.radius, tower_details.radius do
+    for x=-tower_details.radius, tower_details.radius do
+      if x ~=0 or y ~= 0 then 
+        local tile_position = pos+Vec:new(x, y)
+        spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
+      end
+    end
+  end
+  pal()
+end
+
+function draw_floor_attack_overlay()
+  local pos = selector.position/8
+  if (grid[pos.y][pos.x] ~= "path") return
+  palt(0, false)
+  pal(global_table_data.palettes.attack_tile)
+  spr(mget(Vec.unpack(pos)), Vec.unpack(pos*8))
+  pal()
+end
+
+function draw_ray_attack_overlay(tower_details)
+  local pos = selector.position/8
+  if (grid[pos.y][pos.x] ~= "empty") return
+  palt(0, false)
+  pal(global_table_data.palettes.attack_tile)
+  for i=1, tower_details.radius do 
+    local tile_position = pos+Vec:new(direction)*i
+    spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
+  end
+  pal()
+end
+
+function draw_frontal_attack_overlay(tower_details)
+  local pos = selector.position/8
+  if (grid[pos.y][pos.x] ~= "empty") return
+  palt(0, false)
+  pal(global_table_data.palettes.attack_tile)
+  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(tower_details.radius, Vec:new(direction))
+  for y=fy, fly, iy do
+    for x=fx, flx, ix do
+      local tile_position = pos + Vec:new(x, y)
+      spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
+    end
+  end
+  pal()
+
+end
