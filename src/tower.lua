@@ -8,7 +8,7 @@ function Tower:new(pos, tower_template_data, direction)
     current_attack_ticks = 0,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
-    dir = Vec:new(direction),
+    dir = direction,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
   add(animators, obj.animator)
@@ -77,11 +77,10 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   local p = self.position * 8
-  draw_sprite_rotated(
-    Animator.get_sprite(self.animator),
-    p.x, p.y, self.animator.sprite_size,
-    parse_direction(self.dir)
-  )
+  local sprite = Animator.get_sprite(self.animator)
+  local theta = parse_direction(self.dir)
+  draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
+  draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
 
 function place_tower(position)
@@ -140,13 +139,13 @@ end
 
 function draw_ray_attack_overlay(radius, pos)
   for i=1, radius do 
-    local tile_position = pos+Vec:new(direction)*i
+    local tile_position = pos+direction*i
     spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
   end
 end
 
 function draw_frontal_attack_overlay(radius, pos)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, Vec:new(direction))
+  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, direction)
   for y=fy, fly, iy do
     for x=fx, flx, ix do
       local tile_position = pos + Vec:new(x, y)

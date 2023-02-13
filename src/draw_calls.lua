@@ -5,6 +5,8 @@ function game_draw_loop()
   draw_tower_attack_overlay(tower_details)
   -- towers
   foreach(towers, Tower.draw)
+  -- enemy shadows
+  foreach(enemies, function (enemy) Enemy.draw(enemy, true) end)
   -- enemies
   foreach(enemies, Enemy.draw)
   -- particles

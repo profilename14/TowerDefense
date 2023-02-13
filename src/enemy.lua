@@ -1,16 +1,17 @@
 Enemy = {}
-function Enemy:new(location, enemy_data)
+function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, height_)
   obj = { 
     position = Vec:new(location),
-    hp = enemy_data.hp, 
-    step_delay = enemy_data.step_delay,
+    hp = hp_, 
+    step_delay = step_delay_,
     current_step = 0,
     is_frozen = false,
     frozen_tick = 0,
     burning_tick = 0,
-    gfx = enemy_data.sprite_index,
-    reward = enemy_data.reward,
-    damage = enemy_data.damage,
+    gfx = sprite_id,
+    reward = reward_,
+    damage = damage_,
+    height = height_,
     pos = 1
   }
   setmetatable(obj, self)
@@ -24,8 +25,8 @@ function Enemy:step()
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
     self.hp -= 2
-    local px, py, _ = Enemy.get_pixel_location(self)
-    add(particles, Particle:new(Vec:new(px, py), true, Animator:new(global_table_data.animation_data.burn, false)))
+    local p, _ = Enemy.get_pixel_location(self)
+    add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
   end
 
   if (not self.is_frozen) return true 
@@ -37,17 +38,21 @@ end
 function Enemy:get_pixel_location()
   local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
   if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
-  local px, py = Vec.unpack(self.position * 8)
+  local pos = self.position * 8
   if not self.is_frozen then 
-    px, py = lerp(prev*8, n*8, self.current_step / self.step_delay)
+    pos = lerp(prev*8, n*8, self.current_step / self.step_delay)
   end
-  return px, py, n
+  return pos, n
 end
-function Enemy:draw()
+function Enemy:draw(is_shadows)
   if (self.hp <= 0) return
-  local px, py, n = Enemy.get_pixel_location(self)
-  local dir = normalize(n-self.position)
-  draw_sprite_rotated(self.gfx, px, py, 8, parse_direction(dir))
+  local p, n = Enemy.get_pixel_location(self)
+  local theta = parse_direction(normalize(n-self.position))
+  if is_shadows then
+    draw_sprite_shadow(self.gfx, p, self.height, 8, theta)
+  else
+    draw_sprite_rotated(self.gfx, p, 8, theta)
+  end
 end
 
 function kill_enemy(enemy)
@@ -123,10 +128,11 @@ function spawn_enemy()
   while enemies_remaining > 0 do 
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
     if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
-    if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
-    enemy_data_from_template = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
-    add(enemies, Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location, enemy_data_from_template))
-    enemies_remaining -= 1
+    if enemy_current_spawn_tick == 0 then
+      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
+      add(enemies, Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location, unpack(enemy_data)))
+      enemies_remaining -= 1
+    end
     ::spawn_enemy_continue:: 
     yield()
   end

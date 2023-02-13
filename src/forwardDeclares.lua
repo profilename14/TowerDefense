@@ -43,29 +43,28 @@ end
 
 function display_tower_rotation(menu_pos, position)
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  local offset = Vec:new(0, -28)
-  BorderRect.reposition(tower_rotation_background_rect, position + offset)
+  local position_offset = position + Vec:new(0, -28)
+  BorderRect.reposition(tower_rotation_background_rect, position_offset)
   BorderRect.draw(tower_rotation_background_rect)
 
-  local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
+  local sprite_position = position_offset + Vec:new(4, 4)
 
   if tower_details.disable_icon_rotation then 
-    spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
+    spr(tower_details.icon_data, combine_and_unpack({Vec.unpack(sprite_position)},{2, 2}))
   else
-    draw_sprite_rotated(global_table_data.tower_icon_background, combine_and_unpack(
-      {Vec.unpack(position + offset)}, {24, parse_direction(Vec:new(direction))}
-    ))
-    draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
-      sprite_position, {16, parse_direction(Vec:new(direction))}
-    ))
+    draw_sprite_rotated(global_table_data.tower_icon_background,
+      position_offset, 24, parse_direction(direction)
+    )
+    draw_sprite_rotated(tower_details.icon_data,
+      sprite_position, 16, parse_direction(direction)
+    )
   end
 end
 
 -- Enemy Related
 function start_round()
   if not start_next_wave and #enemies == 0 then
-    start_next_wave = true
-    enemies_active = true
+    start_next_wave,enemies_active = true,true
     wave_round += 1
     wave_round = min(wave_round, #global_table_data.wave_data)
     if wave_round == #global_table_data.wave_data then 
@@ -91,8 +90,7 @@ function get_menu(name)
 end
 
 function swap_menu_context(name)
-  local menu = get_active_menu()
-  menu.enable = false
+  get_active_menu().enable = false
   get_menu(name).enable = true
 end
 
@@ -119,8 +117,7 @@ function load_game(map_id)
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-      if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
+      if (not placable_tile_location(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift))) grid[y][x] = "path" 
     end
   end
   music(0)

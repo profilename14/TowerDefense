@@ -44,7 +44,7 @@ end
 
 function lerp(start, last, rate)
   if type(start) == "table" then 
-    return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
+    return Vec:new(lerp(start.x, last.x, rate), lerp(start.y, last.y, rate))
   else
     return start + (last - start) * rate
   end

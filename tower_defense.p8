@@ -43,25 +43,24 @@ Vec.unpack(tower_stats_background_rect.position+Vec:new(longest_menu_str(texts)*
 end
 function display_tower_rotation(menu_pos, position)
 local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-local offset = Vec:new(0, -28)
-BorderRect.reposition(tower_rotation_background_rect, position + offset)
+local position_offset = position + Vec:new(0, -28)
+BorderRect.reposition(tower_rotation_background_rect, position_offset)
 BorderRect.draw(tower_rotation_background_rect)
-local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
+local sprite_position = position_offset + Vec:new(4, 4)
 if tower_details.disable_icon_rotation then 
-spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
+spr(tower_details.icon_data, combine_and_unpack({Vec.unpack(sprite_position)},{2, 2}))
 else
-draw_sprite_rotated(global_table_data.tower_icon_background, combine_and_unpack(
-{Vec.unpack(position+offset)},{24,parse_direction(Vec:new(direction))}
-))
-draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
-sprite_position,{16,parse_direction(Vec:new(direction))}
-))
+draw_sprite_rotated(global_table_data.tower_icon_background,
+position_offset,24,parse_direction(direction)
+)
+draw_sprite_rotated(tower_details.icon_data,
+sprite_position,16,parse_direction(direction)
+)
 end
 end
 function start_round()
 if not start_next_wave and #enemies == 0 then
-start_next_wave=true
-enemies_active=true
+start_next_wave,enemies_active=true,true
 wave_round+=1
 wave_round=min(wave_round,#global_table_data.wave_data)
 if wave_round == #global_table_data.wave_data then 
@@ -83,8 +82,7 @@ if (menu.name == name) return menu
 end
 end
 function swap_menu_context(name)
-local menu = get_active_menu()
-menu.enable=false
+get_active_menu().enable=false
 get_menu(name).enable=true
 end
 function longest_menu_str(data)
@@ -108,13 +106,12 @@ for y=0, 15 do
 grid[y]={}
 for x=0, 15 do 
 grid[y][x] = "empty"
-local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
+if (not placable_tile_location(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift))) grid[y][x] = "path" 
 end
 end
 music(0)
 end
-global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},tower_templates={{name=sword circle,damage=2,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=10,icon_data=16,disable_icon_rotation=True},{name=lightning lance,damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=55,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False},{name=hale howitzer,damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=25,type=frontal,attack_delay=30,icon_data=20,disable_icon_rotation=False},{name=fire pit,damage=3,prefix=duration,radius=0,animation_key=fire_pit,cost=25,type=floor,attack_delay=15,icon_data=22,disable_icon_rotation=True}},enemy_templates={{hp=10,step_delay=10,sprite_index=3,reward=3,damage=1},{hp=10,step_delay=8,sprite_index=4,reward=5,damage=2},{hp=25,step_delay=12,sprite_index=5,reward=7,damage=5},{hp=20,step_delay=9,sprite_index=3,reward=3,damage=4},{hp=15,step_delay=5,sprite_index=4,reward=5,damage=5},{hp=70,step_delay=13,sprite_index=5,reward=7,damage=10}},wave_data={{1,1,1},{1,1,1,1,1,1},{2,1,2,1,2,1,1},{1,2,2,1,2,2,1,2,2,2},{3,3,3,3,2,2,2,2,3,2,3,1},{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}}"
+global_table_str = "tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=3,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},tower_templates={{name=sword circle,damage=2,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=10,icon_data=16,disable_icon_rotation=True},{name=lightning lance,damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=55,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False},{name=hale howitzer,damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=25,type=frontal,attack_delay=30,icon_data=20,disable_icon_rotation=False},{name=fire pit,damage=3,prefix=duration,radius=0,animation_key=fire_pit,cost=25,type=floor,attack_delay=15,icon_data=22,disable_icon_rotation=True}},enemy_templates={{hp=10,step_delay=10,sprite_index=3,reward=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,reward=5,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,reward=7,damage=5,height=2},{hp=20,step_delay=9,sprite_index=3,reward=3,damage=4,height=2},{hp=15,step_delay=5,sprite_index=4,reward=5,damage=5,height=6},{hp=70,step_delay=13,sprite_index=5,reward=7,damage=10,height=2}},wave_data={{1,1,1},{1,1,1,1,1,1},{2,1,2,1,2,1,1},{1,2,2,1,2,2,1,2,2,2},{3,3,3,3,2,2,2,2,3,2,3,1},{2,2,2,2,2,2,2,2,1,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,1,1,3,3,3,3,4,4,4,4,4},{1,4,4,4,4,4,1,1,1,4,4,4,4,4,1,1,1},{2,3,2,3,2,3,2,3,2,3,2,3,2,3,4,4,4,4,4},{1,4,4,4,4,2,2,2,2,2,2,2,5,5,5,5},{2,5,5,5,5,5,2,3,3,3,3,2,2,4,1},{5,5,3,3,3,5,2,4,4,4,4,3,3,3,3,2,2,2},{5,5,3,3,3,5,5,5,5,3,3,3,3,5,5,5,5,5,5},{3,3,3,3,3,3,5,2,5,2,5,2,6,6,6},{4,3,4,3,4,3,5,5,5,5,6,6,6,6,6,6,5,5,5,5,5,5,5,5}}"
 function reset_game()
 global_table_data=unpack_table(global_table_str)
 menu_data={
@@ -126,7 +123,7 @@ menu_data={
 {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
 {text = "rotate tower", color = {7, 0}, 
 callback = function()
-direction={direction[2]*-1,direction[1]}
+direction=Vec:new(direction.y*-1,direction.x)
 end
 }
 },
@@ -190,7 +187,7 @@ map_menu_enable=true
 start_next_wave=false
 wave_cor = nil
 incoming_hint={}
-direction={0,-1}
+direction=Vec:new(0,-1)
 grid={}--16x16cellstates
 towers={}
 enemies={}
@@ -208,18 +205,19 @@ sell_selector = Animator:new(global_table_data.animation_data.sell)
 get_menu("map").enable = true
 end
 Enemy={}
-function Enemy:new(location, enemy_data)
+function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, height_)
 obj={
 position=Vec:new(location),
-hp=enemy_data.hp,
-step_delay=enemy_data.step_delay,
+hp=hp_,
+step_delay=step_delay_,
 current_step=0,
 is_frozen=false,
 frozen_tick=0,
 burning_tick=0,
-gfx=enemy_data.sprite_index,
-reward=enemy_data.reward,
-damage=enemy_data.damage,
+gfx=sprite_id,
+reward=reward_,
+damage=damage_,
+height=height_,
 pos=1
 }
 setmetatable(obj,self)
@@ -232,8 +230,8 @@ if (self.current_step ~= 0) return false
 if self.burning_tick > 0 then 
 self.burning_tick-=1
 self.hp-=2
-local px, py, _ = Enemy.get_pixel_location(self)
-add(particles, Particle:new(Vec:new(px, py), true, Animator:new(global_table_data.animation_data.burn, false)))
+local p, _ = Enemy.get_pixel_location(self)
+add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
 end
 if (not self.is_frozen) return true 
 self.frozen_tick=max(self.frozen_tick-1,0)
@@ -244,17 +242,21 @@ end
 function Enemy:get_pixel_location()
 local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
 if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
-local px, py = Vec.unpack(self.position * 8)
+local pos = self.position * 8
 if not self.is_frozen then 
-px,py=lerp(prev*8,n*8,self.current_step/self.step_delay)
+pos=lerp(prev*8,n*8,self.current_step/self.step_delay)
 end
-return px, py, n
+return pos, n
 end
-function Enemy:draw()
+function Enemy:draw(is_shadows)
 if (self.hp <= 0) return
-local px, py, n = Enemy.get_pixel_location(self)
-local dir = normalize(n-self.position)
-draw_sprite_rotated(self.gfx,px,py,8,parse_direction(dir))
+local p, n = Enemy.get_pixel_location(self)
+local theta = parse_direction(normalize(n-self.position))
+if is_shadows then
+draw_sprite_shadow(self.gfx,p,self.height,8,theta)
+else
+draw_sprite_rotated(self.gfx,p,8,theta)
+end
 end
 function kill_enemy(enemy)
 if (enemy.hp > 0) return
@@ -324,10 +326,11 @@ function spawn_enemy()
 while enemies_remaining > 0 do 
 enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
 if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
-if (enemy_current_spawn_tick ~= 0) goto spawn_enemy_continue 
-enemy_data_from_template = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
-add(enemies,Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location,enemy_data_from_template))
+if enemy_current_spawn_tick == 0 then
+local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
+add(enemies,Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location,unpack(enemy_data)))
 enemies_remaining-=1
+end
 ::spawn_enemy_continue::
 yield()
 end
@@ -342,7 +345,7 @@ attack_delay=tower_template_data.attack_delay,
 current_attack_ticks=0,
 cost=tower_template_data.cost,
 type=tower_template_data.type,
-dir=Vec:new(direction),
+dir=direction,
 animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
 }
 add(animators, obj.animator)
@@ -410,11 +413,10 @@ end
 end
 function Tower:draw()
 local p = self.position * 8
-draw_sprite_rotated(
-Animator.get_sprite(self.animator),
-p.x, p.y, self.animator.sprite_size,
-parse_direction(self.dir)
-)
+local sprite = Animator.get_sprite(self.animator)
+local theta = parse_direction(self.dir)
+draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
+draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
 function place_tower(position)
 if (grid[position.y][position.x] == "tower") return false
@@ -465,12 +467,12 @@ end
 end
 function draw_ray_attack_overlay(radius, pos)
 for i=1, radius do 
-local tile_position = pos+Vec:new(direction)*i
+local tile_position = pos+direction*i
 spr(mget(Vec.unpack(tile_position)),Vec.unpack(tile_position*8))
 end
 end
 function draw_frontal_attack_overlay(radius, pos)
-local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, Vec:new(direction))
+local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, direction)
 for y=fy, fly, iy do
 for x=fx, flx, ix do
 local tile_position = pos + Vec:new(x, y)
@@ -563,7 +565,7 @@ end
 if self.spin_enable then 
 draw_sprite_rotated(
 self.data[self.animation_frame].sprite,
-x,y,self.sprite_size,self.theta
+Vec:new(x,y),self.sprite_size,self.theta
 )
 else
 spr(self.data[self.animation_frame].sprite,x,y)
@@ -761,7 +763,7 @@ return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or
 end
 function lerp(start, last, rate)
 if type(start) == "table" then 
-return lerp(start.x, last.x, rate), lerp(start.y, last.y, rate)
+return Vec:new(lerp(start.x, last.x, rate), lerp(start.y, last.y, rate))
 else
 return start + (last - start) * rate
 end
@@ -784,6 +786,7 @@ map(unpack(global_table_data.map_data[loaded_map].mget_shift))
 local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
 draw_tower_attack_overlay(tower_details)
 foreach(towers, Tower.draw)
+foreach(enemies, function (enemy) Enemy.draw(enemy, true) end)
 foreach(enemies, Enemy.draw)
 foreach(particles, Particle.draw)
 if (shop_enable) foreach(menus, Menu.draw)
@@ -809,7 +812,7 @@ else
 if is_in_table(selector.position/8, towers, true) then
 Animator.update(sell_selector)
 Animator.draw(sell_selector, Vec.unpack(selector.position))
-print_with_outline("❎ sell\n🅾️ open menu", 1, 115, 7, 0)
+print_with_outline("❎ sell", 1, 115, 7, 0)
 else
 spr(selector.sprite_index, Vec.unpack(selector.position))
 Animator.reset(sell_selector)
@@ -823,8 +826,8 @@ text = "can't place "..tower_details.name.." here"
 color = 8
 end
 print_with_outline(text, 1, 115, color, 0)
-print_with_outline("🅾️ open menu", 1, 122, 7, 0)
 end
+print_with_outline("🅾️ open menu", 1, 122, 7, 0)
 end
 end
 function map_draw_loop()
@@ -910,8 +913,7 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
 ?text,dx,dy,text_color
 end
 function print_text_center(text, dy, text_color, outline_color)
-local dx = 64 - (#text*5)\2
-print_with_outline(text, dx, dy, text_color, outline_color)
+print_with_outline(text, 64-(#text*5)\2, dy, text_color, outline_color)
 end
 function controls()
 if btnp(⬆️) then return 0, -1
@@ -922,12 +924,15 @@ end
 return 0, 0
 end
 function increase_enemy_health(enemy_data)
-return {
-hp=enemy_data.hp+global_table_data.freeplay_stats.hp*freeplay_rounds,
-step_delay=max(enemy_data.step_delay-global_table_data.freeplay_stats.speed*freeplay_rounds,global_table_data.freeplay_stats.min_step_delay),
-sprite_index=enemy_data.sprite_index,
-reward=enemy_data.reward,
-damage=enemy_data.damage
+local stats = global_table_data.freeplay_stats
+return 
+{
+enemy_data.hp+stats.hp*freeplay_rounds,
+max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
+enemy_data.sprite_index,
+enemy_data.reward,
+enemy_data.damage,
+enemy_data.height
 }
 end
 function is_in_table(val, table, is_entity)
@@ -950,7 +955,7 @@ return
 end
 end
 end
-function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
+function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
 local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
 local sine, cosine = sin(theta / 360), cos(theta / 360)
 local shift = flr(size*0.5) - 0.5
@@ -962,11 +967,16 @@ local yy = flr(dx*sine+dy*cosine+shift)
 if xx >= 0 and xx < size and yy >= 0 and yy <= size then
 local id = sget(sx+xx, sy+yy)
 if id ~= global_table_data.palettes.transparent_color_id or is_opaque then 
-pset(x+mx,y+my,id)
+pset(position.x+mx,position.y+my,id)
 end
 end
 end
 end
+end
+function draw_sprite_shadow(sprite, position, height, size, theta)
+pal(global_table_data.palettes.shadows)
+draw_sprite_rotated(sprite,position+Vec:new(height,height),size,theta)
+pal()
 end
 function parse_direction(dir)
 if (dir.x > 0) return 90
@@ -1029,9 +1039,9 @@ else
 local value
 if val[1] == "{" and val[-1] == "}" then 
 value=unpack_table(sub(val,2,#val-1))
-elseif val == "true" then 
+elseif val == "True" then 
 value=true
-elseif val == "false" then 
+elseif val == "False" then 
 value=false
 else
 value = tonum(val) or val
