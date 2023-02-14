@@ -49,7 +49,7 @@ function placable_tile_location(coord)
 end
 
 function add_enemy_at_to_table(pos, table)
-  for _, enemy in pairs(enemies) do
+  for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
       return

@@ -63,12 +63,12 @@ function Tower:frontal_collision()
   return hits
 end
 function Tower:apply_damage(targets)
-  for _, enemy in pairs(targets) do
+  for enemy in all(targets) do
     if (enemy.hp > 0) enemy.hp -= self.dmg
   end
 end
 function Tower:freeze_enemies(targets)
-  for _, enemy in pairs(targets) do
+  for enemy in all(targets) do
     if not enemy.is_frozen then 
       enemy.is_frozen = true
       enemy.frozen_tick = self.dmg
@@ -96,7 +96,7 @@ function place_tower(position)
 end
 
 function refund_tower_at(position)
-  for _, tower in pairs(towers) do
+  for tower in all(towers) do
     if tower.position == position then
       grid[position.y][position.x] = "empty"
       if (tower.type == "floor") grid[position.y][position.x] = "path"

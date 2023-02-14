@@ -166,6 +166,7 @@
   "tower_templates": [
     {
       "name": "sword circle",
+      "text_color": [2, 13],
       "damage": 2,
       "prefix": "damage",
       "radius": 1,
@@ -178,6 +179,7 @@
     },
     {
       "name": "lightning lance",
+      "text_color": [10, 9],
       "damage": 5,
       "prefix": "damage",
       "radius": 5,
@@ -190,6 +192,7 @@
     },
     {
       "name": "hale howitzer",
+      "text_color": [12, 7],
       "damage": 5,
       "prefix": "delay",
       "radius": 2,
@@ -202,6 +205,7 @@
     },
     {
       "name": "fire pit",
+      "text_color": [9, 8],
       "damage": 3,
       "prefix": "duration",
       "radius": 0,

@@ -73,13 +73,13 @@ end
 
 -- Menu Related
 function get_active_menu()
-  for _, menu in pairs(menus) do
+  for menu in all(menus) do
     if (menu.enable) return menu
   end
 end
 
 function get_menu(name)
-  for _, menu in pairs(menus) do
+  for menu in all(menus) do
     if (menu.name == name) return menu
   end
 end
@@ -91,10 +91,32 @@ end
 
 function longest_menu_str(data)
   local len = 0
-  for _, str in pairs(data) do
+  for str in all(data) do
     len = max(len, #str.text)
   end
   return len
+end
+
+function get_tower_data_for_menu()
+  local menu_content = {}
+  for i, tower_details in pairs(global_table_data.tower_templates) do
+    add(menu_content, {
+      text = tower_details.name,
+      color = tower_details.text_color,
+      callback = choose_tower, args = {i}
+    })
+  end
+  return menu_content
+end
+
+function get_map_data_for_menu()
+  local menu_content = {}
+  for i, map_data in pairs(global_table_data.map_data) do
+    add(menu_content, 
+      {text = map_data.name, color = {7, 0}, callback = load_game, args = {i}}
+    )
+  end
+  return menu_content
 end
 
 -- Game State Related
