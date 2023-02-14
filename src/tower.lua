@@ -129,7 +129,7 @@ function draw_nova_attack_overlay(radius, pos)
     for x=-radius, radius do
       if x ~=0 or y ~= 0 then 
         local tile_position = pos+Vec:new(x, y)
-        spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
+        spr(mget(Vec.unpack(tile_position+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(tile_position*8))
       end
     end
   end
@@ -138,7 +138,7 @@ end
 function draw_ray_attack_overlay(radius, pos)
   for i=1, radius do 
     local tile_position = pos+direction*i
-    spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
+    spr(mget(Vec.unpack(tile_position+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(tile_position*8))
   end
 end
 
@@ -147,7 +147,7 @@ function draw_frontal_attack_overlay(radius, pos)
   for y=fy, fly, iy do
     for x=fx, flx, ix do
       local tile_position = pos + Vec:new(x, y)
-      spr(mget(Vec.unpack(tile_position)), Vec.unpack(tile_position*8))
+      spr(mget(Vec.unpack(tile_position+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(tile_position*8))
     end
   end
 end
