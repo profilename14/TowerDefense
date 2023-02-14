@@ -14,7 +14,7 @@ function reset_game()
         {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
         {text = "rotate tower", color = {7, 0}, 
           callback = function()
-            direction = Vec:new(direction.y*-1, direction.x)
+            direction = Vec:new(-direction.y, direction.x)
           end
         }
       },

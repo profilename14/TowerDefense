@@ -138,16 +138,14 @@ menu_data={
 {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
 {text = "rotate tower", color = {7, 0}, 
 callback = function()
-direction=Vec:new(direction.y*-1,direction.x)
+direction=Vec:new(-direction.y,direction.x)
 end
 }
 },
 display_tower_rotation,
 5,8,7,3
 },
-{
-"towers", "main", 5, 70, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3
-},
+{ "towers", "main", 5, 70, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
 {
 "options", "main",
 5,70,
@@ -164,9 +162,7 @@ end
 nil,
 5,8,7,3
 },
-{
-"map", nil, 5, 84, get_map_data_for_menu(), nil, 5, 8, 7, 3
-}
+{ "map", nil, 5, 84, get_map_data_for_menu(), nil, 5, 8, 7, 3 }
 }
 selector = {
 position=Vec:new(64,64),
