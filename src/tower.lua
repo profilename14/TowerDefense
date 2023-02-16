@@ -119,7 +119,7 @@ function draw_tower_attack_overlay(tower_details)
   elseif tower_details.type == "frontal" and is_empty then 
     draw_frontal_attack_overlay(tower_details.radius, pos)
   elseif tower_details.type == "floor" and grid[pos.y][pos.x] == "path" then 
-    spr(mget(Vec.unpack(pos)), Vec.unpack(pos*8))
+    spr(mget(Vec.unpack(pos+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(pos*8))
   end
   pal()
 end
