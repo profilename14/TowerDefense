@@ -85,5 +85,8 @@ class Compiler():
     def _JoinPrefixes(prefixes: list[str]) -> str:
         result = ""
         for prefix in prefixes:
-            result += prefix + "\\\\"
+            if os.name == 'nt' :
+                result += prefix + "\\\\"
+            else:
+                result += prefix +'/'
         return result
