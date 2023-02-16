@@ -71,7 +71,10 @@ class Compiler():
 
     @staticmethod
     def _WinReverseSlashes(path: str) -> str:
-        return path.replace("/", "\\\\")
+        if os.name == 'nt' :
+            return path.replace("/", "\\\\")
+        else:
+            return path
 
     @staticmethod
     def _GetPathPrefix(path: str) -> str:
