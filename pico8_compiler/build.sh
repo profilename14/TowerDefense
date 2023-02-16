@@ -2,4 +2,4 @@
 
 pico8_file="tower_defense.p8"
 
-python main.py .. $pico8_file main.lua
+python3 main.py .. $pico8_file main.lua
