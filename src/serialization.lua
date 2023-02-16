@@ -33,9 +33,9 @@ function insert_key_val(str, table)
     local value
     if val[1] == "{" and val[-1] == "}" then 
       value = unpack_table(sub(val, 2, #val-1))
-    elseif val == "true" then 
+    elseif val == "True" then 
       value = true 
-    elseif val == "false" then 
+    elseif val == "False" then 
       value = false 
     else
       value = tonum(val) or val

@@ -6,102 +6,117 @@ function choose_tower(id)
 end
 
 function display_tower_info(tower_id, position, text_color)
-  local offset = Vec:new(-1, -31)
+  local position_offset = position + Vec:new(-1, -31)
   local tower_details = global_table_data.tower_templates[tower_id]
   local texts = {
     {text = tower_details.name}, 
     {text = tower_details.prefix..": "..tower_details.damage}
   }
+  local longest_str_len = longest_menu_str(texts)*5+4
   BorderRect.resize(
     tower_stats_background_rect,
-    position + offset, 
-    Vec:new(longest_menu_str(texts)*5 + 24,27
+    position_offset, 
+    Vec:new(longest_str_len + 20,27
   ))
   BorderRect.draw(tower_stats_background_rect)
   print_with_outline(
     tower_details.name,
-    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 2))},
+    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 2))},
     text_color
   ))
   print_with_outline(
-    tower_details.prefix..": "..tower_details.damage,
-    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 14))},
+    texts[2].text,
+    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 14))},
     {7, 0}
   ))
   print_with_outline(
     "cost: "..tower_details.cost, 
-    combine_and_unpack({Vec.unpack(position + offset + Vec:new(4, 21))},
+    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 21))},
     {(coins >= tower_details.cost) and 3 or 8, 0}
   ))
   spr(
     tower_details.icon_data, 
-    combine_and_unpack({
-      Vec.unpack(tower_stats_background_rect.position + Vec:new(longest_menu_str(texts)*5 + 4, 6))
-    },{2, 2}
+    combine_and_unpack(
+      {Vec.unpack(tower_stats_background_rect.position + Vec:new(longest_str_len, 6))},
+      {2, 2}
   ))
 end
 
 function display_tower_rotation(menu_pos, position)
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  local offset = Vec:new(0, -28)
-  BorderRect.reposition(tower_rotation_background_rect, position + offset)
+  local position_offset = position + Vec:new(0, -28)
+  BorderRect.reposition(tower_rotation_background_rect, position_offset)
   BorderRect.draw(tower_rotation_background_rect)
 
-  local sprite_position = {Vec.unpack(position + offset + Vec:new(4, 4))}
+  local sprite_position = position_offset + Vec:new(4, 4)
 
   if tower_details.disable_icon_rotation then 
-    spr(tower_details.icon_data, combine_and_unpack(sprite_position,{2, 2}))
+    spr(tower_details.icon_data, combine_and_unpack({Vec.unpack(sprite_position)},{2, 2}))
   else
-    draw_sprite_rotated(global_table_data.tower_icon_background, combine_and_unpack(
-      {Vec.unpack(position + offset)}, {24, parse_direction(Vec:new(direction))}
-    ))
-    draw_sprite_rotated(tower_details.icon_data, combine_and_unpack(
-      sprite_position, {16, parse_direction(Vec:new(direction))}
-    ))
+    draw_sprite_rotated(global_table_data.tower_icon_background,
+      position_offset, 24, parse_direction(direction)
+    )
+    draw_sprite_rotated(tower_details.icon_data, sprite_position, 16, parse_direction(direction))
   end
 end
 
 -- Enemy Related
 function start_round()
-  if not start_next_wave and #enemies == 0 then
-    start_next_wave = true
-    enemies_active = true
-    wave_round += 1
-    wave_round = min(wave_round, #global_table_data.wave_data)
-    if wave_round == #global_table_data.wave_data then 
-      freeplay_rounds += 1
-    end
-    enemies_remaining = #global_table_data.wave_data[wave_round]
-    get_active_menu().enable = false
-    shop_enable = false
-  end
+  if (start_next_wave or #enemies ~= 0) return
+  start_next_wave,enemies_active = true,true
+  wave_round = min(wave_round + 1, #global_table_data.wave_data)
+  if (wave_round == #global_table_data.wave_data) freeplay_rounds += 1
+  enemies_remaining = #global_table_data.wave_data[wave_round]
+  get_active_menu().enable = false
+  shop_enable = false
 end
 
 -- Menu Related
 function get_active_menu()
-  for _, menu in pairs(menus) do
+  for menu in all(menus) do
     if (menu.enable) return menu
   end
 end
 
 function get_menu(name)
-  for _, menu in pairs(menus) do
+  for menu in all(menus) do
     if (menu.name == name) return menu
   end
 end
 
 function swap_menu_context(name)
-  local menu = get_active_menu()
-  menu.enable = false
+  get_active_menu().enable = false
   get_menu(name).enable = true
 end
 
 function longest_menu_str(data)
   local len = 0
-  for _, str in pairs(data) do
+  for str in all(data) do
     len = max(len, #str.text)
   end
   return len
+end
+
+function get_tower_data_for_menu()
+  local menu_content = {}
+  for i, tower_details in pairs(global_table_data.tower_templates) do
+    add(menu_content, {
+      text = tower_details.name,
+      color = tower_details.text_color,
+      callback = choose_tower, args = {i}
+    })
+  end
+  return menu_content
+end
+
+function get_map_data_for_menu()
+  local menu_content = {}
+  for i, map_data in pairs(global_table_data.map_data) do
+    add(menu_content, 
+      {text = map_data.name, color = {7, 0}, callback = load_game, args = {i}}
+    )
+  end
+  return menu_content
 end
 
 -- Game State Related
@@ -119,8 +134,7 @@ function load_game(map_id)
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      local map_coords = Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-      if (not placable_tile_location(map_coords)) grid[y][x] = "path" 
+      if (not placable_tile_location(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift))) grid[y][x] = "path" 
     end
   end
   music(0)

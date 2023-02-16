@@ -8,8 +8,7 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
 end
 
 function print_text_center(text, dy, text_color, outline_color)
-  local dx = 64 - (#text*5)\2
-  print_with_outline(text, dx, dy, text_color, outline_color)
+  print_with_outline(text, 64-(#text*5)\2, dy, text_color, outline_color)
 end
 
 -- Utility
@@ -23,13 +22,16 @@ function controls()
 end
 
 function increase_enemy_health(enemy_data)
-  return {
-    hp = enemy_data.hp + global_table_data.freeplay_stats.hp * freeplay_rounds,
-    step_delay = max(enemy_data.step_delay - global_table_data.freeplay_stats.speed * freeplay_rounds, global_table_data.freeplay_stats.min_step_delay),
-    sprite_index = enemy_data.sprite_index,
-    reward = enemy_data.reward,
-    damage = enemy_data.damage
-  }
+  local stats = global_table_data.freeplay_stats
+  return 
+    {
+      enemy_data.hp+stats.hp*freeplay_rounds,
+      max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
+      enemy_data.sprite_index,
+      enemy_data.reward,
+      enemy_data.damage,
+      enemy_data.height
+    }
 end
 
 function is_in_table(val, table, is_entity)
@@ -47,7 +49,7 @@ function placable_tile_location(coord)
 end
 
 function add_enemy_at_to_table(pos, table)
-  for _, enemy in pairs(enemies) do
+  for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
       return
@@ -56,10 +58,10 @@ function add_enemy_at_to_table(pos, table)
 end
 
 -- https://www.lexaloffle.com/bbs/?pid=52525 [modified for this game]
-function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
+function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
   local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
   local sine, cosine = sin(theta / 360), cos(theta / 360)
-  local shift = flr(size*0.5) - 0.5
+  local shift = size\2 - 0.5
   for mx=0, size-1 do 
     for my=0, size-1 do 
       local dx, dy = mx-shift, my-shift
@@ -68,11 +70,17 @@ function draw_sprite_rotated(sprite_id, x, y, size, theta, is_opaque)
       if xx >= 0 and xx < size and yy >= 0 and yy <= size then
         local id = sget(sx+xx, sy+yy)
         if id ~= global_table_data.palettes.transparent_color_id or is_opaque then 
-          pset(x+mx, y+my, id)
+          pset(position.x+mx, position.y+my, id)
         end
       end
     end
   end
+end
+
+function draw_sprite_shadow(sprite, position, height, size, theta)
+  pal(global_table_data.palettes.shadows)
+  draw_sprite_rotated(sprite, position + Vec:new(height, height), size, theta)
+  pal()
 end
 
 function parse_direction(dir)

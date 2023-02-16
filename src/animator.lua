@@ -29,19 +29,13 @@ function Animator:finished()
   return self.animation_frame >= #self.data
 end
 function Animator:draw(dx, dy)
-  local x,y=dx,dy 
+  local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]
   -- if positions were given to the animation array
-  if self.data[self.animation_frame].offset then 
-    x += self.data[self.animation_frame].offset[1]
-    y += self.data[self.animation_frame].offset[2]
-  end
+  if (frame.offset) position += Vec:new(frame.offset)
   if self.spin_enable then 
-    draw_sprite_rotated(
-      self.data[self.animation_frame].sprite,
-      x, y, self.sprite_size, self.theta
-    )
+    draw_sprite_rotated(frame.sprite, position, self.sprite_size, self.theta)
   else
-    spr(self.data[self.animation_frame].sprite,x,y)
+    spr(Animator.get_sprite(self),Vec.unpack(position))
   end
 end
 function Animator:get_sprite()
