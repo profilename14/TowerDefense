@@ -37,7 +37,11 @@ function game_draw_loop()
     if is_in_table(selector.position/8, towers, true) then
       Animator.update(sell_selector)
       Animator.draw(sell_selector, Vec.unpack(selector.position))
-      print_with_outline("❎ sell", 1, 115, 7, 0)
+      if manifest_mode == false then
+        print_with_outline("❎ sell", 1, 115, 7, 0)
+      else
+        print_with_outline("❎ manifest", 1, 115, 7, 0)
+      end
     else
       spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)

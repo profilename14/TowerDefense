@@ -96,13 +96,15 @@ function place_tower(position)
 end
 
 function refund_tower_at(position)
-  for tower in all(towers) do
-    if tower.position == position then
-      grid[position.y][position.x] = "empty"
-      if (tower.type == "floor") grid[position.y][position.x] = "path"
-      coins += tower.cost \ 2
-      del(animators, tower.animator) 
-      del(towers, tower)
+  if manifest_mode == false then
+    for tower in all(towers) do
+      if tower.position == position then
+        grid[position.y][position.x] = "empty"
+        if (tower.type == "floor") grid[position.y][position.x] = "path"
+        coins += tower.cost \ 2
+        del(animators, tower.animator) 
+        del(towers, tower)
+      end
     end
   end
 end
@@ -119,7 +121,7 @@ function draw_tower_attack_overlay(tower_details)
   elseif tower_details.type == "frontal" and is_empty then 
     draw_frontal_attack_overlay(tower_details.radius, pos)
   elseif tower_details.type == "floor" and grid[pos.y][pos.x] == "path" then 
-    spr(mget(Vec.unpack(pos+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(pos*8))
+    spr(mget(Vec.unpack(pos)), Vec.unpack(pos*8))
   end
   pal()
 end

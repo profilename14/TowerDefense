@@ -55,7 +55,7 @@ end
 
 function kill_enemy(enemy)
   if (enemy.hp > 0) return
-  coins += enemy.reward
+  --coins += enemy.reward
   del(enemies, enemy)
 end
 

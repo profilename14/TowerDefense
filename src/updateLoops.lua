@@ -75,5 +75,6 @@ function game_loop()
   if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
     enemies_active = false 
     sfx(global_table_data.sfx_data.round_complete)
+    coins += 15
   end
 end
