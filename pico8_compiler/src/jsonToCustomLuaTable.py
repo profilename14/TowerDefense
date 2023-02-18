@@ -7,9 +7,17 @@ class JSONSerializer():
         pass
 
     def Parse(self) -> str:
+        fileName = self.file.split("/")[-1]
+        print(f"Converting [{fileName}] to lua table string...")
         with open(self.file, "r") as f:
             data = json.load(f)
-            return self.ConvertDict(data)[1:-1]
+            tableStr: str = self.ConvertDict(data)[1:-1]
+            print("\tJSON finishing converting...")
+            tokensSaved = self.tokenCount - 1
+            print(f"\tYou saved {tokensSaved} tokens")
+            charsUsed = len(tableStr) + 2
+            print(f"\tLua Table String is {charsUsed} chars long including the quotes after pasting")
+            return tableStr
 
     def ConvertDict(self, data) -> str:
         result = "{"
