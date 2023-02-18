@@ -18,13 +18,13 @@ class JSONSerializer():
             print("\tJSON finishing converting...")
             tokensSaved = self.tokenCount - 1
             print(f"\tYou saved {tokensSaved} tokens")
-            charsUsed = len(tableStr) + 2
-            print(f"\tLua Table String is {charsUsed} chars long including the quotes after pasting")
+            charsUsed = len(tableStr) + 5
+            print(f"\t{charsUsed} chars used after replacement")
             return tableStr
 
     def ConvertDict(self, data) -> str:
         result = "{"
-        self.tokenCount += 1
+        self.tokenCount += 2
         for i, item in enumerate(data):
             result += f"{item}="
             self.tokenCount += 2
@@ -41,7 +41,7 @@ class JSONSerializer():
 
     def ConvertList(self, listData: list[any]) -> str:
         result = "{"
-        self.tokenCount += 1
+        self.tokenCount += 2
         for i, item in enumerate(listData):
             if type(item) is None: continue
 
