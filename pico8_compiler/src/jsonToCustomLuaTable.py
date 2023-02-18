@@ -1,5 +1,8 @@
 import json
 
+# Lua Format:
+# `--[[json lua_variable_name relative_path_to_JSON_file]]`
+
 class JSONSerializer():
     def __init__(self, file: str) -> None:
         self.file = file
