@@ -1,4 +1,5 @@
 from src.compiler import Compiler, FunctionData
+from src.jsonToCustomLuaTable import JSONSerializer
 
 class Stitcher():
     def __init__(self, srcDirectory: str) -> None:
@@ -42,16 +43,26 @@ class Stitcher():
         with open(mainFilePath, encoding="utf8") as f:
             lines: list[str] = f.readlines()
             for i, line in enumerate(lines):
-                if line.lstrip().startswith("--"): continue
+                if line.lstrip().startswith("--"):
+                    # Stringify JSON File
+                    if line.startswith("--[[json"):
+                        args: list[str] = line.split(" ")
+                        if len(args) != 3: continue
+                        replacementLine:str = Compiler.JsonStringify(args[1], args[2])
+                        buffer.append(replacementLine)
+                    # Skip comments
+                    continue
+                # Copy code
                 if line.count("#include") == 0:
                     functionName: str = Compiler._GetFunctionName(line)
                     if self.compiler.FunctionExist(functionName):
                         raise Exception(f"Function {functionName} exist in {self.compiler.GetFunctionData(functionName)} and in main file on line: {i + 1}")
                     buffer.append(line)
-                    continue
-                fileName = Compiler._ParseFileName(line)
-                data = self.compiler.Compile(fileName)
-                buffer.append(self._ListToString(data))
+                else:
+                    # Stitch included file
+                    fileName = Compiler._ParseFileName(line)
+                    data = self.compiler.Compile(fileName)
+                    buffer.append(self._ListToString(data))
         mainData = self._ListToString(buffer)
         return mainData
             
