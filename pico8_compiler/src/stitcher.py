@@ -85,7 +85,7 @@ class Stitcher():
                 if line == "\n": continue
                 if line.lstrip().startswith("--"): continue
 
-                line = self._Sanitize(line)
+                # line = self._Sanitize(line) # Basic mimifying
         
             result += line
         if not result.endswith("\n"):
