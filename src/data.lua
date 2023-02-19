@@ -65,7 +65,16 @@ function reset_game()
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = true
   -- If true, the player is currently manifesting a tower. Else, they aren't and the game functions as normal.
-  manifesting_now = true
+  manifesting_now = false
+  -- Where the player is manifesting (defaults to 0,0 but is set on selection)
+  manifest_location     = Vec:new(0, 0)
+  -- Only one of these can be true at one time. Affects game logic.
+  manifesting_sword     = false
+  manifesting_lightning = false
+  manifesting_hale      = false
+  manifesting_torch     = false
+  manifesting_sharp     = false
+
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true

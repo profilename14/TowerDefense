@@ -96,17 +96,64 @@ function place_tower(position)
 end
 
 function refund_tower_at(position)
-  if manifest_mode == false then
-    for tower in all(towers) do
-      if tower.position == position then
-        grid[position.y][position.x] = "empty"
-        if (tower.type == "floor") grid[position.y][position.x] = "path"
-        coins += tower.cost \ 2
-        del(animators, tower.animator) 
-        del(towers, tower)
+  for tower in all(towers) do
+    if tower.position == position then
+      grid[position.y][position.x] = "empty"
+      if (tower.type == "floor") grid[position.y][position.x] = "path"
+      coins += tower.cost \ 1.25
+      del(animators, tower.animator) 
+      del(towers, tower)
+     end
+  end
+end
+
+function manifest_tower_at(position)
+  for tower in all(towers) do
+    if tower.position == position then
+      manifesting_now = true
+      if (tower.name == "sword circle") then
+        manifesting_sword = true
+      elseif (tower.name == "lightning lance") then
+        manifesting_lightning = true
+      elseif (tower.name == "hale howitzer") then
+        manifesting_hale = true
+      elseif (tower.name == "torch trap") then
+        manifesting_torch = true
+      end
+      manifest_location = position
+    end
+  end
+end
+
+function unmanifest_tower()
+  manifesting_now = false
+  manifesting_sword = false
+  manifesting_lightning = false
+  manifesting_hale = false
+  manifesting_torch = false
+  manifesting_sharp = false
+  for tower in all(towers) do
+    if tower.position == manifest_location then
+      if (tower.name == "sword circle") then
+        --reenable the tower to act as normal
+      elseif (tower.name == "lightning lance") then
+        --reenable the tower to act as normal. If cursor color implementation is changed, change back to normal cursor. 
+      elseif (tower.name == "hale howitzer") then
+        --reenable the tower to act as normal. If cursor color implementation is changed, change back to normal cursor. 
+      elseif (tower.name == "torch trap") then
+        --For the Torch Trap, its position will be updated every frame and the original tower will be deleted as soon as manifestation start. 
+        --Ending manifestation will just place the torch trap wherever the cursor currently is.
       end
     end
   end
+end
+
+function manifested_lightning_blast()
+
+end
+
+function manifested_hale_blast()
+
 end
 
 function draw_tower_attack_overlay(tower_details)

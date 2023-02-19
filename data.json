@@ -173,7 +173,7 @@
       "animation_key": "blade_circle",
       "cost": 25,
       "type": "tack",
-      "attack_delay": 20,
+      "attack_delay": 15,
       "icon_data": 16,
       "disable_icon_rotation": true
     },
@@ -199,7 +199,7 @@
       "animation_key": "hale_howitzer",
       "cost": 30,
       "type": "frontal",
-      "attack_delay": 30,
+      "attack_delay": 25,
       "icon_data": 20,
       "disable_icon_rotation": false
     },

@@ -35,16 +35,36 @@ function game_loop()
   if (auto_start_wave) start_round()
 
   if btnp(🅾️) then
-    shop_enable = true
-    menus[1].enable = true
-    return
+    if manifesting_now == false then
+      shop_enable = true
+      menus[1].enable = true
+      return
+    else
+      unmanifest_tower()
+    end
   end
   if btnp(❎) then 
-    local position = selector.position/8
-    if is_in_table(position, towers, true) then 
-      refund_tower_at(position)
-    else
-      place_tower(position)
+    if manifesting_now == false then
+      local position = selector.position/8
+      if is_in_table(position, towers, true) then 
+        if manifest_mode == false then
+          refund_tower_at(position)
+        else
+          manifest_tower_at(position)
+        end
+      else
+        place_tower(position)
+      end
+    elseif manifesting_now == true then
+      if manifesting_sword then
+        -- X does nothing when manifesting the sword circle, unless we implement the easy version of the minigame.
+      elseif manifesting_lightning then
+        manifested_lightning_blast()
+      elseif manifesting_hale then
+        manifested_hale_blast()
+      elseif manifesting_torch then
+        -- X does nothing when manifesting the Torch trap unless we add some fancy extra functionality.
+      end
     end
   end
 
