@@ -212,7 +212,7 @@
       "animation_key": "fire_pit",
       "cost": 20,
       "type": "floor",
-      "attack_delay": 15,
+      "attack_delay": 10,
       "icon_data": 22,
       "disable_icon_rotation": true
     }
