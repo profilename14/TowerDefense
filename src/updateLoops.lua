@@ -59,9 +59,19 @@ function game_loop()
       if manifesting_sword then
         -- X does nothing when manifesting the sword circle, unless we implement the easy version of the minigame.
       elseif manifesting_lightning then
-        manifested_lightning_blast()
+        for tower in all(towers) do
+          if tower.position == manifest_location then
+            -- Find the currently manifested lightning lance and have it do its special attack (skipped in function if on cooldown)
+            tower.manifested_lightning_blast(tower)
+          end
+        end
       elseif manifesting_hale then
-        manifested_hale_blast()
+        for tower in all(towers) do
+          if tower.position == manifest_location then
+            -- Find the currently manifested lightning lance and have it do its special attack (skipped in function if on cooldown)
+            tower.manifested_hale_blast(tower)
+          end
+        end
       elseif manifesting_torch then
         -- X does nothing when manifesting the Torch trap unless we add some fancy extra functionality.
       end
@@ -82,6 +92,8 @@ function game_loop()
   else
     check_sword_circle_spin()
   end
+
+  foreach(towers, Tower.cooldown)
 
   -- update objs
   if enemies_active then 
