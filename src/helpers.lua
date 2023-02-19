@@ -21,11 +21,14 @@ function controls()
   return 0, 0
 end
 
+-- How enemy health works (note it scales beyond in freeplay):
+-- stats.hp is a modifier for how much more hp will have by wave 15. Ex, 3 means 3x health.
+-- the +1 and -1 are to ensure health scales from the default HP to the multiplied hp linearly.
 function increase_enemy_health(enemy_data)
   local stats = global_table_data.freeplay_stats
   return 
     {
-      enemy_data.hp+stats.hp*freeplay_rounds,
+      enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
       max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
       enemy_data.sprite_index,
       enemy_data.reward,

@@ -30,7 +30,7 @@
     "round_complete": 10
   },
   "freeplay_stats": {
-    "hp": 3,
+    "hp": 2,
     "speed": 1,
     "min_step_delay": 3
   },
@@ -167,13 +167,13 @@
     {
       "name": "sword circle",
       "text_color": [2, 13],
-      "damage": 2,
+      "damage": 4,
       "prefix": "damage",
       "radius": 1,
       "animation_key": "blade_circle",
       "cost": 25,
       "type": "tack",
-      "attack_delay": 10,
+      "attack_delay": 20,
       "icon_data": 16,
       "disable_icon_rotation": true
     },
@@ -184,7 +184,7 @@
       "prefix": "damage",
       "radius": 5,
       "animation_key": "lightning_lance",
-      "cost": 55,
+      "cost": 45,
       "type": "rail",
       "attack_delay": 25,
       "icon_data": 18,
@@ -197,22 +197,22 @@
       "prefix": "delay",
       "radius": 2,
       "animation_key": "hale_howitzer",
-      "cost": 25,
+      "cost": 30,
       "type": "frontal",
       "attack_delay": 30,
       "icon_data": 20,
       "disable_icon_rotation": false
     },
     {
-      "name": "fire pit",
+      "name": "torch trap",
       "text_color": [9, 8],
-      "damage": 3,
+      "damage": 5,
       "prefix": "duration",
       "radius": 0,
       "animation_key": "fire_pit",
-      "cost": 25,
+      "cost": 20,
       "type": "floor",
-      "attack_delay": 15,
+      "attack_delay": 10,
       "icon_data": 22,
       "disable_icon_rotation": true
     }
@@ -243,45 +243,29 @@
       "height": 2
     },
     {
-      "hp": 20,
-      "step_delay": 9,
+      "hp": 8,
+      "step_delay": 12,
       "sprite_index": 3,
-      "reward": 3,
-      "damage": 4,
-      "height": 2
-    },
-    {
-      "hp": 15,
-      "step_delay": 5,
-      "sprite_index": 4,
       "reward": 5,
-      "damage": 5,
-      "height": 6
-    },
-    {
-      "hp": 70,
-      "step_delay": 13,
-      "sprite_index": 5,
-      "reward": 7,
-      "damage": 10,
+      "damage": 1,
       "height": 2
     }
   ],
   "wave_data": [
-    [1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [2, 1, 2, 1, 2, 1, 1],
-    [1, 2, 2, 1, 2, 2, 1, 2, 2, 2],
-    [3, 3, 3, 3, 2, 2, 2, 2, 3, 2, 3, 1],
-    [2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
-    [3, 3, 3, 3, 3, 3, 1, 1, 1, 3, 3, 3, 3, 4, 4, 4, 4, 4],
-    [1, 4, 4, 4, 4, 4, 1, 1, 1, 4, 4, 4, 4, 4, 1, 1, 1],
-    [2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 4, 4, 4, 4, 4],
-    [1, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 5, 5, 5, 5],
-    [2, 5, 5, 5, 5, 5, 2, 3, 3, 3, 3, 2, 2, 4, 1],
-    [5, 5, 3, 3, 3, 5, 2, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2],
-    [5, 5, 3, 3, 3, 5, 5, 5, 5, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5],
-    [3, 3, 3, 3, 3, 3, 5, 2, 5, 2, 5, 2, 6, 6, 6],
-    [4, 3, 4, 3, 4, 3, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5]
+    [4, 4, 4],
+    [1, 4, 1, 4, 1, 4],
+    [2, 4, 2, 1, 2, 4, 1],
+    [1, 2, 2, 4, 2, 2, 1, 2, 2, 2],
+    [3, 3, 3, 3, 2, 2, 2, 2, 4, 2, 3, 1],
+    [2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
+    [3, 3, 3, 3, 3, 3, 1, 4, 1, 3, 3, 3, 3, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1],
+    [2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3],
+    [1, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    [2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 2, 2, 4, 1],
+    [2, 2, 3, 3, 3, 2, 2, 4, 4, 2, 2, 3, 3, 3, 3, 2, 2, 2],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2],
+    [3, 3, 3, 3, 3, 3, 4, 2, 4, 2, 4, 2, 3, 3, 3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
   ]
 }

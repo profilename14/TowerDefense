@@ -11,27 +11,41 @@ function reset_game()
       5, 70, 
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
-        {text = "options", color = {7, 0}, callback = swap_menu_context, args = {"options"}},
-        {text = "rotate tower", color = {7, 0}, 
+        {text = "misc", color = {7, 0}, callback = swap_menu_context, args = {"misc"}},
+        {text = "rotate clockwise", color = {7, 0}, 
           callback = function()
             direction = Vec:new(-direction.y, direction.x)
           end
-        }
+        },
+        {text = "start round", color = {7, 0}, callback = start_round}
       },
       display_tower_rotation,
       5, 8, 7, 3
     },
     { "towers", "main", 5, 70, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
     {
-      "options", "main",
+      "misc", "main",
       5, 70, 
       {
-        {text = "start round", color = {7, 0}, callback = start_round},
         {text = "map select", color = {7, 0}, 
           callback = function()
             get_active_menu().enable = false
             reset_game()
             map_menu_enable = true
+          end
+        },
+        {text = "manifest mode", color = {7, 0}, 
+          callback = function()
+            manifest_mode = true
+            get_active_menu().enable = false
+            shop_enable = false
+          end
+        },
+        {text = "selling mode", color = {7, 0}, 
+          callback = function()
+            manifest_mode = false
+            get_active_menu().enable = false
+            shop_enable = false
           end
         }
       },
@@ -45,9 +59,13 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins = 50
-  player_health = 100
+  coins = 30
+  player_health = 50
   enemy_required_spawn_ticks = 10
+  -- If true, selecting towers manifests them. If false, selecting towers sells them.
+  manifest_mode = true
+  -- If true, the player is currently manifesting a tower. Else, they aren't and the game functions as normal.
+  manifesting_now = true
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true

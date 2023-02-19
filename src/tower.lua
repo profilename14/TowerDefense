@@ -96,13 +96,15 @@ function place_tower(position)
 end
 
 function refund_tower_at(position)
-  for tower in all(towers) do
-    if tower.position == position then
-      grid[position.y][position.x] = "empty"
-      if (tower.type == "floor") grid[position.y][position.x] = "path"
-      coins += tower.cost \ 2
-      del(animators, tower.animator) 
-      del(towers, tower)
+  if manifest_mode == false then
+    for tower in all(towers) do
+      if tower.position == position then
+        grid[position.y][position.x] = "empty"
+        if (tower.type == "floor") grid[position.y][position.x] = "path"
+        coins += tower.cost \ 2
+        del(animators, tower.animator) 
+        del(towers, tower)
+      end
     end
   end
 end
