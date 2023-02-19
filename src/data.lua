@@ -1,3 +1,4 @@
+local global_table_str --[[remove]]
 --[[json global_table_str ../data.json]]
 
 -- Game

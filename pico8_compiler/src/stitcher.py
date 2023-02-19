@@ -43,6 +43,7 @@ class Stitcher():
         with open(mainFilePath, encoding="utf8") as f:
             lines: list[str] = f.readlines()
             for i, line in enumerate(lines):
+                if line.count("--[[remove]]") > 0: continue
                 if line.lstrip().startswith("--"):
                     # Stringify JSON File
                     if line.startswith("--[[json"):

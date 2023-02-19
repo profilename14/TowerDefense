@@ -31,6 +31,7 @@ class Compiler():
         with open(path, encoding="utf8") as f:
             lines: list[str] = f.readlines()
             for i, line in enumerate(lines):
+                if line.count("--[[remove]]") > 0: continue
                 if line.count("#include") > 0:
                     fileName = self._ParseFileName(line)
                     if fileName in self.includedFiles:
