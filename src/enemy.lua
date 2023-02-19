@@ -1,3 +1,5 @@
+-- FOR REFERENCE IN DATA.LUA:
+-- 1 = car, 2 = plane, 3 = tank, 4 = lab cart, 5 = ice truck, 6 = trailblazer
 Enemy = {}
 function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, height_)
   obj = { 
@@ -24,13 +26,29 @@ function Enemy:step()
 
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
-    self.hp -= 2
+    -- Sense the reward system was retired, I'm just recycling it into an ID system.
+    if self.reward == 6 then
+      self.hp -= 0.5
+    elseif self.reward == 5 then
+      self.hp -= 5
+    else
+      self.hp -= 2
+    end
     local p, _ = Enemy.get_pixel_location(self)
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
   end
 
   if (not self.is_frozen) return true 
-  self.frozen_tick = max(self.frozen_tick - 1, 0)
+  if self.reward == 6 then
+    -- Trailblazers are frozen a little longer and take damage.
+    self.frozen_tick = max(self.frozen_tick - 0.8, 0)
+    self.hp -= 2
+  elseif self.reward == 5 then
+    -- Ice trucks are frozen for only 1/8 the time
+    self.frozen_tick = max(self.frozen_tick - 8, 0)
+  else
+    self.frozen_tick = max(self.frozen_tick - 1, 0)
+  end
   if (self.frozen_tick ~= 0) return false
   self.is_frozen = false
   return true
