@@ -6,6 +6,7 @@ function Tower:new(pos, tower_template_data, direction)
     radius = tower_template_data.radius, 
     attack_delay = tower_template_data.attack_delay,
     current_attack_ticks = 0,
+    manifest_cooldown = -1,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
@@ -16,6 +17,7 @@ function Tower:new(pos, tower_template_data, direction)
   self.__index = self 
   return obj 
 end
+
 function Tower:attack()
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
   if (self.current_attack_ticks > 0) return
@@ -41,6 +43,16 @@ function Tower:raycast()
   if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.spark)
   return hits
 end
+-- Used for manifestation wby both the Hale Howitzer and Lightning Lance (probably). Can draw whatever type of line required.
+function Tower:custom_raycast(in_position, in_radius, in_direction, in_animation)
+  if (in_direction == Vec:new(0, 0)) return
+  local hits = {}
+  for i=1, in_radius do 
+    add_enemy_at_to_table(in_position + in_direction * i, hits)
+  end
+  raycast_spawn(in_position, in_radius, in_direction, in_animation)
+  return hits
+end
 function Tower:nova_collision()
   local hits, rad = {}, self.radius
   for y=-rad, rad do
@@ -63,8 +75,14 @@ function Tower:frontal_collision()
   return hits
 end
 function Tower:apply_damage(targets)
-  for enemy in all(targets) do
-    if (enemy.hp > 0) enemy.hp -= self.dmg
+  if self.type ~= "frontal" then
+    for enemy in all(targets) do
+      if (enemy.hp > 0) enemy.hp -= self.dmg
+    end
+  else
+    for enemy in all(targets) do
+      if (enemy.hp > 0) enemy.hp -= (self.dmg / 5)
+    end
   end
 end
 function Tower:freeze_enemies(targets)
@@ -105,6 +123,10 @@ function refund_tower_at(position)
       del(towers, tower)
      end
   end
+end
+
+function Tower:cooldown()
+  if (self.manifest_cooldown >= 0) self.manifest_cooldown -= 1
 end
 
 function manifest_tower_at(position)
@@ -150,10 +172,25 @@ function unmanifest_tower()
 end
 
 function manifested_lightning_blast()
-
+  if (self.manifest_cooldown > 0) self.manifest_cooldown = (self.manifest_cooldown + 1) % 100
+  if (self.manifest_cooldown > 0) return
+  
 end
 
-function manifested_hale_blast()
+function Tower:manifested_hale_blast()
+  local pos = selector.position/8
+  local southpos = Vec:new(pos.x, pos.y + 2)
+  local westpos = Vec:new(pos.x - 2, pos.y)
+  local north = Vec:new(0, -1)
+  local east  = Vec:new(1, 0)
+  if (self.manifest_cooldown > 0) return
+  self.manifest_cooldown = 20
+  -- Now that we know we can attack, freeze a 3x3 + shaped area and then deal damage in that same area.
+  -- Note this will probably deal extra damage to the center area but we can just call that a feature.
+  Tower.freeze_enemies(self, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
+  Tower.freeze_enemies(self, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
+  Tower.apply_damage(self, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
+  Tower.apply_damage(self, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
 
 end
 
