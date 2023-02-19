@@ -111,45 +111,46 @@ end
 
 function draw_tower_attack_overlay(tower_details)
   local pos = selector.position/8
-  palt(0, false)
+  palt(global_table_data.palettes.transparent_color_id, false)
   pal(global_table_data.palettes.attack_tile)
   local is_empty = grid[pos.y][pos.x] == "empty"
+  local map_shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
   if tower_details.type == "tack" and is_empty then 
-    draw_nova_attack_overlay(tower_details.radius, pos)
+    draw_nova_attack_overlay(tower_details.radius, pos, map_shift)
   elseif tower_details.type == "rail" and is_empty then 
-    draw_ray_attack_overlay(tower_details.radius, pos)
+    draw_ray_attack_overlay(tower_details.radius, pos, map_shift)
   elseif tower_details.type == "frontal" and is_empty then 
-    draw_frontal_attack_overlay(tower_details.radius, pos)
+    draw_frontal_attack_overlay(tower_details.radius, pos, map_shift)
   elseif tower_details.type == "floor" and grid[pos.y][pos.x] == "path" then 
-    spr(mget(Vec.unpack(pos)), Vec.unpack(pos*8))
+    spr(mget(Vec.unpack(pos+map_shift)), Vec.unpack(pos*8))
   end
   pal()
 end
 
-function draw_nova_attack_overlay(radius, pos)
+function draw_nova_attack_overlay(radius, pos, map_shift)
   for y=-radius, radius do
     for x=-radius, radius do
       if x ~=0 or y ~= 0 then 
         local tile_position = pos+Vec:new(x, y)
-        spr(mget(Vec.unpack(tile_position+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(tile_position*8))
+        spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
       end
     end
   end
 end
 
-function draw_ray_attack_overlay(radius, pos)
+function draw_ray_attack_overlay(radius, pos, map_shift)
   for i=1, radius do 
     local tile_position = pos+direction*i
-    spr(mget(Vec.unpack(tile_position+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(tile_position*8))
+    spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
   end
 end
 
-function draw_frontal_attack_overlay(radius, pos)
+function draw_frontal_attack_overlay(radius, pos, map_shift)
   local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, direction)
   for y=fy, fly, iy do
     for x=fx, flx, ix do
       local tile_position = pos + Vec:new(x, y)
-      spr(mget(Vec.unpack(tile_position+Vec:new(global_table_data.map_data[loaded_map].mget_shift))), Vec.unpack(tile_position*8))
+      spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
     end
   end
 end
