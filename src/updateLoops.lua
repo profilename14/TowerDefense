@@ -68,8 +68,20 @@ function game_loop()
     end
   end
 
-  selector.position += Vec:new(controls()) * 8
-  Vec.clamp(selector.position, 0, 120)
+  if manifesting_sword == false then
+    -- This defines the cursor's movement.
+    selector.position += Vec:new(controls()) * 8
+    Vec.clamp(selector.position, 0, 120)
+    if manifesting_torch == true then
+      -- FOR KAOUSHIK:
+      -- Torch Trap logic goes here. Update the towers location to wherever its going by deleting the previous torch trap and making another.
+      -- Make sure that deleting the torch trap in the previous location doesn't destroy other torch traps on the road! You might require a
+      -- special flag set when you move onto another torch trap tile (and unset when you move onto empty space).
+      -- To save space if this ends up taking a hefty amount of lines, consider putting this a function in tower.lua with the other 3 towers.
+    end
+  else
+    check_sword_circle_spin()
+  end
 
   -- update objs
   if enemies_active then 
