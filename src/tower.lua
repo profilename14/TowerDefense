@@ -48,9 +48,13 @@ function Tower:custom_raycast(in_position, in_radius, in_direction, in_animation
   if (in_direction == Vec:new(0, 0)) return
   local hits = {}
   for i=1, in_radius do 
-    add_enemy_at_to_table(in_position + in_direction * i, hits)
+    -- Round collision to nearest bit
+    local cur_loc = in_position + in_direction * i
+    cur_loc.x = ((flr(cur_loc.x))*8 )/ 8
+    cur_loc.y = ((flr(cur_loc.y))*8 )/ 8
+    add_enemy_at_to_table(cur_loc, hits)
   end
-  raycast_spawn(in_position, in_radius, in_direction, in_animation)
+  custom_raycast_spawn(in_position, in_radius, in_direction, in_animation)
   return hits
 end
 function Tower:nova_collision()
@@ -75,14 +79,13 @@ function Tower:frontal_collision()
   return hits
 end
 function Tower:apply_damage(targets)
-  if self.type ~= "frontal" then
-    for enemy in all(targets) do
-      if (enemy.hp > 0) enemy.hp -= self.dmg
-    end
-  else
-    for enemy in all(targets) do
-      if (enemy.hp > 0) enemy.hp -= (self.dmg / 5)
-    end
+  for enemy in all(targets) do
+    if (enemy.hp > 0) enemy.hp -= self.dmg
+  end
+end
+function Tower:apply_custom_damage(damage_in, targets)
+  for enemy in all(targets) do
+    if (enemy.hp > 0) enemy.hp -= damage_in
   end
 end
 function Tower:freeze_enemies(targets)
@@ -171,10 +174,24 @@ function unmanifest_tower()
   end
 end
 
-function manifested_lightning_blast()
-  if (self.manifest_cooldown > 0) self.manifest_cooldown = (self.manifest_cooldown + 1) % 100
+function Tower:manifested_lightning_blast()
+  local pos_sel = selector.position/8
+  local xnum =  (pos_sel.x - self.position.x) / 8
+  local ynum =  (pos_sel.y - self.position.y) / 8
+  local direction = Vec:new(xnum, ynum)
+  local selfpos = Vec:new(self.position.x+1, self.position.y)
   if (self.manifest_cooldown > 0) return
-  
+  self.manifest_cooldown = 200
+  for i=1, 3 do
+    Tower.apply_custom_damage(self, self.dmg * 2, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark))
+    selfpos.x -= 1
+  end
+  selfpos.x += 2
+  selfpos.y += 1
+  for i=1, 3 do
+    Tower.apply_custom_damage(self, self.dmg * 2, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark))
+    selfpos.y -= 1
+  end
 end
 
 function Tower:manifested_hale_blast()
@@ -184,13 +201,13 @@ function Tower:manifested_hale_blast()
   local north = Vec:new(0, -1)
   local east  = Vec:new(1, 0)
   if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 20
+  self.manifest_cooldown = 25
   -- Now that we know we can attack, freeze a 3x3 + shaped area and then deal damage in that same area.
   -- Note this will probably deal extra damage to the center area but we can just call that a feature.
   Tower.freeze_enemies(self, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
   Tower.freeze_enemies(self, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
-  Tower.apply_damage(self, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
-  Tower.apply_damage(self, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
+  Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
+  Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
 
 end
 
