@@ -23,6 +23,10 @@ function Tower:attack()
   if (self.current_attack_ticks > 0) return
 
   if self.type == "tack" then
+    if manifesting_sword and self.position == manifest_location then
+      -- ensure damage is awlays updated to the cooldown.
+      self.dmg = min(self.manifest_cooldown, 100) / 15
+    end
     Tower.apply_damage(self, Tower.nova_collision(self))
   elseif self.type == "rail" then
     Tower.apply_damage(self, Tower.raycast(self))
@@ -138,6 +142,8 @@ function manifest_tower_at(position)
       manifesting_now = true
       if (tower.type == "tack") then
         manifesting_sword = true
+        tower.attack_delay = 10
+        tower.dmg = 0
       elseif (tower.type == "rail") then
         manifesting_lightning = true
       elseif (tower.type == "frontal") then
@@ -161,7 +167,9 @@ function unmanifest_tower()
   for tower in all(towers) do
     if tower.position == manifest_location then
       if (tower.type == "tack") then
-        --reenable the sword circle tower to act as normal
+        local tower_details = global_table_data.tower_templates[1]
+        tower.attack_delay = tower_details.attack_delay
+        tower.dmg = tower_details.damage
       elseif (tower.type == "rail") then
         --reenable the lightning lance tower to act as normal. If cursor color implementation is changed, change back to normal cursor. 
       elseif (tower.type == "frontal") then
@@ -211,8 +219,18 @@ function Tower:manifested_hale_blast()
 
 end
 
-function check_sword_circle_spin()
+ -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 
+ -- rotation speed (to a max of 100/25=4 damage, with 3x attack speed).
 
+function Tower:check_sword_circle_spin()
+
+  self.manifest_cooldown += 7
+
+  self.manifest_cooldown = min(self.manifest_cooldown, 110)
+  
+  self.dmg = min(self.manifest_cooldown, 100) / 15
+  
+  printh(self.dmg)
 end
 
 function draw_tower_attack_overlay(tower_details)

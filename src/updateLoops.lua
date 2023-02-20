@@ -57,7 +57,12 @@ function game_loop()
       end
     elseif manifesting_now == true then
       if manifesting_sword then
-        -- X does nothing when manifesting the sword circle, unless we implement the easy version of the minigame.
+        for tower in all(towers) do
+          if tower.position == manifest_location then
+            -- Find the currently manifested lightning lance and have it do its special attack (skipped in function if on cooldown)
+            tower.check_sword_circle_spin(tower)
+          end
+        end
       elseif manifesting_lightning then
         for tower in all(towers) do
           if tower.position == manifest_location then
@@ -90,7 +95,8 @@ function game_loop()
       -- To save space if this ends up taking a hefty amount of lines, consider putting this a function in tower.lua with the other 3 towers.
     end
   else
-    check_sword_circle_spin()
+    -- When we move over to the proper minigame, uncomment this and comment the thing that activates on x press.
+    --check_sword_circle_spin()
   end
 
   foreach(towers, Tower.cooldown)
