@@ -1,5 +1,5 @@
 Tower = {}
-function Tower:new(pos, tower_template_data, direction)
+function Tower:new(pos, tower_template_data, direction, overlap)
   obj = { 
     position = pos,
     dmg = tower_template_data.damage,
@@ -9,6 +9,7 @@ function Tower:new(pos, tower_template_data, direction)
     manifest_cooldown = -1,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
+    overlap = overlap or false,  -- default value is false, can specify if needed
     dir = direction,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
@@ -158,12 +159,6 @@ function manifest_tower_at(position)
 end
 
 function unmanifest_tower()
-  manifesting_now = false
-  manifesting_sword = false
-  manifesting_lightning = false
-  manifesting_hale = false
-  manifesting_torch = false
-  manifesting_sharp = false
   for tower in all(towers) do
     if tower.position == manifest_location then
       if (tower.type == "tack") then
@@ -175,11 +170,19 @@ function unmanifest_tower()
       elseif (tower.type == "frontal") then
         --reenable the hale howitzer tower to act as normal. If cursor color implementation is changed, change back to normal cursor. 
       elseif (tower.type == "floor") then
+        if (tower.overlap) == true return
         --For the Torch Trap, its position will be updated every frame and the original tower will be deleted as soon as manifestation start. 
         --Ending manifestation will just place the torch trap wherever the cursor currently is.
+        --can't end manifestation if cursor is on an existing torch trap
       end
     end
   end
+  manifesting_now = false
+  manifesting_sword = false
+  manifesting_lightning = false
+  manifesting_hale = false
+  manifesting_torch = false
+  manifesting_sharp = false
 end
 
 function Tower:manifested_lightning_blast()
@@ -217,6 +220,63 @@ function Tower:manifested_hale_blast()
   Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
   Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
 
+end
+
+function Tower:manifested_torch_trap()
+  -- selector logic
+  -- Only allow selector to move if new position is on a path (or above any tower that is on path)
+  -- printh("selector - " .. selector.position.y .. ", " .. selector.position.x)
+  local controlpos = Vec:new(controls())
+  -- printh("controls - " .. controlpos.y .. ", " .. controlpos.x)
+  local newpos = (selector.position + (controlpos * 8))/8
+  local oldpos = Vec:new(self.position.x, self.position.y)
+  
+  if (newpos == oldpos) return
+  
+  -- printh("newpos - " .. newpos.y .. ", " .. newpos.x)
+  -- printh("grid value - " .. grid[11][6])
+  if grid[newpos.y][newpos.x] == "path" then
+    selector.position += controlpos * 8
+    Vec.clamp(selector.position, 0, 120)
+    printh("Empty Path")
+  elseif grid[newpos.y][newpos.x] == "tower" then
+    -- costly, but temporary solution to allow moving over a tower on path
+    for tower in all(towers) do
+      printh("Tower type" .. tower.type)
+      if tower.type == "floor" and tower.position == newpos then          
+        printh("Tower in Path")  
+        selector.position += controlpos * 8
+        Vec.clamp(selector.position, 0, 120)
+      end
+    end
+  end
+
+
+
+  if (self.manifest_cooldown > 0) return
+  self.manifest_cooldown = 25
+
+  -- FOR KAOUSHIK:
+  -- Torch Trap logic goes here. Update the towers location to wherever its going by deleting the previous torch trap and making another.
+  -- Make sure that deleting the torch trap in the previous location doesn't destroy other torch traps on the road! You might require a
+  -- special flag set when you move onto another torch trap tile (and unset when you move onto empty space).
+  -- To save space if this ends up taking a hefty amount of lines, consider putting this a function in tower.lua with the other 3 towers.
+
+  -- delete tower from old position in grid
+  if self.overlap == false then
+    grid[oldpos.y][oldpos.x] = "path"
+    printh('Case 1')
+  end
+  -- place tower in new position in grid
+  -- printh("newpos - " .. newpos.y .. ", " .. newpos.x)
+  if grid[newpos.y][newpos.x] == "path" then
+    grid[newpos.y][newpos.x] = "tower"
+    printh('Case 2')
+  elseif grid[newpos.y][newpos.x] == "tower" then
+    self.overlap = true
+    printh('Case 3')
+  end
+  self.position = newpos
 end
 
  -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 

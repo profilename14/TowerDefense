@@ -78,21 +78,28 @@ function game_loop()
           end
         end
       elseif manifesting_torch then
+        -- for tower in all(towers) do
+        --   if tower.position == manifest_location then
+        --     tower.manifest_torch_trap(tower)
+        --   end
+        -- end
         -- X does nothing when manifesting the Torch trap unless we add some fancy extra functionality.
       end
     end
   end
 
   if manifesting_sword == false then
-    -- This defines the cursor's movement.
-    selector.position += Vec:new(controls()) * 8
-    Vec.clamp(selector.position, 0, 120)
-    if manifesting_torch == true then
-      -- FOR KAOUSHIK:
-      -- Torch Trap logic goes here. Update the towers location to wherever its going by deleting the previous torch trap and making another.
-      -- Make sure that deleting the torch trap in the previous location doesn't destroy other torch traps on the road! You might require a
-      -- special flag set when you move onto another torch trap tile (and unset when you move onto empty space).
-      -- To save space if this ends up taking a hefty amount of lines, consider putting this a function in tower.lua with the other 3 towers.
+    if manifesting_torch ~= true then
+      -- This defines the cursor's movement.
+      selector.position += Vec:new(controls()) * 8
+      Vec.clamp(selector.position, 0, 120)
+    else
+      -- selector logic inside manifested torch
+      for tower in all(towers) do 
+        if tower.position == manifest_location then
+          tower.manifested_torch_trap(tower)
+        end
+      end
     end
   else
     -- When we move over to the proper minigame, uncomment this and comment the thing that activates on x press.

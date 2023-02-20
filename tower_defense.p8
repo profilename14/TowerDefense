@@ -345,7 +345,7 @@ function spawn_enemy()
   end
 end
 Tower = {}
-function Tower:new(pos, tower_template_data, direction)
+function Tower:new(pos, tower_template_data, direction, overlap)
   obj = { 
     position = pos,
     dmg = tower_template_data.damage,
@@ -355,6 +355,7 @@ function Tower:new(pos, tower_template_data, direction)
     manifest_cooldown = -1,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
+    overlap = overlap or false,  -- default value is false, can specify if needed
     dir = direction,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
@@ -367,6 +368,9 @@ function Tower:attack()
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
   if (self.current_attack_ticks > 0) return
   if self.type == "tack" then
+    if manifesting_sword and self.position == manifest_location then
+      self.dmg = min(self.manifest_cooldown, 100) / 15
+    end
     Tower.apply_damage(self, Tower.nova_collision(self))
   elseif self.type == "rail" then
     Tower.apply_damage(self, Tower.raycast(self))
@@ -473,6 +477,8 @@ function manifest_tower_at(position)
       manifesting_now = true
       if (tower.type == "tack") then
         manifesting_sword = true
+        tower.attack_delay = 10
+        tower.dmg = 0
       elseif (tower.type == "rail") then
         manifesting_lightning = true
       elseif (tower.type == "frontal") then
@@ -495,6 +501,9 @@ function unmanifest_tower()
   for tower in all(towers) do
     if tower.position == manifest_location then
       if (tower.type == "tack") then
+        local tower_details = global_table_data.tower_templates[1]
+        tower.attack_delay = tower_details.attack_delay
+        tower.dmg = tower_details.damage
       elseif (tower.type == "rail") then
       elseif (tower.type == "frontal") then
       elseif (tower.type == "floor") then
@@ -534,7 +543,49 @@ function Tower:manifested_hale_blast()
   Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
   Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
 end
-function check_sword_circle_spin()
+function Tower:manifested_torch_trap()
+  local controlpos = Vec:new(controls())
+  local newpos = (selector.position + (controlpos * 8))/8
+  local oldpos = Vec:new(self.position.x, self.position.y)
+  
+  if (newpos == oldpos) return
+  
+  if grid[newpos.y][newpos.x] == "path" then
+    selector.position += controlpos * 8
+    Vec.clamp(selector.position, 0, 120)
+    printh("Empty Path")
+  elseif grid[newpos.y][newpos.x] == "tower" then
+    for tower in all(towers) do
+      printh("Tower type" .. tower.type)
+      if tower.type == "floor" and tower.position == newpos then          
+        printh("Tower in Path")  
+        selector.position += controlpos * 8
+        Vec.clamp(selector.position, 0, 120)
+      end
+    end
+  end
+  if (self.manifest_cooldown > 0) return
+  self.manifest_cooldown = 25
+  if self.overlap == false then
+    grid[oldpos.y][oldpos.x] = "path"
+    printh('Case 1')
+  end
+  if grid[newpos.y][newpos.x] == "path" then
+    grid[newpos.y][newpos.x] = "tower"
+    printh('Case 2')
+  elseif grid[newpos.y][newpos.x] == "tower" then
+    self.overlap = true
+    printh('Case 3')
+  end
+  self.position = newpos
+end
+function Tower:check_sword_circle_spin()
+  self.manifest_cooldown += 7
+  self.manifest_cooldown = min(self.manifest_cooldown, 110)
+  
+  self.dmg = min(self.manifest_cooldown, 100) / 15
+  
+  printh(self.dmg)
 end
 function draw_tower_attack_overlay(tower_details)
   local pos = selector.position/8
@@ -986,6 +1037,11 @@ function game_loop()
       end
     elseif manifesting_now == true then
       if manifesting_sword then
+        for tower in all(towers) do
+          if tower.position == manifest_location then
+            tower.check_sword_circle_spin(tower)
+          end
+        end
       elseif manifesting_lightning then
         for tower in all(towers) do
           if tower.position == manifest_location then
@@ -1003,12 +1059,17 @@ function game_loop()
     end
   end
   if manifesting_sword == false then
-    selector.position += Vec:new(controls()) * 8
-    Vec.clamp(selector.position, 0, 120)
-    if manifesting_torch == true then
+    if manifesting_torch ~= true then
+      selector.position += Vec:new(controls()) * 8
+      Vec.clamp(selector.position, 0, 120)
+    else
+      for tower in all(towers) do 
+        if tower.position == manifest_location then
+          tower.manifested_torch_trap(tower)
+        end
+      end
     end
   else
-    check_sword_circle_spin()
   end
   foreach(towers, Tower.cooldown)
   if enemies_active then 
@@ -1175,6 +1236,9 @@ function insert_key_val(str, table)
       value = false 
     else
       value = tonum(val) or val
+    end
+    if value == "inf" then 
+      value = 32767
     end
     table[key] = value
   end
