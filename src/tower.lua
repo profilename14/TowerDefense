@@ -225,34 +225,32 @@ end
 function Tower:manifested_torch_trap()
   -- selector logic
   -- Only allow selector to move if new position is on a path (or above any tower that is on path)
-  -- printh("selector - " .. selector.position.y .. ", " .. selector.position.x)
   local controlpos = Vec:new(controls())
-  -- printh("controls - " .. controlpos.y .. ", " .. controlpos.x)
   local newpos = (selector.position + (controlpos * 8))/8
   local oldpos = Vec:new(self.position.x, self.position.y)
   
   if (newpos == oldpos) return
   
-  -- printh("newpos - " .. newpos.y .. ", " .. newpos.x)
-  -- printh("grid value - " .. grid[11][6])
   if grid[newpos.y][newpos.x] == "path" then
     selector.position += controlpos * 8
     Vec.clamp(selector.position, 0, 120)
     self.position = newpos
     manifest_location = newpos
-    printh("Empty Path")
   elseif grid[newpos.y][newpos.x] == "tower" then
     -- costly, but temporary solution to allow moving over a tower on path
+    local found_floor_tower = false
     for tower in all(towers) do
-      printh("Tower type" .. tower.type)
-      if tower.type == "floor" and tower.position == newpos then          
-        printh("Tower in Path")  
+      if tower.type == "floor" and tower.position == newpos then
+        found_floor_tower = true
         selector.position += controlpos * 8
         Vec.clamp(selector.position, 0, 120)
         self.position = newpos
         manifest_location = newpos
+        break
       end
     end
+    if (found_floor_tower == false) return
+
   else
     return
   end
@@ -266,16 +264,12 @@ function Tower:manifested_torch_trap()
   -- delete tower from old position in grid
   if self.overlap == false then
     grid[oldpos.y][oldpos.x] = "path"
-    printh('Case 1')
   end
   -- place tower in new position in grid
-  -- printh("newpos - " .. newpos.y .. ", " .. newpos.x)
   if grid[newpos.y][newpos.x] == "path" then
     grid[newpos.y][newpos.x] = "tower"
-    printh('Case 2')
   elseif grid[newpos.y][newpos.x] == "tower" then
     self.overlap = true
-    printh('Case 3')
   end
 end
 

@@ -558,16 +558,20 @@ function Tower:manifested_torch_trap()
     manifest_location = newpos
     printh("Empty Path")
   elseif grid[newpos.y][newpos.x] == "tower" then
+    local found_floor_tower = false
     for tower in all(towers) do
-      printh("Tower type" .. tower.type)
-      if tower.type == "floor" and tower.position == newpos then          
+      printh("Tower type " .. tower.type)
+      if tower.type == "floor" and tower.position == newpos then       
         printh("Tower in Path")  
+        found_floor_tower = true
         selector.position += controlpos * 8
         Vec.clamp(selector.position, 0, 120)
         self.position = newpos
         manifest_location = newpos
+        break
       end
     end
+    if (found_floor_tower == false) return
   else
     return
   end
