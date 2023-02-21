@@ -40,6 +40,7 @@ function game_loop()
       menus[1].enable = true
       return
     else
+      printh('unmanifesting now')
       unmanifest_tower()
     end
   end
@@ -94,10 +95,12 @@ function game_loop()
       selector.position += Vec:new(controls()) * 8
       Vec.clamp(selector.position, 0, 120)
     else
+      -- printh(manifest_location.x .. ", " .. manifest_location.y)
       -- selector logic inside manifested torch
       for tower in all(towers) do 
         if tower.position == manifest_location then
           tower.manifested_torch_trap(tower)
+          break
         end
       end
     end

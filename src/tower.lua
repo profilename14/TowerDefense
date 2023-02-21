@@ -238,6 +238,8 @@ function Tower:manifested_torch_trap()
   if grid[newpos.y][newpos.x] == "path" then
     selector.position += controlpos * 8
     Vec.clamp(selector.position, 0, 120)
+    self.position = newpos
+    manifest_location = newpos
     printh("Empty Path")
   elseif grid[newpos.y][newpos.x] == "tower" then
     -- costly, but temporary solution to allow moving over a tower on path
@@ -247,14 +249,13 @@ function Tower:manifested_torch_trap()
         printh("Tower in Path")  
         selector.position += controlpos * 8
         Vec.clamp(selector.position, 0, 120)
+        self.position = newpos
+        manifest_location = newpos
       end
     end
+  else
+    return
   end
-
-
-
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 25
 
   -- FOR KAOUSHIK:
   -- Torch Trap logic goes here. Update the towers location to wherever its going by deleting the previous torch trap and making another.
@@ -276,7 +277,6 @@ function Tower:manifested_torch_trap()
     self.overlap = true
     printh('Case 3')
   end
-  self.position = newpos
 end
 
  -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 

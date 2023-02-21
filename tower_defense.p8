@@ -492,12 +492,6 @@ function manifest_tower_at(position)
   end
 end
 function unmanifest_tower()
-  manifesting_now = false
-  manifesting_sword = false
-  manifesting_lightning = false
-  manifesting_hale = false
-  manifesting_torch = false
-  manifesting_sharp = false
   for tower in all(towers) do
     if tower.position == manifest_location then
       if (tower.type == "tack") then
@@ -507,9 +501,16 @@ function unmanifest_tower()
       elseif (tower.type == "rail") then
       elseif (tower.type == "frontal") then
       elseif (tower.type == "floor") then
+        if (tower.overlap) == true return
       end
     end
   end
+  manifesting_now = false
+  manifesting_sword = false
+  manifesting_lightning = false
+  manifesting_hale = false
+  manifesting_torch = false
+  manifesting_sharp = false
 end
 function Tower:manifested_lightning_blast()
   local pos_sel = selector.position/8
@@ -553,6 +554,8 @@ function Tower:manifested_torch_trap()
   if grid[newpos.y][newpos.x] == "path" then
     selector.position += controlpos * 8
     Vec.clamp(selector.position, 0, 120)
+    self.position = newpos
+    manifest_location = newpos
     printh("Empty Path")
   elseif grid[newpos.y][newpos.x] == "tower" then
     for tower in all(towers) do
@@ -561,11 +564,13 @@ function Tower:manifested_torch_trap()
         printh("Tower in Path")  
         selector.position += controlpos * 8
         Vec.clamp(selector.position, 0, 120)
+        self.position = newpos
+        manifest_location = newpos
       end
     end
+  else
+    return
   end
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 25
   if self.overlap == false then
     grid[oldpos.y][oldpos.x] = "path"
     printh('Case 1')
@@ -577,7 +582,6 @@ function Tower:manifested_torch_trap()
     self.overlap = true
     printh('Case 3')
   end
-  self.position = newpos
 end
 function Tower:check_sword_circle_spin()
   self.manifest_cooldown += 7
@@ -1020,6 +1024,7 @@ function game_loop()
       menus[1].enable = true
       return
     else
+      printh('unmanifesting now')
       unmanifest_tower()
     end
   end
@@ -1066,6 +1071,7 @@ function game_loop()
       for tower in all(towers) do 
         if tower.position == manifest_location then
           tower.manifested_torch_trap(tower)
+          break
         end
       end
     end
