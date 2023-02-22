@@ -59,7 +59,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins = 30
+  coins = 1000  -- TEMP
   player_health = 50
   enemy_required_spawn_ticks = 10
   -- If true, selecting towers manifests them. If false, selecting towers sells them.

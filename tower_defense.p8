@@ -183,7 +183,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins = 30
+  coins = 1000  -- TEMP
   player_health = 50
   enemy_required_spawn_ticks = 10
   manifest_mode = true
@@ -367,9 +367,12 @@ function Tower:attack()
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
   if (self.current_attack_ticks > 0) return
   if self.type == "tack" then
-    Tower.apply_damage(self, Tower.nova_collision(self))
+    if manifesting_sword and self.position == manifest_location then
+      self.dmg = min(self.manifest_cooldown, 100) / 15
+    end
+    Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
   elseif self.type == "rail" then
-    Tower.apply_damage(self, Tower.raycast(self))
+    Tower.apply_damage(self, Tower.raycast(self), self.dmg)
   elseif self.type == "frontal" then 
     Tower.freeze_enemies(self, Tower.frontal_collision(self))
   elseif self.type == "floor" then 
@@ -392,8 +395,8 @@ function Tower:custom_raycast(in_position, in_radius, in_direction, in_animation
   local hits = {}
   for i=1, in_radius do 
     local cur_loc = in_position + in_direction * i
-    cur_loc.x = ((flr(cur_loc.x))*8 )/ 8
-    cur_loc.y = ((flr(cur_loc.y))*8 )/ 8
+    cur_loc.x = flr(cur_loc.x)
+    cur_loc.y = flr(cur_loc.y)
     add_enemy_at_to_table(cur_loc, hits)
   end
   custom_raycast_spawn(in_position, in_radius, in_direction, in_animation)
@@ -420,14 +423,9 @@ function Tower:frontal_collision()
   if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.frost)
   return hits
 end
-function Tower:apply_damage(targets)
+function Tower:apply_damage(targets, damage)
   for enemy in all(targets) do
-    if (enemy.hp > 0) enemy.hp -= self.dmg
-  end
-end
-function Tower:apply_custom_damage(damage_in, targets)
-  for enemy in all(targets) do
-    if (enemy.hp > 0) enemy.hp -= damage_in
+    if (enemy.hp > 0) enemy.hp -= damage
   end
 end
 function Tower:freeze_enemies(targets)
@@ -443,29 +441,45 @@ function Tower:draw()
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
-function place_tower(position)
-  if (grid[position.y][position.x] == "tower") return false
-  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  if (coins < tower_details.cost) return false
-  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
-  add(towers, Tower:new(position, tower_details, direction))
-  coins -= tower_details.cost
-  grid[position.y][position.x] = "tower"
-  return true
-end
-function refund_tower_at(position)
-  for tower in all(towers) do
-    if tower.position == position then
-      grid[position.y][position.x] = "empty"
-      if (tower.type == "floor") grid[position.y][position.x] = "path"
-      coins += tower.cost \ 1.25
-      del(animators, tower.animator) 
-      del(towers, tower)
-     end
-  end
-end
 function Tower:cooldown()
   if (self.manifest_cooldown >= 0) self.manifest_cooldown -= 1
+end
+function Tower:manifested_lightning_blast()
+  local pos_sel = selector.position/8
+  local xnum =  (pos_sel.x - self.position.x) / 8
+  local ynum =  (pos_sel.y - self.position.y) / 8
+  local direction = Vec:new(xnum, ynum)
+  local selfpos = Vec:new(self.position.x+1, self.position.y)
+  if (self.manifest_cooldown > 0) return
+  self.manifest_cooldown = 5
+  for i=1, 3 do
+    Tower.apply_damage(self, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark), self.dmg * 2)
+    selfpos.x -= 1
+  end
+  selfpos.x += 2
+  selfpos.y += 1
+  for i=1, 3 do
+    Tower.apply_damage(self, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark), self.dmg * 2)
+    selfpos.y -= 1
+  end
+end
+function Tower:manifested_hale_blast()
+  if (self.manifest_cooldown > 0) return
+  self.manifest_cooldown = 25
+  local pos = selector.position / 8
+  local hits = {}
+  add_enemy_at_to_table(pos, hits, true)  -- center
+  add_enemy_at_to_table(pos + Vec:new(0, 1), hits, true)  -- south
+  add_enemy_at_to_table(pos + Vec:new(0, -1), hits, true) -- north
+  add_enemy_at_to_table(pos + Vec:new(-1, 0), hits, true) -- west
+  add_enemy_at_to_table(pos + Vec:new(1, 0), hits, true)  -- east
+  Tower.freeze_enemies(self, hits)
+  Tower.apply_damage(self, hits, self.dmg\4)
+end
+function Tower:check_sword_circle_spin()
+  self.manifest_cooldown += 7
+  self.manifest_cooldown = min(self.manifest_cooldown, 110)
+  self.dmg = min(self.manifest_cooldown, 100) / 15
 end
 function manifest_tower_at(position)
   for tower in all(towers) do
@@ -473,6 +487,8 @@ function manifest_tower_at(position)
       manifesting_now = true
       if (tower.type == "tack") then
         manifesting_sword = true
+        tower.attack_delay = 10
+        tower.dmg = 0
       elseif (tower.type == "rail") then
         manifesting_lightning = true
       elseif (tower.type == "frontal") then
@@ -495,6 +511,9 @@ function unmanifest_tower()
   for tower in all(towers) do
     if tower.position == manifest_location then
       if (tower.type == "tack") then
+        local tower_details = global_table_data.tower_templates[1]
+        tower.attack_delay = tower_details.attack_delay
+        tower.dmg = tower_details.damage
       elseif (tower.type == "rail") then
       elseif (tower.type == "frontal") then
       elseif (tower.type == "floor") then
@@ -502,39 +521,26 @@ function unmanifest_tower()
     end
   end
 end
-function Tower:manifested_lightning_blast()
-  local pos_sel = selector.position/8
-  local xnum =  (pos_sel.x - self.position.x) / 8
-  local ynum =  (pos_sel.y - self.position.y) / 8
-  local direction = Vec:new(xnum, ynum)
-  local selfpos = Vec:new(self.position.x+1, self.position.y)
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 200
-  for i=1, 3 do
-    Tower.apply_custom_damage(self, self.dmg * 2, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark))
-    selfpos.x -= 1
-  end
-  selfpos.x += 2
-  selfpos.y += 1
-  for i=1, 3 do
-    Tower.apply_custom_damage(self, self.dmg * 2, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark))
-    selfpos.y -= 1
-  end
+function place_tower(position)
+  if (grid[position.y][position.x] == "tower") return false
+  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
+  if (coins < tower_details.cost) return false
+  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+  add(towers, Tower:new(position, tower_details, direction))
+  coins -= tower_details.cost
+  grid[position.y][position.x] = "tower"
+  return true
 end
-function Tower:manifested_hale_blast()
-  local pos = selector.position/8
-  local southpos = Vec:new(pos.x, pos.y + 2)
-  local westpos = Vec:new(pos.x - 2, pos.y)
-  local north = Vec:new(0, -1)
-  local east  = Vec:new(1, 0)
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 25
-  Tower.freeze_enemies(self, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
-  Tower.freeze_enemies(self, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
-  Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
-  Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
-end
-function check_sword_circle_spin()
+function refund_tower_at(position)
+  for tower in all(towers) do
+    if tower.position == position then
+      grid[position.y][position.x] = "empty"
+      if (tower.type == "floor") grid[position.y][position.x] = "path"
+      coins += tower.cost \ 1.25
+      del(animators, tower.animator) 
+      del(towers, tower)
+     end
+  end
 end
 function draw_tower_attack_overlay(tower_details)
   local pos = selector.position/8
@@ -986,6 +992,11 @@ function game_loop()
       end
     elseif manifesting_now == true then
       if manifesting_sword then
+        for tower in all(towers) do
+          if tower.position == manifest_location then
+            tower.check_sword_circle_spin(tower)
+          end
+        end
       elseif manifesting_lightning then
         for tower in all(towers) do
           if tower.position == manifest_location then
@@ -1008,7 +1019,6 @@ function game_loop()
     if manifesting_torch == true then
     end
   else
-    check_sword_circle_spin()
   end
   foreach(towers, Tower.cooldown)
   if enemies_active then 
@@ -1077,11 +1087,11 @@ end
 function placable_tile_location(coord)
   return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
 end
-function add_enemy_at_to_table(pos, table)
+function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
-      return
+      if (multitarget) return
     end
   end
 end
@@ -1175,6 +1185,9 @@ function insert_key_val(str, table)
       value = false 
     else
       value = tonum(val) or val
+    end
+    if value == "inf" then 
+      value = 32767
     end
     table[key] = value
   end

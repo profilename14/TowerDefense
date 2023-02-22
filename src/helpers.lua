@@ -51,11 +51,11 @@ function placable_tile_location(coord)
   return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
 end
 
-function add_enemy_at_to_table(pos, table)
+function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
-      return
+      if (multitarget) return
     end
   end
 end
