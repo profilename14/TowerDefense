@@ -372,7 +372,7 @@ function Tower:attack()
     end
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
   elseif self.type == "rail" then
-    Tower.apply_damage(self, Tower.raycast(self), self.dmg)
+    Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
   elseif self.type == "frontal" then 
     Tower.freeze_enemies(self, Tower.frontal_collision(self))
   elseif self.type == "floor" then 
@@ -380,27 +380,6 @@ function Tower:attack()
     add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
   end
-end
-function Tower:raycast()
-  if (self.dir == Vec:new(0, 0)) return
-  local hits = {}
-  for i=1, self.radius do 
-    add_enemy_at_to_table(self.position + self.dir * i, hits)
-  end
-  if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.spark)
-  return hits
-end
-function Tower:custom_raycast(in_position, in_radius, in_direction, in_animation)
-  if (in_direction == Vec:new(0, 0)) return
-  local hits = {}
-  for i=1, in_radius do 
-    local cur_loc = in_position + in_direction * i
-    cur_loc.x = flr(cur_loc.x)
-    cur_loc.y = flr(cur_loc.y)
-    add_enemy_at_to_table(cur_loc, hits)
-  end
-  custom_raycast_spawn(in_position, in_radius, in_direction, in_animation)
-  return hits
 end
 function Tower:nova_collision()
   local hits, rad = {}, self.radius
@@ -442,37 +421,40 @@ function Tower:draw()
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
 function Tower:cooldown()
-  if (self.manifest_cooldown >= 0) self.manifest_cooldown -= 1
+  self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
 end
 function Tower:manifested_lightning_blast()
-  local pos_sel = selector.position/8
-  local xnum =  (pos_sel.x - self.position.x) / 8
-  local ynum =  (pos_sel.y - self.position.y) / 8
-  local direction = Vec:new(xnum, ynum)
-  local selfpos = Vec:new(self.position.x+1, self.position.y)
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 5
-  for i=1, 3 do
-    Tower.apply_damage(self, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark), self.dmg * 2)
-    selfpos.x -= 1
+  if (self.manifest_cooldown > 0) return 
+  self.manifest_cooldown = 5 -- orginially 200
+  local pos = selector.position / 8
+  local dir = (pos - self.position) / 8
+  local anchor = self.position + Vec:new(1, 0)
+  local damage = self.dmg * 2
+  for i=1, 3 do 
+    Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
+    anchor.x -= 1
   end
-  selfpos.x += 2
-  selfpos.y += 1
+  anchor += Vec:new(2, 1)
   for i=1, 3 do
-    Tower.apply_damage(self, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark), self.dmg * 2)
-    selfpos.y -= 1
+    Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
+    anchor.y -= 1
   end
 end
 function Tower:manifested_hale_blast()
   if (self.manifest_cooldown > 0) return
   self.manifest_cooldown = 25
   local pos = selector.position / 8
-  local hits = {}
-  add_enemy_at_to_table(pos, hits, true)  -- center
-  add_enemy_at_to_table(pos + Vec:new(0, 1), hits, true)  -- south
-  add_enemy_at_to_table(pos + Vec:new(0, -1), hits, true) -- north
-  add_enemy_at_to_table(pos + Vec:new(-1, 0), hits, true) -- west
-  add_enemy_at_to_table(pos + Vec:new(1, 0), hits, true)  -- east
+  local hits, locations = {}, {
+    pos, -- center
+    pos + Vec:new(0, 1),  -- south
+    pos + Vec:new(0, -1), -- north
+    pos + Vec:new(-1, 0), -- west
+    pos + Vec:new(1, 0)   -- east
+  }
+  for location in all(locations) do 
+    add_enemy_at_to_table(location, hits, true)
+  end
+  spawn_particles_at(locations, global_table_data.animation_data.frost)
   Tower.freeze_enemies(self, hits)
   Tower.apply_damage(self, hits, self.dmg\4)
 end
@@ -480,6 +462,17 @@ function Tower:check_sword_circle_spin()
   self.manifest_cooldown += 7
   self.manifest_cooldown = min(self.manifest_cooldown, 110)
   self.dmg = min(self.manifest_cooldown, 100) / 15
+end
+function raycast(position, radius, dir)
+  if (dir == Vec:new(0, 0)) return
+  local hits, particle_locations = {}, {}
+  for i=1, radius do 
+    local pos = Vec.floor(position + dir * i)
+    add(particle_locations, pos)
+    add_enemy_at_to_table(pos, hits)
+  end
+  if (#hits > 0 or manifesting_now) spawn_particles_at(particle_locations, global_table_data.animation_data.spark)
+  return hits
 end
 function manifest_tower_at(position)
   for tower in all(towers) do
@@ -608,17 +601,9 @@ function destroy_particle(particle)
   if (not Animator.finished(particle.animator)) return
   del(particles, particle)
 end
-function raycast_spawn(position, range, dir, data)
-  for i=1, range do 
-    add(particles, Particle:new(position + dir * i, false, Animator:new(data, false)))
-  end
-end
-function custom_raycast_spawn(position, range, dir, data)
-  for i=1, range do 
-    local cur_loc = position + dir * i
-    cur_loc.x = ((flr(cur_loc.x))*8 )/ 8
-    cur_loc.y = ((flr(cur_loc.y))*8 )/ 8
-    add(particles, Particle:new(cur_loc, false, Animator:new(data, false)))
+function spawn_particles_at(locations, animation_data)
+  for location in all(locations) do 
+    add(particles, Particle:new(location, false, Animator:new(animation_data, false)))
   end
 end
 function nova_spawn(position, radius, data)
@@ -857,6 +842,9 @@ function Vec:unpack()
 end
 function Vec:clamp(min, max)
   self.x, self.y = mid(self.x, min, max), mid(self.y, min, max)
+end
+function Vec:floor()
+  return Vec:new(flr(self.x), flr(self.y))
 end
 function normalize(val)
   return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))

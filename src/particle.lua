@@ -25,18 +25,9 @@ function destroy_particle(particle)
 end
 
 -- particle spawing
-function raycast_spawn(position, range, dir, data)
-  for i=1, range do 
-    add(particles, Particle:new(position + dir * i, false, Animator:new(data, false)))
-  end
-end
--- This mostly exists for the lightning lance. Snaps positions to the grid.
-function custom_raycast_spawn(position, range, dir, data)
-  for i=1, range do 
-    local cur_loc = position + dir * i
-    cur_loc.x = ((flr(cur_loc.x))*8 )/ 8
-    cur_loc.y = ((flr(cur_loc.y))*8 )/ 8
-    add(particles, Particle:new(cur_loc, false, Animator:new(data, false)))
+function spawn_particles_at(locations, animation_data)
+  for location in all(locations) do 
+    add(particles, Particle:new(location, false, Animator:new(animation_data, false)))
   end
 end
 
