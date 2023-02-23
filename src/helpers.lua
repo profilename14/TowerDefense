@@ -117,3 +117,10 @@ function combine_and_unpack(data1, data2)
   end
   return unpack(data)
 end
+
+function round_to(value, place)
+  local places = 10 * place
+  local val = value * places 
+  val = flr(val)
+  return val / places
+end

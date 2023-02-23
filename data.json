@@ -184,7 +184,8 @@
       "type": "tack",
       "attack_delay": 15,
       "icon_data": 16,
-      "disable_icon_rotation": true
+      "disable_icon_rotation": true,
+      "cooldown": 0
     },
     {
       "name": "lightning lance",
@@ -197,7 +198,8 @@
       "type": "rail",
       "attack_delay": 25,
       "icon_data": 18,
-      "disable_icon_rotation": false
+      "disable_icon_rotation": false,
+      "cooldown": 200
     },
     {
       "name": "hale howitzer",
@@ -210,7 +212,8 @@
       "type": "frontal",
       "attack_delay": 25,
       "icon_data": 20,
-      "disable_icon_rotation": false
+      "disable_icon_rotation": false,
+      "cooldown": 25
     },
     {
       "name": "torch trap",
@@ -223,7 +226,8 @@
       "type": "floor",
       "attack_delay": 10,
       "icon_data": 22,
-      "disable_icon_rotation": true
+      "disable_icon_rotation": true,
+      "cooldown": 0
     }
   ],
   "enemy_templates": [

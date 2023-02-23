@@ -53,14 +53,14 @@ function game_draw_loop()
           print_with_outline("❎ sell", 1, 115, 7, 0)
         end
       else
-        print_with_outline("❎ activate", 1, 115, 3, 0)
+        print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, 3, 0)
       end
     else
       Animator.reset(sell_selector)
       local position, color = selector.position/8, 7
       local text = "❎ buy & place "..tower_details.name
       if manifested_tower_ref then 
-        text = "❎ activate" 
+        text = Tower.get_cooldown_str(manifested_tower_ref) 
         if manifested_tower_ref.type == "tack" then 
           color = 3
         else

@@ -6,6 +6,7 @@ function Tower:new(pos, tower_template_data, direction)
     radius = tower_template_data.radius, 
     attack_delay = tower_template_data.attack_delay,
     current_attack_ticks = 0,
+    cooldown = tower_template_data.cooldown,
     manifest_cooldown = -1,
     being_manifested = false,
     cost = tower_template_data.cost,
@@ -27,7 +28,6 @@ function Tower:attack()
   if (self.current_attack_ticks > 0) return
 
   if self.type == "tack" then
-    printh(self.dmg)
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
   elseif not self.being_manifested then
     if self.type == "rail" then
@@ -85,7 +85,7 @@ function Tower:cooldown()
 end
 function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
-  self.manifest_cooldown = 200
+  self.manifest_cooldown = self.cooldown
 
   local pos = selector.position / 8
   local dir = (pos - self.position) / 8
@@ -104,7 +104,7 @@ function Tower:manifested_lightning_blast()
 end
 function Tower:manifested_hale_blast()
   if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 25
+  self.manifest_cooldown = self.cooldown
 
   local pos = selector.position / 8
   local hits, locations = {}, {
@@ -125,7 +125,12 @@ end
  -- rotation speed (to a max of 100/25=4 damage, with 3x attack speed).
 function Tower:manifested_nova()
   self.manifest_cooldown = min(self.manifest_cooldown + 7, 110)
-  self.dmg = min(self.manifest_cooldown, 100) / 15
+  self.dmg = round_to(min(self.manifest_cooldown, 100) / 15, 2)
+end
+function Tower:get_cooldown_str()
+  if (self.type == "tack") return "❎ activate ("..self.dmg.."d)"
+  if (self.manifest_cooldown == 0) return "❎ activate"
+  return "❎ activate ("..self.manifest_cooldown.."t)"
 end
 
 function raycast(position, radius, dir)
