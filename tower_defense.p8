@@ -132,7 +132,7 @@ function reset_game()
   menu_data = {
     {
       "main", nil,
-      5, 70, 
+      5, 63, 
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
         {text = "misc", color = {7, 0}, callback = swap_menu_context, args = {"misc"}},
@@ -146,10 +146,10 @@ function reset_game()
       display_tower_rotation,
       5, 8, 7, 3
     },
-    { "towers", "main", 5, 70, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
+    { "towers", "main", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
     {
       "misc", "main",
-      5, 70, 
+      5, 63, 
       {
         {text = "map select", color = {7, 0}, 
           callback = function()
@@ -158,18 +158,10 @@ function reset_game()
             map_menu_enable = true
           end
         },
-        {text = "manifest mode", color = {7, 0}, 
+        {
+          text="toggle mode", color={7, 0},
           callback = function()
-            manifest_mode = true
-            get_active_menu().enable = false
-            shop_enable = false
-          end
-        },
-        {text = "selling mode", color = {7, 0}, 
-          callback = function()
-            manifest_mode = false
-            get_active_menu().enable = false
-            shop_enable = false
+            manifest_mode = not manifest_mode
           end
         }
       },
@@ -487,18 +479,14 @@ function manifest_tower_at(position)
   end
 end
 function unmanifest_tower()
-  manifested_tower_ref = nil
-  for tower in all(towers) do 
-    if tower.being_manifested then 
-      tower.being_manifested = false 
-    end
-    if tower.type == "tack" then
-      lock_cursor = false
-      local tower_details = global_table_data.tower_templates[1]
-      tower.attack_delay = tower_details.attack_delay
-      tower.dmg = tower_details.damage
-    end
+  manifested_tower_ref.being_manifested = false 
+  if manifested_tower_ref.type == "tack" then
+    lock_cursor = false
+    local tower_details = global_table_data.tower_templates[1]
+    manifested_tower_ref.attack_delay = tower_details.attack_delay
+    manifested_tower_ref.dmg = tower_details.damage
   end
+  manifested_tower_ref = nil
 end
 function place_tower(position)
   if (grid[position.y][position.x] == "tower") return false
@@ -875,6 +863,8 @@ function game_draw_loop()
   end
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
+  local mode = manifest_mode and "manifest" or "sell"
+  print_with_outline("mode: "..mode, 1, 108, 7, 0)
   if shop_enable and get_active_menu() then
     print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
     if get_active_menu().prev then

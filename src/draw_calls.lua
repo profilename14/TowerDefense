@@ -26,6 +26,8 @@ function game_draw_loop()
   -- UI
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
+  local mode = manifest_mode and "manifest" or "sell"
+  print_with_outline("mode: "..mode, 1, 108, 7, 0)
   if shop_enable and get_active_menu() then
     print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
     if get_active_menu().prev then

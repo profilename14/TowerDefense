@@ -8,7 +8,7 @@ function reset_game()
   menu_data = {
     {
       "main", nil,
-      5, 70, 
+      5, 63, 
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
         {text = "misc", color = {7, 0}, callback = swap_menu_context, args = {"misc"}},
@@ -22,10 +22,10 @@ function reset_game()
       display_tower_rotation,
       5, 8, 7, 3
     },
-    { "towers", "main", 5, 70, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
+    { "towers", "main", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
     {
       "misc", "main",
-      5, 70, 
+      5, 63, 
       {
         {text = "map select", color = {7, 0}, 
           callback = function()
@@ -34,18 +34,10 @@ function reset_game()
             map_menu_enable = true
           end
         },
-        {text = "manifest mode", color = {7, 0}, 
+        {
+          text="toggle mode", color={7, 0},
           callback = function()
-            manifest_mode = true
-            get_active_menu().enable = false
-            shop_enable = false
-          end
-        },
-        {text = "selling mode", color = {7, 0}, 
-          callback = function()
-            manifest_mode = false
-            get_active_menu().enable = false
-            shop_enable = false
+            manifest_mode = not manifest_mode
           end
         }
       },
