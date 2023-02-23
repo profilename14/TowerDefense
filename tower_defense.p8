@@ -366,15 +366,15 @@ function Tower:attack()
   if (self.current_attack_ticks > 0) return
   if self.type == "tack" then
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
+  elseif self.type == "floor" then 
+    local hits = {}
+    add_enemy_at_to_table(self.position, hits)
+    foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
   elseif not self.being_manifested then
     if self.type == "rail" then
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
     elseif self.type == "frontal" then 
       Tower.freeze_enemies(self, Tower.frontal_collision(self))
-    elseif self.type == "floor" then 
-      local hits = {}
-      add_enemy_at_to_table(self.position, hits)
-      foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
     end
   end
 end
