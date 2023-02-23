@@ -8,6 +8,7 @@ function Animator:new(animation_data, continuous_)
     animation_frame = 1,
     frame_duration = animation_data.ticks_per_frame,
     tick = 0,
+    dir = 1,
     continuous = continuous_
   }
   setmetatable(obj, self)
@@ -22,11 +23,15 @@ function Animator:update()
     if (self.continuous) Animator.reset(self)
     return true
   end
-  self.animation_frame += 1
+  self.animation_frame += self.dir
   return false
 end
+function Animator:set_direction(dir)
+  self.dir = dir
+end
 function Animator:finished()
-  return self.animation_frame >= #self.data
+  if (self.dir == 1) return self.animation_frame >= #self.data
+  return self.animation_frame <= 1
 end
 function Animator:draw(dx, dy)
   local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]

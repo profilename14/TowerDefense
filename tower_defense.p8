@@ -110,6 +110,7 @@ end
 function load_game(map_id)
   pal()
   auto_start_wave = false
+  manifest_mode = true
   wave_round = 0
   freeplay_rounds = 0
   loaded_map = map_id
@@ -181,7 +182,7 @@ function reset_game()
   enemy_required_spawn_ticks = 10
   lock_cursor = false
   
-  manifest_mode = true
+  manifest_mode = false
   sell_mode = false
   manifested_tower_ref = nil
   enemy_current_spawn_tick = 0
@@ -195,6 +196,7 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
+  Animator.set_direction(manifest_selector, -1)
   get_menu("map").enable = true
 end
 Enemy = {}
@@ -496,6 +498,7 @@ function manifest_tower_at(position)
     if tower.position == position then 
       tower.being_manifested = true 
       manifested_tower_ref = tower
+      Animator.set_direction(manifest_selector, 1)
       if tower.type == "tack" then
         lock_cursor = true
         tower.attack_delay = 10
@@ -506,6 +509,7 @@ function manifest_tower_at(position)
 end
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
+  Animator.set_direction(manifest_selector, -1)
   if manifested_tower_ref.type == "tack" then
     lock_cursor = false
     local tower_details = global_table_data.tower_templates[1]
@@ -632,6 +636,7 @@ function Animator:new(animation_data, continuous_)
     animation_frame = 1,
     frame_duration = animation_data.ticks_per_frame,
     tick = 0,
+    dir = 1,
     continuous = continuous_
   }
   setmetatable(obj, self)
@@ -646,11 +651,15 @@ function Animator:update()
     if (self.continuous) Animator.reset(self)
     return true
   end
-  self.animation_frame += 1
+  self.animation_frame += self.dir
   return false
 end
+function Animator:set_direction(dir)
+  self.dir = dir
+end
 function Animator:finished()
-  return self.animation_frame >= #self.data
+  if (self.dir == 1) return self.animation_frame >= #self.data
+  return self.animation_frame <= 1
 end
 function Animator:draw(dx, dy)
   local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]
@@ -908,30 +917,38 @@ function ui_draw_loop(tower_details)
     print_with_outline(text, 1, 115, 7, 0)
   else -- game ui
     if manifest_mode and manifested_tower_ref then 
-        Animator.update(manifest_selector)
-        Animator.draw(manifest_selector, Vec.unpack(selector.position))
-        print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
-        local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
-        print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
+      print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+      local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
+      print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
     else
-      Animator.reset(manifest_selector)
       if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+    end
+    if manifest_mode then 
+      Animator.update(manifest_selector)
+      Animator.draw(manifest_selector, Vec.unpack(selector.position))
     end
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
     if (not manifested_tower_ref and manifest_mode) or (sell_mode and not tower_in_table_state) then 
-      spr(selector.sprite_index, Vec.unpack(selector.position))
+    end
+    if not tower_in_table_state then 
+      Animator.set_direction(sell_selector, -1)
+    else
+      Animator.set_direction(sell_selector, 1)
     end
     if tower_in_table_state and not manifested_tower_ref then 
       if manifest_mode then
         print_with_outline("❎ manifest", 1, 115, 7, 0)
       else
+        print_with_outline("❎ sell", 1, 115, 7, 0)
         Animator.update(sell_selector)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
-        print_with_outline("❎ sell", 1, 115, 7, 0)
       end
     else
-      Animator.reset(sell_selector)
       if (not manifested_tower_ref and not sell_mode) ui_buy_and_place_draw_loop(tower_details)
+      if sell_mode then 
+        Animator.update(sell_selector)
+        Animator.draw(sell_selector, Vec.unpack(selector.position))
+      end
     end
   end
 end

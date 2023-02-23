@@ -58,7 +58,7 @@ function reset_game()
   lock_cursor = false
   
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
-  manifest_mode = true
+  manifest_mode = false
   sell_mode = false
   manifested_tower_ref = nil
 
@@ -74,5 +74,6 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
+  Animator.set_direction(manifest_selector, -1)
   get_menu("map").enable = true
 end

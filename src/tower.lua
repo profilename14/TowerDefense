@@ -170,6 +170,7 @@ function manifest_tower_at(position)
     if tower.position == position then 
       tower.being_manifested = true 
       manifested_tower_ref = tower
+      Animator.set_direction(manifest_selector, 1)
       if tower.type == "tack" then
         lock_cursor = true
         tower.attack_delay = 10
@@ -181,6 +182,7 @@ end
 
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
+  Animator.set_direction(manifest_selector, -1)
   if manifested_tower_ref.type == "tack" then
     lock_cursor = false
     local tower_details = global_table_data.tower_templates[1]

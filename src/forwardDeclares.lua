@@ -123,6 +123,7 @@ end
 function load_game(map_id)
   pal()
   auto_start_wave = false
+  manifest_mode = true
   wave_round = 0
   freeplay_rounds = 0
   loaded_map = map_id

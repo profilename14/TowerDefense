@@ -49,32 +49,38 @@ function ui_draw_loop(tower_details)
     print_with_outline(text, 1, 115, 7, 0)
   else -- game ui
     if manifest_mode and manifested_tower_ref then 
-        Animator.update(manifest_selector)
-        Animator.draw(manifest_selector, Vec.unpack(selector.position))
-        print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
-        local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
-        print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
+      print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+      local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
+      print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
     else
-      Animator.reset(manifest_selector)
       if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+    end
+    if manifest_mode then 
+      Animator.update(manifest_selector)
+      Animator.draw(manifest_selector, Vec.unpack(selector.position))
     end
 
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
-    if (not manifested_tower_ref and manifest_mode) or (sell_mode and not tower_in_table_state) then 
-      spr(selector.sprite_index, Vec.unpack(selector.position))
+    if not tower_in_table_state then 
+      Animator.set_direction(sell_selector, -1)
+    else
+      Animator.set_direction(sell_selector, 1)
     end
 
     if tower_in_table_state and not manifested_tower_ref then 
       if manifest_mode then
         print_with_outline("❎ manifest", 1, 115, 7, 0)
       else
+        print_with_outline("❎ sell", 1, 115, 7, 0)
         Animator.update(sell_selector)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
-        print_with_outline("❎ sell", 1, 115, 7, 0)
       end
     else
-      Animator.reset(sell_selector)
       if (not manifested_tower_ref and not sell_mode) ui_buy_and_place_draw_loop(tower_details)
+      if sell_mode then 
+        Animator.update(sell_selector)
+        Animator.draw(sell_selector, Vec.unpack(selector.position))
+      end
     end
   end
 end
