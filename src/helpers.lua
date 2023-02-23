@@ -48,7 +48,7 @@ function is_in_table(val, table, is_entity)
 end
 
 function placable_tile_location(coord)
-  return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
+  return check_tile_flag_at(coord, global_table_data.map_meta_data.non_path_flag_id)
 end
 
 function add_enemy_at_to_table(pos, table, multitarget)
@@ -123,4 +123,8 @@ function round_to(value, place)
   local val = value * places 
   val = flr(val)
   return val / places
+end
+
+function check_tile_flag_at(position, flag)
+  return fget(mget(Vec.unpack(position)), flag)
 end

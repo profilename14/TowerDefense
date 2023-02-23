@@ -94,7 +94,7 @@ function parse_path()
   for iy=0, 15 do
     for ix=0, 15 do
       local map_cord = Vec:new(ix, iy) + map_shift
-      if fget(mget(Vec.unpack(map_cord)), global_table_data.map_meta_data.path_flag_id) then 
+      if check_tile_flag_at(map_cord, global_table_data.map_meta_data.path_flag_id) then 
         add(path_tiles, map_cord)
       end
     end

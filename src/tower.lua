@@ -143,7 +143,7 @@ function Tower:manifested_torch_trap()
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     -- torch tower on path
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-    if (fget(mget(Vec.unpack(sel_pos+shift)), 0) and prev ~= sel_pos) self.enable = false
+    if (check_tile_flag_at(sel_pos+shift, 0) and prev ~= sel_pos) self.enable = false
     return
   end
 

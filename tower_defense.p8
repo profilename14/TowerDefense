@@ -282,7 +282,7 @@ function parse_path()
   for iy=0, 15 do
     for ix=0, 15 do
       local map_cord = Vec:new(ix, iy) + map_shift
-      if fget(mget(Vec.unpack(map_cord)), global_table_data.map_meta_data.path_flag_id) then 
+      if check_tile_flag_at(map_cord, global_table_data.map_meta_data.path_flag_id) then 
         add(path_tiles, map_cord)
       end
     end
@@ -472,7 +472,7 @@ function Tower:manifested_torch_trap()
   local prev = Vec:new(Vec.unpack(self.position))
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-    if (fget(mget(Vec.unpack(sel_pos+shift)), 0) and prev ~= sel_pos) self.enable = false
+    if (check_tile_flag_at(sel_pos+shift, 0) and prev ~= sel_pos) self.enable = false
     return
   end
   self.position = sel_pos
@@ -1078,7 +1078,7 @@ function is_in_table(val, table, is_entity)
   end
 end
 function placable_tile_location(coord)
-  return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
+  return check_tile_flag_at(coord, global_table_data.map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do
@@ -1143,6 +1143,9 @@ function round_to(value, place)
   local val = value * places 
   val = flr(val)
   return val / places
+end
+function check_tile_flag_at(position, flag)
+  return fget(mget(Vec.unpack(position)), flag)
 end
 function unpack_table(str)
   local table,start,stack,i={},1,0,1
