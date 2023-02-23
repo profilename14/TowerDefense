@@ -121,12 +121,12 @@ function load_game(map_id)
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      if (not placable_tile_location(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift))) grid[y][x] = "path" 
+      if (not check_tile_flag_at(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift), global_table_data.map_meta_data.non_path_flag_id)) grid[y][x] = "path" 
     end
   end
   music(0)
 end
-global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,reward=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,reward=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,reward=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,reward=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,reward=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,reward=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
+global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
 function reset_game()
   global_table_data = unpack_table(global_table_str)
   menu_data = {
@@ -198,7 +198,7 @@ function reset_game()
   get_menu("map").enable = true
 end
 Enemy = {}
-function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, height_)
+function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
   obj = { 
     position = Vec:new(location),
     hp = hp_, 
@@ -208,7 +208,7 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, heig
     frozen_tick = 0,
     burning_tick = 0,
     gfx = sprite_id,
-    reward = reward_,
+    type = type_,
     damage = damage_,
     height = height_,
     pos = 1
@@ -222,9 +222,9 @@ function Enemy:step()
   if (self.current_step ~= 0) return false
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
-    if self.reward == 6 then
+    if self.type == 6 then
       self.hp -= 0.5
-    elseif self.reward == 5 then
+    elseif self.type == 5 then
       self.hp -= 5
     else
       self.hp -= 2
@@ -233,10 +233,10 @@ function Enemy:step()
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
   end
   if (not self.is_frozen) return true 
-  if self.reward == 6 then
+  if self.type == 6 then
     self.frozen_tick = max(self.frozen_tick - 0.8, 0)
     self.hp -= 2
-  elseif self.reward == 5 then
+  elseif self.type == 5 then
     self.frozen_tick = max(self.frozen_tick - 8, 0)
   else
     self.frozen_tick = max(self.frozen_tick - 1, 0)
@@ -1063,7 +1063,7 @@ function increase_enemy_health(enemy_data)
       enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
       max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
       enemy_data.sprite_index,
-      enemy_data.reward,
+      enemy_data.type,
       enemy_data.damage,
       enemy_data.height
     }
@@ -1076,9 +1076,6 @@ function is_in_table(val, table, is_entity)
       if (val == obj) return true, i 
     end
   end
-end
-function placable_tile_location(coord)
-  return check_tile_flag_at(coord, global_table_data.map_meta_data.non_path_flag_id)
 end
 function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do

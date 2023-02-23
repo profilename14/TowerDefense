@@ -31,7 +31,7 @@ function increase_enemy_health(enemy_data)
       enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
       max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
       enemy_data.sprite_index,
-      enemy_data.reward,
+      enemy_data.type,
       enemy_data.damage,
       enemy_data.height
     }
@@ -45,10 +45,6 @@ function is_in_table(val, table, is_entity)
       if (val == obj) return true, i 
     end
   end
-end
-
-function placable_tile_location(coord)
-  return check_tile_flag_at(coord, global_table_data.map_meta_data.non_path_flag_id)
 end
 
 function add_enemy_at_to_table(pos, table, multitarget)

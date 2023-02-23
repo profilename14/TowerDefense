@@ -235,7 +235,7 @@
       "hp": 12,
       "step_delay": 10,
       "sprite_index": 3,
-      "reward": 3,
+      "type": 3,
       "damage": 1,
       "height": 2
     },
@@ -243,7 +243,7 @@
       "hp": 10,
       "step_delay": 8,
       "sprite_index": 4,
-      "reward": 2,
+      "type": 2,
       "damage": 2,
       "height": 6
     },
@@ -251,7 +251,7 @@
       "hp": 25,
       "step_delay": 12,
       "sprite_index": 5,
-      "reward": 3,
+      "type": 3,
       "damage": 4,
       "height": 2
     },
@@ -259,7 +259,7 @@
       "hp": 8,
       "step_delay": 12,
       "sprite_index": 64,
-      "reward": 4,
+      "type": 4,
       "damage": 1,
       "height": 2
     },
@@ -267,7 +267,7 @@
       "hp": 40,
       "step_delay": 12,
       "sprite_index": 65,
-      "reward": 5,
+      "type": 5,
       "damage": 6,
       "height": 2
     },
@@ -275,7 +275,7 @@
       "hp": 15,
       "step_delay": 6,
       "sprite_index": 66,
-      "reward": 6,
+      "type": 6,
       "damage": 4,
       "height": 6
     }
