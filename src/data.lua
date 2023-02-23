@@ -8,7 +8,7 @@ function reset_game()
   menu_data = {
     {
       "main", nil,
-      5, 70, 
+      5, 63, 
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
         {text = "misc", color = {7, 0}, callback = swap_menu_context, args = {"misc"}},
@@ -22,10 +22,10 @@ function reset_game()
       display_tower_rotation,
       5, 8, 7, 3
     },
-    { "towers", "main", 5, 70, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
+    { "towers", "main", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
     {
       "misc", "main",
-      5, 70, 
+      5, 63, 
       {
         {text = "map select", color = {7, 0}, 
           callback = function()
@@ -34,18 +34,11 @@ function reset_game()
             map_menu_enable = true
           end
         },
-        {text = "manifest mode", color = {7, 0}, 
+        {
+          text="toggle mode", color={7, 0},
           callback = function()
-            manifest_mode = true
-            get_active_menu().enable = false
-            shop_enable = false
-          end
-        },
-        {text = "selling mode", color = {7, 0}, 
-          callback = function()
-            manifest_mode = false
-            get_active_menu().enable = false
-            shop_enable = false
+            manifest_mode = not manifest_mode
+            sell_mode = not sell_mode
           end
         }
       },
@@ -59,21 +52,16 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins = 30
+  coins = 1000  -- TEMP
   player_health = 50
   enemy_required_spawn_ticks = 10
+  lock_cursor = false
+  manifested_tower_ref = nil
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = true
-  -- If true, the player is currently manifesting a tower. Else, they aren't and the game functions as normal.
-  manifesting_now = false
-  -- Where the player is manifesting (defaults to 0,0 but is set on selection)
-  manifest_location     = Vec:new(0, 0)
+  sell_mode = false
   -- Only one of these can be true at one time. Affects game logic.
-  manifesting_sword     = false
-  manifesting_lightning = false
-  manifesting_hale      = false
-  manifesting_torch     = false
-  manifesting_sharp     = false
+  manifesting_torch = false 
 
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick = 0
@@ -86,5 +74,6 @@ function reset_game()
   tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
+  manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   get_menu("map").enable = true
 end

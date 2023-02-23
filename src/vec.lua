@@ -37,6 +37,9 @@ end
 function Vec:clamp(min, max)
   self.x, self.y = mid(self.x, min, max), mid(self.y, min, max)
 end
+function Vec:floor()
+  return Vec:new(flr(self.x), flr(self.y))
+end
 
 function normalize(val)
   return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))

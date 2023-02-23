@@ -6,7 +6,9 @@ function Tower:new(pos, tower_template_data, direction)
     radius = tower_template_data.radius, 
     attack_delay = tower_template_data.attack_delay,
     current_attack_ticks = 0,
+    cooldown = tower_template_data.cooldown,
     manifest_cooldown = -1,
+    being_manifested = false,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
@@ -17,49 +19,27 @@ function Tower:new(pos, tower_template_data, direction)
   self.__index = self 
   return obj 
 end
-
 function Tower:attack()
+  if self.being_manifested and self.type == "tack" then 
+    -- ensure damage is awlays updated to the cooldown.
+    self.dmg = min(self.manifest_cooldown, 100) / 15
+  end
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
   if (self.current_attack_ticks > 0) return
 
   if self.type == "tack" then
-    if manifesting_sword and self.position == manifest_location then
-      -- ensure damage is awlays updated to the cooldown.
-      self.dmg = min(self.manifest_cooldown, 100) / 15
+    Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
+  elseif not self.being_manifested then
+    if self.type == "rail" then
+      Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
+    elseif self.type == "frontal" then 
+      Tower.freeze_enemies(self, Tower.frontal_collision(self))
+    elseif self.type == "floor" then 
+      local hits = {}
+      add_enemy_at_to_table(self.position, hits)
+      foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
     end
-    Tower.apply_damage(self, Tower.nova_collision(self))
-  elseif self.type == "rail" then
-    Tower.apply_damage(self, Tower.raycast(self))
-  elseif self.type == "frontal" then 
-    Tower.freeze_enemies(self, Tower.frontal_collision(self))
-  elseif self.type == "floor" then 
-    local hits = {}
-    add_enemy_at_to_table(self.position, hits)
-    foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
   end
-end
-function Tower:raycast()
-  if (self.dir == Vec:new(0, 0)) return
-  local hits = {}
-  for i=1, self.radius do 
-    add_enemy_at_to_table(self.position + self.dir * i, hits)
-  end
-  if (#hits > 0) raycast_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.spark)
-  return hits
-end
--- Used for manifestation wby both the Hale Howitzer and Lightning Lance (probably). Can draw whatever type of line required.
-function Tower:custom_raycast(in_position, in_radius, in_direction, in_animation)
-  if (in_direction == Vec:new(0, 0)) return
-  local hits = {}
-  for i=1, in_radius do 
-    -- Round collision to nearest bit
-    local cur_loc = in_position + in_direction * i
-    cur_loc.x = ((flr(cur_loc.x))*8 )/ 8
-    cur_loc.y = ((flr(cur_loc.y))*8 )/ 8
-    add_enemy_at_to_table(cur_loc, hits)
-  end
-  custom_raycast_spawn(in_position, in_radius, in_direction, in_animation)
-  return hits
 end
 function Tower:nova_collision()
   local hits, rad = {}, self.radius
@@ -82,14 +62,9 @@ function Tower:frontal_collision()
   if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.frost)
   return hits
 end
-function Tower:apply_damage(targets)
+function Tower:apply_damage(targets, damage)
   for enemy in all(targets) do
-    if (enemy.hp > 0) enemy.hp -= self.dmg
-  end
-end
-function Tower:apply_custom_damage(damage_in, targets)
-  for enemy in all(targets) do
-    if (enemy.hp > 0) enemy.hp -= damage_in
+    if (enemy.hp > 0) enemy.hp -= damage
   end
 end
 function Tower:freeze_enemies(targets)
@@ -104,6 +79,95 @@ function Tower:draw()
   local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
+end
+function Tower:cooldown()
+  self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
+end
+function Tower:manifested_lightning_blast()
+  if (self.manifest_cooldown > 0) return 
+  self.manifest_cooldown = self.cooldown
+
+  local pos = selector.position / 8
+  local dir = (pos - self.position) / 8
+  local anchor = self.position + Vec:new(1, 0)
+  local damage = self.dmg * 2
+
+  for i=1, 3 do 
+    Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
+    anchor.x -= 1
+  end
+  anchor += Vec:new(2, 1)
+  for i=1, 3 do
+    Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
+    anchor.y -= 1
+  end
+end
+function Tower:manifested_hale_blast()
+  if (self.manifest_cooldown > 0) return
+  self.manifest_cooldown = self.cooldown
+
+  local pos = selector.position / 8
+  local hits, locations = {}, {
+    pos, -- center
+    pos + Vec:new(0, 1),  -- south
+    pos + Vec:new(0, -1), -- north
+    pos + Vec:new(-1, 0), -- west
+    pos + Vec:new(1, 0)   -- east
+  }
+  for location in all(locations) do 
+    add_enemy_at_to_table(location, hits, true)
+  end
+  spawn_particles_at(locations, global_table_data.animation_data.frost)
+  Tower.freeze_enemies(self, hits)
+  Tower.apply_damage(self, hits, self.dmg\4)
+end
+ -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 
+ -- rotation speed (to a max of 100/25=4 damage, with 3x attack speed).
+function Tower:manifested_nova()
+  self.manifest_cooldown = min(self.manifest_cooldown + 7, 110)
+  self.dmg = round_to(min(self.manifest_cooldown, 100) / 15, 2)
+end
+function Tower:get_cooldown_str()
+  if (self.type == "tack") return "❎ activate ("..self.dmg.."d)"
+  if (self.manifest_cooldown == 0) return "❎ activate"
+  return "❎ activate ("..self.manifest_cooldown.."t)"
+end
+
+function raycast(position, radius, dir)
+  if (dir == Vec:new(0, 0)) return
+  local hits, particle_locations = {}, {}
+  for i=1, radius do 
+    local pos = Vec.floor(position + dir * i)
+    add(particle_locations, pos)
+    add_enemy_at_to_table(pos, hits)
+  end
+  if (#hits > 0 or manifested_tower_ref) spawn_particles_at(particle_locations, global_table_data.animation_data.spark)
+  return hits
+end
+
+function manifest_tower_at(position)
+  for tower in all(towers) do
+    if tower.position == position then 
+      tower.being_manifested = true 
+      manifested_tower_ref = tower
+      if (tower.type == "tack") then
+        lock_cursor = true
+        tower.attack_delay = 10
+        tower.dmg = 0
+      end
+    end
+  end
+end
+
+function unmanifest_tower()
+  manifested_tower_ref.being_manifested = false 
+  if manifested_tower_ref.type == "tack" then
+    lock_cursor = false
+    local tower_details = global_table_data.tower_templates[1]
+    manifested_tower_ref.attack_delay = tower_details.attack_delay
+    manifested_tower_ref.dmg = tower_details.damage
+  end
+  manifested_tower_ref = nil
 end
 
 function place_tower(position)
@@ -130,107 +194,6 @@ function refund_tower_at(position)
       del(towers, tower)
      end
   end
-end
-
-function Tower:cooldown()
-  if (self.manifest_cooldown >= 0) self.manifest_cooldown -= 1
-end
-
-function manifest_tower_at(position)
-  for tower in all(towers) do
-    if tower.position == position then
-      manifesting_now = true
-      if (tower.type == "tack") then
-        manifesting_sword = true
-        tower.attack_delay = 10
-        tower.dmg = 0
-      elseif (tower.type == "rail") then
-        manifesting_lightning = true
-      elseif (tower.type == "frontal") then
-        manifesting_hale = true
-      elseif (tower.type == "floor") then
-        manifesting_torch = true
-      end
-      
-      manifest_location = position
-    end
-  end
-end
-
-function unmanifest_tower()
-  manifesting_now = false
-  manifesting_sword = false
-  manifesting_lightning = false
-  manifesting_hale = false
-  manifesting_torch = false
-  manifesting_sharp = false
-  for tower in all(towers) do
-    if tower.position == manifest_location then
-      if (tower.type == "tack") then
-        local tower_details = global_table_data.tower_templates[1]
-        tower.attack_delay = tower_details.attack_delay
-        tower.dmg = tower_details.damage
-      elseif (tower.type == "rail") then
-        --reenable the lightning lance tower to act as normal. If cursor color implementation is changed, change back to normal cursor. 
-      elseif (tower.type == "frontal") then
-        --reenable the hale howitzer tower to act as normal. If cursor color implementation is changed, change back to normal cursor. 
-      elseif (tower.type == "floor") then
-        --For the Torch Trap, its position will be updated every frame and the original tower will be deleted as soon as manifestation start. 
-        --Ending manifestation will just place the torch trap wherever the cursor currently is.
-      end
-    end
-  end
-end
-
-function Tower:manifested_lightning_blast()
-  local pos_sel = selector.position/8
-  local xnum =  (pos_sel.x - self.position.x) / 8
-  local ynum =  (pos_sel.y - self.position.y) / 8
-  local direction = Vec:new(xnum, ynum)
-  local selfpos = Vec:new(self.position.x+1, self.position.y)
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 200
-  for i=1, 3 do
-    Tower.apply_custom_damage(self, self.dmg * 2, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark))
-    selfpos.x -= 1
-  end
-  selfpos.x += 2
-  selfpos.y += 1
-  for i=1, 3 do
-    Tower.apply_custom_damage(self, self.dmg * 2, Tower.custom_raycast(self, selfpos, 64, direction, global_table_data.animation_data.spark))
-    selfpos.y -= 1
-  end
-end
-
-function Tower:manifested_hale_blast()
-  local pos = selector.position/8
-  local southpos = Vec:new(pos.x, pos.y + 2)
-  local westpos = Vec:new(pos.x - 2, pos.y)
-  local north = Vec:new(0, -1)
-  local east  = Vec:new(1, 0)
-  if (self.manifest_cooldown > 0) return
-  self.manifest_cooldown = 25
-  -- Now that we know we can attack, freeze a 3x3 + shaped area and then deal damage in that same area.
-  -- Note this will probably deal extra damage to the center area but we can just call that a feature.
-  Tower.freeze_enemies(self, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
-  Tower.freeze_enemies(self, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
-  Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, southpos, 3, north, global_table_data.animation_data.frost))
-  Tower.apply_custom_damage(self, self.dmg / 4, Tower.custom_raycast(self, westpos, 3, east, global_table_data.animation_data.frost))
-
-end
-
- -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 
- -- rotation speed (to a max of 100/25=4 damage, with 3x attack speed).
-
-function Tower:check_sword_circle_spin()
-
-  self.manifest_cooldown += 7
-
-  self.manifest_cooldown = min(self.manifest_cooldown, 110)
-  
-  self.dmg = min(self.manifest_cooldown, 100) / 15
-  
-  printh(self.dmg)
 end
 
 function draw_tower_attack_overlay(tower_details)
