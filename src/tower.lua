@@ -96,8 +96,7 @@ function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
   self.manifest_cooldown = self.cooldown
 
-  local pos = selector.position / 8
-  local dir = (pos - self.position) / 8
+  local dir = normalize(selector.position / 8 - self.position)
   local anchor = self.position + Vec:new(1, 0)
   local damage = self.dmg * 2
 
