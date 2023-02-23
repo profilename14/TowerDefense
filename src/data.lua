@@ -38,6 +38,7 @@ function reset_game()
           text="toggle mode", color={7, 0},
           callback = function()
             manifest_mode = not manifest_mode
+            sell_mode = not sell_mode
           end
         }
       },
@@ -58,6 +59,7 @@ function reset_game()
   manifested_tower_ref = nil
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = true
+  sell_mode = false
   -- Only one of these can be true at one time. Affects game logic.
   manifesting_torch = false 
 
