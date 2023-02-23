@@ -180,10 +180,10 @@ function reset_game()
   player_health = 50
   enemy_required_spawn_ticks = 10
   lock_cursor = false
-  manifested_tower_ref = nil
+  
   manifest_mode = true
   sell_mode = false
-  manifesting_torch = false 
+  manifested_tower_ref = nil
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
   direction = Vec:new(0, -1)
@@ -349,6 +349,7 @@ function Tower:new(pos, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
+    enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
   add(animators, obj.animator)
@@ -357,6 +358,7 @@ function Tower:new(pos, tower_template_data, direction)
   return obj 
 end
 function Tower:attack()
+  if (not self.enable) return
   if self.being_manifested and self.type == "tack" then 
     self.dmg = min(self.manifest_cooldown, 100) / 15
   end
@@ -411,12 +413,19 @@ function Tower:freeze_enemies(targets)
   end
 end
 function Tower:draw()
+  if (not self.enable) return
   local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
 function Tower:cooldown()
   self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
+end
+function Tower:get_cooldown_str()
+  if (self.type == "floor") return "⬆️⬇️⬅️➡️ move"
+  if (self.type == "tack") return "❎ activate ("..self.dmg.."d)"
+  if (self.manifest_cooldown == 0) return "❎ activate"
+  return "❎ activate ("..self.manifest_cooldown.."t)"
 end
 function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
@@ -457,10 +466,20 @@ function Tower:manifested_nova()
   self.manifest_cooldown = min(self.manifest_cooldown + 7, 110)
   self.dmg = round_to(min(self.manifest_cooldown, 100) / 15, 2)
 end
-function Tower:get_cooldown_str()
-  if (self.type == "tack") return "❎ activate ("..self.dmg.."d)"
-  if (self.manifest_cooldown == 0) return "❎ activate"
-  return "❎ activate ("..self.manifest_cooldown.."t)"
+function Tower:manifested_torch_trap()
+  local sel_pos = selector.position / 8
+  if (grid[sel_pos.y][sel_pos.x] == "empty") return
+  
+  local prev = Vec:new(Vec.unpack(self.position))
+  if grid[sel_pos.y][sel_pos.x] == "tower" then
+    local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
+    if (fget(mget(Vec.unpack(sel_pos+shift)), 0) and prev ~= sel_pos) self.enable = false
+    return
+  end
+  self.position = sel_pos
+  grid[sel_pos.y][sel_pos.x] = "floor"
+  grid[prev.y][prev.x] = "path"
+  self.enable = true 
 end
 function raycast(position, radius, dir)
   if (dir == Vec:new(0, 0)) return
@@ -478,7 +497,7 @@ function manifest_tower_at(position)
     if tower.position == position then 
       tower.being_manifested = true 
       manifested_tower_ref = tower
-      if (tower.type == "tack") then
+      if tower.type == "tack" then
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
@@ -494,6 +513,7 @@ function unmanifest_tower()
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
   end
+  manifested_tower_ref.enable = true
   manifested_tower_ref = nil
 end
 function place_tower(position)
@@ -990,7 +1010,8 @@ function game_loop()
   if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
-    if manifesting_torch == true then
+    if manifested_tower_ref and manifested_tower_ref.type == "floor" then
+      Tower.manifested_torch_trap(manifested_tower_ref)
     end
   end
   foreach(towers, Tower.cooldown)

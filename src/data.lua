@@ -56,12 +56,11 @@ function reset_game()
   player_health = 50
   enemy_required_spawn_ticks = 10
   lock_cursor = false
-  manifested_tower_ref = nil
+  
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = true
   sell_mode = false
-  -- Only one of these can be true at one time. Affects game logic.
-  manifesting_torch = false 
+  manifested_tower_ref = nil
 
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick = 0

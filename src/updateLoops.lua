@@ -71,12 +71,8 @@ function game_loop()
   if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
-    if manifesting_torch == true then
-      -- FOR KAOUSHIK:
-      -- Torch Trap logic goes here. Update the towers location to wherever its going by deleting the previous torch trap and making another.
-      -- Make sure that deleting the torch trap in the previous location doesn't destroy other torch traps on the road! You might require a
-      -- special flag set when you move onto another torch trap tile (and unset when you move onto empty space).
-      -- To save space if this ends up taking a hefty amount of lines, consider putting this a function in tower.lua with the other 3 towers.
+    if manifested_tower_ref and manifested_tower_ref.type == "floor" then
+      Tower.manifested_torch_trap(manifested_tower_ref)
     end
   end
 
