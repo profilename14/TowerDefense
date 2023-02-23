@@ -72,5 +72,6 @@ function reset_game()
   tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
+  manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   get_menu("map").enable = true
 end

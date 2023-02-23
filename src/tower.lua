@@ -85,7 +85,7 @@ function Tower:cooldown()
 end
 function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
-  self.manifest_cooldown = 5 -- orginially 200
+  self.manifest_cooldown = 200
 
   local pos = selector.position / 8
   local dir = (pos - self.position) / 8

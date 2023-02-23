@@ -126,7 +126,7 @@ function load_game(map_id)
   end
   music(0)
 end
-global_table_str="tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=9,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,reward=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,reward=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,reward=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,reward=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,reward=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,reward=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
+global_table_str="tower_icon_background=68,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,reward=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,reward=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,reward=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,reward=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,reward=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,reward=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
 function reset_game()
   global_table_data = unpack_table(global_table_str)
   menu_data = {
@@ -192,6 +192,7 @@ function reset_game()
   tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
+  manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   get_menu("map").enable = true
 end
 Enemy = {}
@@ -846,7 +847,7 @@ end
 function game_draw_loop()
   map(unpack(global_table_data.map_data[loaded_map].mget_shift))
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  draw_tower_attack_overlay(tower_details)
+  if (manifested_tower_ref == nil) draw_tower_attack_overlay(tower_details)
   foreach(towers, Tower.draw)
   foreach(enemies, function (enemy) Enemy.draw(enemy, true) end)
   foreach(enemies, Enemy.draw)
@@ -873,26 +874,50 @@ function game_draw_loop()
       print_with_outline("❎ select\n🅾️ close menu", 1, 115, 7, 0)
     end
   else 
+    if manifested_tower_ref then 
+      Animator.update(manifest_selector)
+      Animator.draw(manifest_selector, Vec.unpack(selector.position))
+    end
+    if manifest_mode == false or manifested_tower_ref == nil then 
+      spr(selector.sprite_index, Vec.unpack(selector.position))
+    end
     if is_in_table(selector.position/8, towers, true) then
-      Animator.update(sell_selector)
-      Animator.draw(sell_selector, Vec.unpack(selector.position))
-      if manifest_mode == false then
-        print_with_outline("❎ sell", 1, 115, 7, 0)
+      if manifested_tower_ref == nil then 
+        if manifest_mode then
+          print_with_outline("❎ manifest", 1, 115, 7, 0)
+        else
+          Animator.update(sell_selector)
+          Animator.draw(sell_selector, Vec.unpack(selector.position))
+          print_with_outline("❎ sell", 1, 115, 7, 0)
+        end
       else
-        print_with_outline("❎ manifest", 1, 115, 7, 0)
+        print_with_outline("❎ activate", 1, 115, 3, 0)
       end
     else
-      spr(selector.sprite_index, Vec.unpack(selector.position))
       Animator.reset(sell_selector)
-      local position, text, color = selector.position/8, "❎ buy & place "..tower_details.name, 7
-      if tower_details.cost > coins then
-        text, color = "can't afford "..tower_details.name, 8
-      elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
-        text, color = "can't place "..tower_details.name.." here", 8
+      local position, color = selector.position/8, 7
+      local text = "❎ buy & place "..tower_details.name
+      if manifested_tower_ref then 
+        text = "❎ activate" 
+        if manifested_tower_ref.type == "tack" then 
+          color = 3
+        else
+          color = manifested_tower_ref.manifest_cooldown > 0 and 8 or 3
+        end
+      else
+        if tower_details.cost > coins then
+          text, color = "can't afford "..tower_details.name, 8
+        elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
+          text, color = "can't place "..tower_details.name.." here", 8
+        end
       end
       print_with_outline(text, 1, 115, color, 0)
     end
-    print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+    if manifested_tower_ref then 
+      print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+    else
+      print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+    end
   end
 end
 function map_draw_loop()
@@ -1167,14 +1192,14 @@ function str_contains_char(str, char)
   end
 end
 __gfx__
-11221122888778880077000000a99a0000011000000330007770000000000000000000000000000070000000a0000000000000000000d000000d000000d00000
-112211228000000807887000069999600001100000033000788770007777700000000000000000007a0a0000aa000a000000a000000d200000d2d00000d20000
-221122118000000807888700061111600cc66cc0000330007888877078888770777777700000000097aaa0007aa0aaa09a00aa0000d21d0000d12dd000d12ddd
-22112211700000070078887000999900ccc11ccc0693396007888887078888870788888777777777097aaa007aaaaaaa097aa770d21002d00d20012d00200120
-1122112270000007007888700099990000c11c00063333600788888707888887078888877777777700979aa07a07a0970097a0990d20012dd21002d002100200
-112211228000000807888700069999600001100006333360788887707888877077777770000000000009097a970090070009700000d12d000dd21d00ddd21d00
-221122118000000807887000068998600001100006333360788770007777700000000000000000000000009709000009000090000002d000000d2d0000002d00
-2211221188877888007700000000000000c11c000633336077700000000000000000000000000000000000090000000000000000000d00000000d00000000d00
+11221122888778880077000000a99a000001100000033000777000000000000000000000ccc11ccc70000000a0000000000000000000d000000d000000d00000
+112211228000000807887000069999600001100000033000788770007777700000000000c000000c7a0a0000aa000a000000a000000d200000d2d00000d20000
+221122118000000807888700061111600cc66cc000033000788887707888877077777770c000000c97aaa0007aa0aaa09a00aa0000d21d0000d12dd000d12ddd
+22112211700000070078887000999900ccc11ccc0693396007888887078888870788888710000001097aaa007aaaaaaa097aa770d21002d00d20012d00200120
+1122112270000007007888700099990000c11c00063333600788888707888887078888871000000100979aa07a07a0970097a0990d20012dd21002d002100200
+112211228000000807888700069999600001100006333360788887707888877077777770c000000c0009097a970090070009700000d12d000dd21d00ddd21d00
+221122118000000807887000068998600001100006333360788770007777700000000000c000000c0000009709000009000090000002d000000d2d0000002d00
+2211221188877888007700000000000000c11c0006333360777000000000000000000000ccc11ccc000000090000000000000000000d00000000d00000000d00
 00000d00001000000000000a0a000000000000000000000000080000000800808800008800077000000770000000000055555555555555555555555500000000
 00000dd0011000000000007556000000000770777700777000880008888800888780087800077000000770000000000055666651556666515566665100000000
 000002dd1110000000000655556a0000077777c7c77c766700800888998000080878878000077000000770000000000056666661566666615666666100000000
@@ -1183,22 +1208,22 @@ __gfx__
 11111d222dd222dd0a0aaa05500000a0011677c66677c1100888999aa99880880878878000000000000000000007700056666511511111115556666100077000
 0111dd2002222dd000a7aaa7777770000116c7c7767cc110888999aaaa9988808780087800000000000000000007700055665166666666666655665100077000
 001ddd000022dd000066777aaaa7660001166777c77c111088899aa7aa9998888800008800000000000000000007700051111160000000000611111100077000
-00dd2200002dd100000000055000aa0001116c7cc7cc11108899aa77aaa998888800008800000000000000000000000055555560000770000655555500000000
-0dd2222002dd11100009999999aaa0a00111cc7c77cc1110089aaa777aa998808788887800000000066666666666666055665160000770000655665100000000
-dd222dd222d111110044aaa4444444a001111cc777c11110089aa77777aa99880870078000000000065555555555556056666160000770000656666100000000
-000001dd222000000a0000055000000000111c7777c111000899a777777a99880800008000000000065566515566516056666160000770000656666177777777
-0000011dd2200000a07777aa7777770000111cccc7c111000889a777777a99800800008000000000065666615666616056666160000770000656666177777777
-00000111dd20000006aa77777777776000011cccc7c110000089aa77777a98800870078000000000065666615666616056666160000770000656666100000000
-000001100dd000000a666666666a66a0000111cccc11100000089a7777a998008788887800000000065566515566516055665160000770000655665100000000
-0000010000d00000aaaaaa0550aa0a0a0000111cc1110000000089a77a9980008800008800000000065111115111116051111160000770000651111100000000
-0c667670660007760000c00000800000000080008000008000000000000000008800008800000000065555555555556055555560000000000655555555555555
-ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788800000000065566515566516055665566666666666655665155666651
-7c67ccc0677767700777c60000008808000888000088800000788700788778870800008000000000065666615666616056666555555555555556666156666661
-76766c6707c777706c76776000888800008888000888880007888870788888870700007000000000065666615666616056666651556666515566666156666661
-776777767ccc7c60ccc77760008998800889998008a9998078888887078888700700007000000000065566515566516056666661566666615666666156666661
-766767c707c7ccc60c7676700899a980089aa98008aaa98078877887007887000800008000000000065111115111116056666661566666615666666156666661
-67776ccc07777c7000067700089a7a8008a7aa80087a7a8007700770000770008887788800000000066666666666666055666651556666515566665155666651
-007677c6006707770000000000877a8000877a000087780000000000000000008800008800000000000000000000000051111111511111115111111151111111
+00dd2200002dd100000000055000aa0001116c7cc7cc11108899aa77aaa9988888000088111dd111000000000000000055555560000770000655555500000000
+0dd2222002dd11100009999999aaa0a00111cc7c77cc1110089aaa777aa998808788887810000001066666666666666055665160000770000655665100000000
+dd222dd222d111110044aaa4444444a001111cc777c11110089aa77777aa99880870078010000001065555555555556056666160000770000656666100000000
+000001dd222000000a0000055000000000111c7777c111000899a777777a998808000080d000000d065566515566516056666160000770000656666177777777
+0000011dd2200000a07777aa7777770000111cccc7c111000889a777777a998008000080d000000d065666615666616056666160000770000656666177777777
+00000111dd20000006aa77777777776000011cccc7c110000089aa77777a98800870078010000001065666615666616056666160000770000656666100000000
+000001100dd000000a666666666a66a0000111cccc11100000089a7777a998008788887810000001065566515566516055665160000770000655665100000000
+0000010000d00000aaaaaa0550aa0a0a0000111cc1110000000089a77a99800088000088111dd111065111115111116051111160000770000651111100000000
+0c667670660007760000c00000800000000080008000008000000000000000008800008822266222065555555555556055555560000000000655555555555555
+ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002065566515566516055665566666666666655665155666651
+7c67ccc0677767700777c60000008808000888000088800000788700788778870800008020000002065666615666616056666555555555555556666156666661
+76766c6707c777706c76776000888800008888000888880007888870788888870700007060000006065666615666616056666651556666515566666156666661
+776777767ccc7c60ccc77760008998800889998008a9998078888887078888700700007060000006065566515566516056666661566666615666666156666661
+766767c707c7ccc60c7676700899a980089aa98008aaa98078877887007887000800008020000002065111115111116056666661566666615666666156666661
+67776ccc07777c7000067700089a7a8008a7aa80087a7a8007700770000770008887788820000002066666666666666055666651556666515566665155666651
+007677c6006707770000000000877a8000877a000087780000000000000000008800008822266222000000000000000051111111511111115111111151111111
 056cc65000c66c000002200000000000000770000000000000077000aaaaaaaa00000000000000000000000000000000000000d0000200000d200000000000d0
 0577765006666660002c620000000000007887000000000000788700aaaaaaaa00000000000000000000000000000000d2210d2000dd20000d2210ddd2210d20
 001111005676676502ccc62000000000078668700000000007866870aaaaaaaa000000000000000000000000000000000d11d120001d11d000d11d220d11d120

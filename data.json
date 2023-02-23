@@ -129,7 +129,7 @@
         { "sprite": 6, "offset": [0, 0] },
         { "sprite": 7, "offset": [-1, 0] },
         { "sprite": 8, "offset": [-2, 0] },
-        { "sprite": 9, "offset": [-3, 0] },
+        { "sprite": 47, "offset": [-3, 0] },
         { "sprite": 8, "offset": [-2, 0] },
         { "sprite": 7, "offset": [-1, 0] }
       ],
@@ -159,6 +159,15 @@
         { "sprite": 56 },
         { "sprite": 40 },
         { "sprite": 24 }
+      ],
+      "ticks_per_frame": 3
+    },
+    "manifest": {
+      "data": [
+        { "sprite": 1 },
+        { "sprite": 57 },
+        { "sprite": 41 },
+        { "sprite": 9 }
       ],
       "ticks_per_frame": 3
     }
