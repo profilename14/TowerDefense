@@ -186,14 +186,10 @@ function reset_game()
   coins = 1000  -- TEMP
   player_health = 50
   enemy_required_spawn_ticks = 10
+  lock_cursor = false
+  manifested_tower_ref = nil
   manifest_mode = true
-  manifesting_now = false
-  manifest_location     = Vec:new(0, 0)
-  manifesting_sword     = false
-  manifesting_lightning = false
-  manifesting_hale      = false
-  manifesting_torch     = false
-  manifesting_sharp     = false
+  manifesting_torch = false 
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
   direction = Vec:new(0, -1)
@@ -353,6 +349,7 @@ function Tower:new(pos, tower_template_data, direction)
     attack_delay = tower_template_data.attack_delay,
     current_attack_ticks = 0,
     manifest_cooldown = -1,
+    being_manifested = false,
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
@@ -364,21 +361,24 @@ function Tower:new(pos, tower_template_data, direction)
   return obj 
 end
 function Tower:attack()
+  if self.being_manifested and self.type == "tack" then 
+    self.dmg = min(self.manifest_cooldown, 100) / 15
+  end
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
   if (self.current_attack_ticks > 0) return
   if self.type == "tack" then
-    if manifesting_sword and self.position == manifest_location then
-      self.dmg = min(self.manifest_cooldown, 100) / 15
-    end
+    printh(self.dmg)
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
-  elseif self.type == "rail" then
-    Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
-  elseif self.type == "frontal" then 
-    Tower.freeze_enemies(self, Tower.frontal_collision(self))
-  elseif self.type == "floor" then 
-    local hits = {}
-    add_enemy_at_to_table(self.position, hits)
-    foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
+  elseif not self.being_manifested then
+    if self.type == "rail" then
+      Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
+    elseif self.type == "frontal" then 
+      Tower.freeze_enemies(self, Tower.frontal_collision(self))
+    elseif self.type == "floor" then 
+      local hits = {}
+      add_enemy_at_to_table(self.position, hits)
+      foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
+    end
   end
 end
 function Tower:nova_collision()
@@ -458,9 +458,8 @@ function Tower:manifested_hale_blast()
   Tower.freeze_enemies(self, hits)
   Tower.apply_damage(self, hits, self.dmg\4)
 end
-function Tower:check_sword_circle_spin()
-  self.manifest_cooldown += 7
-  self.manifest_cooldown = min(self.manifest_cooldown, 110)
+function Tower:manifested_nova()
+  self.manifest_cooldown = min(self.manifest_cooldown + 7, 110)
   self.dmg = min(self.manifest_cooldown, 100) / 15
 end
 function raycast(position, radius, dir)
@@ -471,46 +470,33 @@ function raycast(position, radius, dir)
     add(particle_locations, pos)
     add_enemy_at_to_table(pos, hits)
   end
-  if (#hits > 0 or manifesting_now) spawn_particles_at(particle_locations, global_table_data.animation_data.spark)
+  if (#hits > 0 or manifested_tower_ref) spawn_particles_at(particle_locations, global_table_data.animation_data.spark)
   return hits
 end
 function manifest_tower_at(position)
   for tower in all(towers) do
-    if tower.position == position then
-      manifesting_now = true
+    if tower.position == position then 
+      tower.being_manifested = true 
+      manifested_tower_ref = tower
       if (tower.type == "tack") then
-        manifesting_sword = true
+        lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
-      elseif (tower.type == "rail") then
-        manifesting_lightning = true
-      elseif (tower.type == "frontal") then
-        manifesting_hale = true
-      elseif (tower.type == "floor") then
-        manifesting_torch = true
       end
-      
-      manifest_location = position
     end
   end
 end
 function unmanifest_tower()
-  manifesting_now = false
-  manifesting_sword = false
-  manifesting_lightning = false
-  manifesting_hale = false
-  manifesting_torch = false
-  manifesting_sharp = false
-  for tower in all(towers) do
-    if tower.position == manifest_location then
-      if (tower.type == "tack") then
-        local tower_details = global_table_data.tower_templates[1]
-        tower.attack_delay = tower_details.attack_delay
-        tower.dmg = tower_details.damage
-      elseif (tower.type == "rail") then
-      elseif (tower.type == "frontal") then
-      elseif (tower.type == "floor") then
-      end
+  manifested_tower_ref = nil
+  for tower in all(towers) do 
+    if tower.being_manifested then 
+      tower.being_manifested = false 
+    end
+    if tower.type == "tack" then
+      lock_cursor = false
+      local tower_details = global_table_data.tower_templates[1]
+      tower.attack_delay = tower_details.attack_delay
+      tower.dmg = tower_details.damage
     end
   end
 end
@@ -958,7 +944,7 @@ end
 function game_loop()
   if (auto_start_wave) start_round()
   if btnp(🅾️) then
-    if manifesting_now == false then
+    if manifested_tower_ref == nil then
       shop_enable = true
       menus[1].enable = true
       return
@@ -967,46 +953,33 @@ function game_loop()
     end
   end
   if btnp(❎) then 
-    if manifesting_now == false then
+    if manifested_tower_ref then
+      local type = manifested_tower_ref.type
+      if type == "tack" then 
+        Tower.manifested_nova(manifested_tower_ref)
+      elseif type == "rail" then 
+        Tower.manifested_lightning_blast(manifested_tower_ref)
+      elseif type == "frontal" then 
+        Tower.manifested_hale_blast(manifested_tower_ref)
+      end
+    else 
       local position = selector.position/8
       if is_in_table(position, towers, true) then 
-        if manifest_mode == false then
-          refund_tower_at(position)
-        else
+        if manifest_mode then
           manifest_tower_at(position)
+        else
+          refund_tower_at(position)
         end
       else
         place_tower(position)
       end
-    elseif manifesting_now == true then
-      if manifesting_sword then
-        for tower in all(towers) do
-          if tower.position == manifest_location then
-            tower.check_sword_circle_spin(tower)
-          end
-        end
-      elseif manifesting_lightning then
-        for tower in all(towers) do
-          if tower.position == manifest_location then
-            tower.manifested_lightning_blast(tower)
-          end
-        end
-      elseif manifesting_hale then
-        for tower in all(towers) do
-          if tower.position == manifest_location then
-            tower.manifested_hale_blast(tower)
-          end
-        end
-      elseif manifesting_torch then
-      end
     end
   end
-  if manifesting_sword == false then
+  if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
     if manifesting_torch == true then
     end
-  else
   end
   foreach(towers, Tower.cooldown)
   if enemies_active then 

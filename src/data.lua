@@ -62,18 +62,12 @@ function reset_game()
   coins = 1000  -- TEMP
   player_health = 50
   enemy_required_spawn_ticks = 10
+  lock_cursor = false
+  manifested_tower_ref = nil
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = true
-  -- If true, the player is currently manifesting a tower. Else, they aren't and the game functions as normal.
-  manifesting_now = false
-  -- Where the player is manifesting (defaults to 0,0 but is set on selection)
-  manifest_location     = Vec:new(0, 0)
   -- Only one of these can be true at one time. Affects game logic.
-  manifesting_sword     = false
-  manifesting_lightning = false
-  manifesting_hale      = false
-  manifesting_torch     = false
-  manifesting_sharp     = false
+  manifesting_torch = false 
 
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick = 0

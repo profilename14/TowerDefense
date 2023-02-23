@@ -35,7 +35,7 @@ function game_loop()
   if (auto_start_wave) start_round()
 
   if btnp(🅾️) then
-    if manifesting_now == false then
+    if manifested_tower_ref == nil then
       shop_enable = true
       menus[1].enable = true
       return
@@ -44,47 +44,31 @@ function game_loop()
     end
   end
   if btnp(❎) then 
-    if manifesting_now == false then
+    if manifested_tower_ref then
+      local type = manifested_tower_ref.type
+      if type == "tack" then 
+        Tower.manifested_nova(manifested_tower_ref)
+      elseif type == "rail" then 
+        Tower.manifested_lightning_blast(manifested_tower_ref)
+      elseif type == "frontal" then 
+        Tower.manifested_hale_blast(manifested_tower_ref)
+      end
+    else 
       local position = selector.position/8
       if is_in_table(position, towers, true) then 
-        if manifest_mode == false then
-          refund_tower_at(position)
-        else
+        if manifest_mode then
           manifest_tower_at(position)
+        else
+          refund_tower_at(position)
         end
       else
         place_tower(position)
       end
-    elseif manifesting_now == true then
-      if manifesting_sword then
-        for tower in all(towers) do
-          if tower.position == manifest_location then
-            -- Find the currently manifested lightning lance and have it do its special attack (skipped in function if on cooldown)
-            tower.check_sword_circle_spin(tower)
-          end
-        end
-      elseif manifesting_lightning then
-        for tower in all(towers) do
-          if tower.position == manifest_location then
-            -- Find the currently manifested lightning lance and have it do its special attack (skipped in function if on cooldown)
-            tower.manifested_lightning_blast(tower)
-          end
-        end
-      elseif manifesting_hale then
-        for tower in all(towers) do
-          if tower.position == manifest_location then
-            -- Find the currently manifested lightning lance and have it do its special attack (skipped in function if on cooldown)
-            tower.manifested_hale_blast(tower)
-          end
-        end
-      elseif manifesting_torch then
-        -- X does nothing when manifesting the Torch trap unless we add some fancy extra functionality.
-      end
     end
   end
 
-  if manifesting_sword == false then
-    -- This defines the cursor's movement.
+  -- Allow for cursor movement if not locked
+  if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
     if manifesting_torch == true then
@@ -94,9 +78,6 @@ function game_loop()
       -- special flag set when you move onto another torch trap tile (and unset when you move onto empty space).
       -- To save space if this ends up taking a hefty amount of lines, consider putting this a function in tower.lua with the other 3 towers.
     end
-  else
-    -- When we move over to the proper minigame, uncomment this and comment the thing that activates on x press.
-    --check_sword_circle_spin()
   end
 
   foreach(towers, Tower.cooldown)
