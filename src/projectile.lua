@@ -2,7 +2,7 @@ Projectile = {}
 function Projectile:new(start, dir_, rot, data)
   obj = {
     position = Vec:new(Vec.unpack(start)),
-    dir = Vec:new(Vec.unpack(dir_)),
+    dir = Vec:new(mid(dir_.x, -1, 1), mid(dir_.y, -1, 1)),
     theta = rot,
     sprite_animator = Animator:new(global_table_data.animation_data[data.animation_key], true),
     size = data.pixel_size,
