@@ -123,6 +123,7 @@ end
 function load_game(map_id)
   pal()
   auto_start_wave = false
+  manifest_mode = true
   wave_round = 0
   freeplay_rounds = 0
   loaded_map = map_id
@@ -134,7 +135,7 @@ function load_game(map_id)
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      if (not placable_tile_location(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift))) grid[y][x] = "path" 
+      if (not check_tile_flag_at(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift), global_table_data.map_meta_data.non_path_flag_id)) grid[y][x] = "path" 
     end
   end
   music(0)

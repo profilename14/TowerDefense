@@ -12,6 +12,7 @@ function Tower:new(pos, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
+    rot = parse_direction(direction),
     enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
@@ -40,6 +41,8 @@ function Tower:attack()
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
     elseif self.type == "frontal" then 
       Tower.freeze_enemies(self, Tower.frontal_collision(self))
+    elseif self.type == "sharp" then 
+      add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
     end
   end
 end
@@ -79,7 +82,14 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   if (not self.enable) return
-  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
+
+  if self.type == "sharp" then 
+    theta = self.rot 
+  else 
+    theta = parse_direction(self.dir)
+  end
+  
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -143,7 +153,7 @@ function Tower:manifested_torch_trap()
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     -- torch tower on path
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-    if (fget(mget(Vec.unpack(sel_pos+shift)), 0) and prev ~= sel_pos) self.enable = false
+    if (check_tile_flag_at(sel_pos+shift, 0) and prev ~= sel_pos) self.enable = false
     return
   end
 
@@ -151,6 +161,13 @@ function Tower:manifested_torch_trap()
   grid[sel_pos.y][sel_pos.x] = "floor"
   grid[prev.y][prev.x] = "path"
   self.enable = true 
+end
+function Tower:manifested_sharp_rotation()
+  self.dir = (selector.position / 8 - self.position)
+  self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
+  if (self.dir.x > 0) self.rot *= -1
+  if (self.rot < 0) self.rot += 360
+  if (self.rot > 360) self.rot -= 360
 end
 
 function raycast(position, radius, dir)
@@ -170,6 +187,7 @@ function manifest_tower_at(position)
     if tower.position == position then 
       tower.being_manifested = true 
       manifested_tower_ref = tower
+      Animator.set_direction(manifest_selector, 1)
       if tower.type == "tack" then
         lock_cursor = true
         tower.attack_delay = 10
@@ -181,8 +199,9 @@ end
 
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
+  Animator.set_direction(manifest_selector, -1)
+  lock_cursor = false
   if manifested_tower_ref.type == "tack" then
-    lock_cursor = false
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
@@ -260,5 +279,15 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
       local tile_position = pos + Vec:new(x, y)
       spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
     end
+  end
+end
+
+function draw_line_overlay(tower)
+  local pos = tower.position + Vec:new(0.5, 0.5)
+  pos *= 8
+  local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
+  if ray ~= pos then 
+    printh(pos.." | "..ray)
+    line(pos.x, pos.y, ray.x, ray.y, 8)
   end
 end

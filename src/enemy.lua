@@ -1,7 +1,7 @@
 -- FOR REFERENCE IN DATA.LUA:
 -- 1 = car, 2 = plane, 3 = tank, 4 = lab cart, 5 = ice truck, 6 = trailblazer
 Enemy = {}
-function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, height_)
+function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
   obj = { 
     position = Vec:new(location),
     hp = hp_, 
@@ -11,7 +11,7 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, heig
     frozen_tick = 0,
     burning_tick = 0,
     gfx = sprite_id,
-    reward = reward_,
+    type = type_,
     damage = damage_,
     height = height_,
     pos = 1
@@ -27,9 +27,9 @@ function Enemy:step()
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
     -- Sense the reward system was retired, I'm just recycling it into an ID system.
-    if self.reward == 6 then
+    if self.type == 6 then
       self.hp -= 0.5
-    elseif self.reward == 5 then
+    elseif self.type == 5 then
       self.hp -= 5
     else
       self.hp -= 2
@@ -39,11 +39,11 @@ function Enemy:step()
   end
 
   if (not self.is_frozen) return true 
-  if self.reward == 6 then
+  if self.type == 6 then
     -- Trailblazers are frozen a little longer and take damage.
     self.frozen_tick = max(self.frozen_tick - 0.8, 0)
     self.hp -= 2
-  elseif self.reward == 5 then
+  elseif self.type == 5 then
     -- Ice trucks are frozen for only 1/8 the time
     self.frozen_tick = max(self.frozen_tick - 8, 0)
   else
@@ -73,7 +73,6 @@ end
 
 function kill_enemy(enemy)
   if (enemy.hp > 0) return
-  --coins += enemy.reward
   del(enemies, enemy)
 end
 
@@ -94,7 +93,7 @@ function parse_path()
   for iy=0, 15 do
     for ix=0, 15 do
       local map_cord = Vec:new(ix, iy) + map_shift
-      if fget(mget(Vec.unpack(map_cord)), global_table_data.map_meta_data.path_flag_id) then 
+      if check_tile_flag_at(map_cord, global_table_data.map_meta_data.path_flag_id) then 
         add(path_tiles, map_cord)
       end
     end

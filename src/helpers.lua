@@ -31,7 +31,7 @@ function increase_enemy_health(enemy_data)
       enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
       max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
       enemy_data.sprite_index,
-      enemy_data.reward,
+      enemy_data.type,
       enemy_data.damage,
       enemy_data.height
     }
@@ -47,15 +47,11 @@ function is_in_table(val, table, is_entity)
   end
 end
 
-function placable_tile_location(coord)
-  return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
-end
-
 function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
-      if (multitarget) return
+      if (not multitarget) return
     end
   end
 end
@@ -124,3 +120,12 @@ function round_to(value, place)
   val = flr(val)
   return val / places
 end
+
+function check_tile_flag_at(position, flag)
+  return fget(mget(Vec.unpack(position)), flag)
+end
+
+-- https://www.lexaloffle.com/bbs/?tid=3142
+function acos(x)
+  return atan2(x,-sqrt(1-x*x))
+ end

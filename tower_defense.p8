@@ -110,6 +110,7 @@ end
 function load_game(map_id)
   pal()
   auto_start_wave = false
+  manifest_mode = true
   wave_round = 0
   freeplay_rounds = 0
   loaded_map = map_id
@@ -121,12 +122,12 @@ function load_game(map_id)
     grid[y] = {}
     for x=0, 15 do 
       grid[y][x] = "empty"
-      if (not placable_tile_location(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift))) grid[y][x] = "path" 
+      if (not check_tile_flag_at(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift), global_table_data.map_meta_data.non_path_flag_id)) grid[y][x] = "path" 
     end
   end
   music(0)
 end
-global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,reward=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,reward=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,reward=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,reward=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,reward=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,reward=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
+global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},blast={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},rocket={data={{sprite=102},{sprite=104}},ticks_per_frame=2},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={animation_key=rocket,pixel_size=16,speed=5,damage=10,trail_animation_key=blast}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=5,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=15,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
 function reset_game()
   global_table_data = unpack_table(global_table_str)
   menu_data = {
@@ -181,13 +182,13 @@ function reset_game()
   enemy_required_spawn_ticks = 10
   lock_cursor = false
   
-  manifest_mode = true
+  manifest_mode = false
   sell_mode = false
   manifested_tower_ref = nil
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
   direction = Vec:new(0, -1)
-  grid, towers, enemies, particles, animators, incoming_hint, menus = {}, {}, {}, {}, {}, {}, {}
+  grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   selected_menu_tower_id = 1
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
@@ -195,10 +196,11 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
+  Animator.set_direction(manifest_selector, -1)
   get_menu("map").enable = true
 end
 Enemy = {}
-function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, height_)
+function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
   obj = { 
     position = Vec:new(location),
     hp = hp_, 
@@ -208,7 +210,7 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, reward_, damage_, heig
     frozen_tick = 0,
     burning_tick = 0,
     gfx = sprite_id,
-    reward = reward_,
+    type = type_,
     damage = damage_,
     height = height_,
     pos = 1
@@ -222,9 +224,9 @@ function Enemy:step()
   if (self.current_step ~= 0) return false
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
-    if self.reward == 6 then
+    if self.type == 6 then
       self.hp -= 0.5
-    elseif self.reward == 5 then
+    elseif self.type == 5 then
       self.hp -= 5
     else
       self.hp -= 2
@@ -233,10 +235,10 @@ function Enemy:step()
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
   end
   if (not self.is_frozen) return true 
-  if self.reward == 6 then
+  if self.type == 6 then
     self.frozen_tick = max(self.frozen_tick - 0.8, 0)
     self.hp -= 2
-  elseif self.reward == 5 then
+  elseif self.type == 5 then
     self.frozen_tick = max(self.frozen_tick - 8, 0)
   else
     self.frozen_tick = max(self.frozen_tick - 1, 0)
@@ -282,7 +284,7 @@ function parse_path()
   for iy=0, 15 do
     for ix=0, 15 do
       local map_cord = Vec:new(ix, iy) + map_shift
-      if fget(mget(Vec.unpack(map_cord)), global_table_data.map_meta_data.path_flag_id) then 
+      if check_tile_flag_at(map_cord, global_table_data.map_meta_data.path_flag_id) then 
         add(path_tiles, map_cord)
       end
     end
@@ -349,6 +351,7 @@ function Tower:new(pos, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
+    rot = parse_direction(direction),
     enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
@@ -375,6 +378,8 @@ function Tower:attack()
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
     elseif self.type == "frontal" then 
       Tower.freeze_enemies(self, Tower.frontal_collision(self))
+    elseif self.type == "sharp" then 
+      add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
     end
   end
 end
@@ -414,7 +419,13 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   if (not self.enable) return
-  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
+  if self.type == "sharp" then 
+    theta = self.rot 
+  else 
+    theta = parse_direction(self.dir)
+  end
+  
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -472,13 +483,20 @@ function Tower:manifested_torch_trap()
   local prev = Vec:new(Vec.unpack(self.position))
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-    if (fget(mget(Vec.unpack(sel_pos+shift)), 0) and prev ~= sel_pos) self.enable = false
+    if (check_tile_flag_at(sel_pos+shift, 0) and prev ~= sel_pos) self.enable = false
     return
   end
   self.position = sel_pos
   grid[sel_pos.y][sel_pos.x] = "floor"
   grid[prev.y][prev.x] = "path"
   self.enable = true 
+end
+function Tower:manifested_sharp_rotation()
+  self.dir = (selector.position / 8 - self.position)
+  self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
+  if (self.dir.x > 0) self.rot *= -1
+  if (self.rot < 0) self.rot += 360
+  if (self.rot > 360) self.rot -= 360
 end
 function raycast(position, radius, dir)
   if (dir == Vec:new(0, 0)) return
@@ -496,6 +514,7 @@ function manifest_tower_at(position)
     if tower.position == position then 
       tower.being_manifested = true 
       manifested_tower_ref = tower
+      Animator.set_direction(manifest_selector, 1)
       if tower.type == "tack" then
         lock_cursor = true
         tower.attack_delay = 10
@@ -506,8 +525,9 @@ function manifest_tower_at(position)
 end
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
+  Animator.set_direction(manifest_selector, -1)
+  lock_cursor = false
   if manifested_tower_ref.type == "tack" then
-    lock_cursor = false
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
@@ -578,6 +598,15 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
     end
   end
 end
+function draw_line_overlay(tower)
+  local pos = tower.position + Vec:new(0.5, 0.5)
+  pos *= 8
+  local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
+  if ray ~= pos then 
+    printh(pos.." | "..ray)
+    line(pos.x, pos.y, ray.x, ray.y, 8)
+  end
+end
 Particle = {}
 function Particle:new(pos, pixel_perfect, animator_)
   obj = {
@@ -627,11 +656,10 @@ function Animator:new(animation_data, continuous_)
   obj = {
     data = animation_data.data,
     sprite_size = animation_data.size or 8,
-    spin_enable = animation_data.rotation,
-    theta = 0,
     animation_frame = 1,
     frame_duration = animation_data.ticks_per_frame,
     tick = 0,
+    dir = 1,
     continuous = continuous_
   }
   setmetatable(obj, self)
@@ -640,26 +668,25 @@ function Animator:new(animation_data, continuous_)
 end
 function Animator:update()
   self.tick = (self.tick + 1) % self.frame_duration
-  self.theta = (self.theta + 5) % 360
   if (self.tick ~= 0) return false
   if Animator.finished(self) then 
     if (self.continuous) Animator.reset(self)
     return true
   end
-  self.animation_frame += 1
+  self.animation_frame += self.dir
   return false
 end
+function Animator:set_direction(dir)
+  self.dir = dir
+end
 function Animator:finished()
-  return self.animation_frame >= #self.data
+  if (self.dir == 1) return self.animation_frame >= #self.data
+  return self.animation_frame <= 1
 end
 function Animator:draw(dx, dy)
   local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]
   if (frame.offset) position += Vec:new(frame.offset)
-  if self.spin_enable then 
-    draw_sprite_rotated(frame.sprite, position, self.sprite_size, self.theta)
-  else
-    spr(Animator.get_sprite(self),Vec.unpack(position))
-  end
+  spr(Animator.get_sprite(self),Vec.unpack(position))
 end
 function Animator:get_sprite()
   return self.data[self.animation_frame].sprite
@@ -857,6 +884,48 @@ function lerp(start, last, rate)
     return start + (last - start) * rate
   end
 end
+Projectile = {}
+function Projectile:new(start, dir_, rot, data)
+  obj = {
+    position = Vec:new(Vec.unpack(start)),
+    dir = Vec:new(mid(dir_.x, -1, 1), mid(dir_.y, -1, 1)),
+    theta = rot,
+    sprite_animator = Animator:new(global_table_data.animation_data[data.animation_key], true),
+    size = data.pixel_size,
+    speed = data.speed,
+    damage = data.damage,
+    trail = global_table_data.animation_data[data.trail_animation_key],
+    ticks = 0
+  }
+  setmetatable(obj, self)
+  self.__index = self
+  return obj
+end
+function Projectile:update()
+  Animator.update(self.sprite_animator)
+  self.ticks = (self.ticks + 1) % self.speed
+  if (self.ticks > 0) return
+  local hits = {}
+  add_enemy_at_to_table(self.position, hits, true)
+  if #hits > 0 then 
+    for enemy in all(hits) do 
+      enemy.hp -= self.damage
+      printh(enemy.hp)
+    end 
+    add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
+    del(projectiles, self)
+    return
+  end
+  add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
+  
+  self.position = Vec.floor(self.position + self.dir)
+  if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 then 
+    del(projectiles, self)
+  end
+end
+function Projectile:draw()
+  draw_sprite_rotated(Animator.get_sprite(self.sprite_animator), self.position*8, self.size, self.theta) 
+end
 function _init() reset_game() end
 function _draw()
   cls()
@@ -883,9 +952,13 @@ function game_draw_loop()
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
   map(unpack(map_data.mget_shift))
   if (manifested_tower_ref == nil and not sell_mode) draw_tower_attack_overlay(tower_details)
+  if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+    draw_line_overlay(manifested_tower_ref)
+  end
   foreach(towers, Tower.draw)
   foreach(enemies, function (enemy) Enemy.draw(enemy, true) end)
   foreach(enemies, Enemy.draw)
+  foreach(projectiles, Projectile.draw)
   foreach(particles, Particle.draw)
   if (shop_enable) foreach(menus, Menu.draw)
   if not shop_enable and not enemies_active and incoming_hint ~= nil then 
@@ -908,30 +981,36 @@ function ui_draw_loop(tower_details)
     print_with_outline(text, 1, 115, 7, 0)
   else -- game ui
     if manifest_mode and manifested_tower_ref then 
-        Animator.update(manifest_selector)
-        Animator.draw(manifest_selector, Vec.unpack(selector.position))
-        print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
-        local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
-        print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
+      print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+      local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
+      print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
     else
-      Animator.reset(manifest_selector)
       if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
     end
+    if manifest_mode then 
+      Animator.update(manifest_selector)
+      Animator.draw(manifest_selector, Vec.unpack(selector.position))
+    end
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
-    if (not manifested_tower_ref and manifest_mode) or (sell_mode and not tower_in_table_state) then 
-      spr(selector.sprite_index, Vec.unpack(selector.position))
+    if not tower_in_table_state then 
+      Animator.set_direction(sell_selector, -1)
+    else
+      Animator.set_direction(sell_selector, 1)
     end
     if tower_in_table_state and not manifested_tower_ref then 
       if manifest_mode then
         print_with_outline("❎ manifest", 1, 115, 7, 0)
       else
+        print_with_outline("❎ sell", 1, 115, 7, 0)
         Animator.update(sell_selector)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
-        print_with_outline("❎ sell", 1, 115, 7, 0)
       end
     else
-      Animator.reset(sell_selector)
       if (not manifested_tower_ref and not sell_mode) ui_buy_and_place_draw_loop(tower_details)
+      if sell_mode then 
+        Animator.update(sell_selector)
+        Animator.draw(sell_selector, Vec.unpack(selector.position))
+      end
     end
   end
 end
@@ -1009,8 +1088,12 @@ function game_loop()
   if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
-    if manifested_tower_ref and manifested_tower_ref.type == "floor" then
-      Tower.manifested_torch_trap(manifested_tower_ref)
+    if manifested_tower_ref then 
+      if manifested_tower_ref.type == "floor" then
+        Tower.manifested_torch_trap(manifested_tower_ref)
+      elseif manifested_tower_ref.type == "sharp" then 
+        Tower.manifested_sharp_rotation(manifested_tower_ref)
+      end
     end
   end
   foreach(towers, Tower.cooldown)
@@ -1027,6 +1110,7 @@ function game_loop()
       wave_cor = nil
     end
   end
+  foreach(projectiles, Projectile.update)
   foreach(particles, Particle.tick)
   foreach(animators, Animator.update)
   if (not enemies_active and incoming_hint) foreach(incoming_hint, Animator.update)
@@ -1063,7 +1147,7 @@ function increase_enemy_health(enemy_data)
       enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
       max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
       enemy_data.sprite_index,
-      enemy_data.reward,
+      enemy_data.type,
       enemy_data.damage,
       enemy_data.height
     }
@@ -1077,14 +1161,11 @@ function is_in_table(val, table, is_entity)
     end
   end
 end
-function placable_tile_location(coord)
-  return fget(mget(coord.x, coord.y), global_table_data.map_meta_data.non_path_flag_id)
-end
 function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
-      if (multitarget) return
+      if (not multitarget) return
     end
   end
 end
@@ -1144,6 +1225,12 @@ function round_to(value, place)
   val = flr(val)
   return val / places
 end
+function check_tile_flag_at(position, flag)
+  return fget(mget(Vec.unpack(position)), flag)
+end
+function acos(x)
+  return atan2(x,-sqrt(1-x*x))
+ end
 function unpack_table(str)
   local table,start,stack,i={},1,0,1
   while i <= #str do
@@ -1255,29 +1342,30 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 057776500676676028288282000000000000000000000000000000000000000000000000000000000000000000000000021d11d00d11210022d11d00021d11d0
 057777505676676522a9a92200000000000000000000000000000000000000000000000000000000000000000000000002d0122d0002dd00dd0122d002d0122d
 0000000056066065200a90020000000000000000000000000000000000000000000000000000000000000000000000000d0000000000d000000002d00d000000
-000770000000000000077000000000000000000000000000000000000000000000000000000000000000000000000000067c606000ccc7000000000000000000
-00788700000000000078870000000000000000000000000000000000000000000000000000000000000000000000000067ccc670077c77700000000000000000
-078668700000000007866870000000000000000000000000000000000000000000000000000000000000000000000000607c77077777c7760000000000000000
-0760067000000000076006700000000000000000000000000000000000000000000000000000000000000000000000000177c7107177c7160000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117c110611771100000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110011111100000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110011111100000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111100001111000000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000090490a00a0940a00000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a09a00a090a90000000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a05776009067750a0000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a90000009a0090000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000577600006775000000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009aa900009aa9000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006777550057776600000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000094000000490000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000080000000800000000800
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000698600006896000065890000659800
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000068a9160068a916006189a6006198960
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000589a9500598a950059a8850059a9850
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000059a7a50059a7a5005a7a95005a7a950
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000619a1600619a160061a9160061a9160
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000655600006556000065560000655600
+00077000000000000007700000056000000000000000a000000000000000000000000000000000000000000000000000067c606000ccc7000000000000000000
+0078870000000000007887000095690000000000099aaa0000000000000000000000000000000000000000000000000067ccc670077c77700000000000000000
+07866870000000000786687000056000000000000888a900000000000000000000000000000000000000000000000000607c77077777c7760000000000000000
+07600670000000000760067000956900000000009a8988900000000000000000000000000000000000000000000000000177c7107177c7160000000000000000
+0000000000000000000000000005600000000000aaa888900000000000000000000000000000000000000000000000000117c110611771100000000000000000
+00000000000000000000000000d56d00000000000a89898000000000000000000000000000000000000000000000000001111110011111100000000000000000
+00000000000000000000000000d56d00000000000009880000000000000000000000000000000000000000000000000001111110011111100000000000000000
+00000000000000000000000000d56d00000000000000000000000000000000000000000000000000000000000000000000111100001111000000000000000000
+000000000000000000000000000000077000000099000889000070077000000000000007700700000000000000000000090490a00a0940a00000000000000000
+0000000000000000000000000000000660000000098888990000700660007000000007066007000000000000000000000a09a00a090a90000000000000000000
+00000000000000000000000000000f5665f0000098889880000070566500700000000756650700000000000000000000a05776009067750a0000000000000000
+000000000000000000000000000009566590000008a88880000070566500700000000056650707000000000000000000000a90000009a0090000000000000000
+00000000000000000000000000000456654000008aaa8a9000700056650070000000005665000700000000000000000000577600006775000000000000000000
+000000000000000000000000000000566500000008a8aaa9007000566500000000000056650007000000000000000000009aa900009aa9000000000000000000
+00000000000000000000000000000f5665f0000008888a8000700056650000000007005665000700000000000000000006777550057776600000000000000000
+00000000000000000000000000000956659000000098088800700056750000000007005665000000000000000000000000094000000490000000000000000000
+00000000000000000000000000000456654000000a99898000700056750000700007005665700000000000000000000000080000000080000000800000000800
+0000000000000000000000000000005665000000aaa99a8000700056750000700007005665700000000000000000000000698600006896000065890000659800
+00000000000000000000000000000d5665d000008a98aaa000000d5675d0007000000d56657000000000000000000000068a9160068a916006189a6006198960
+00000000000000000000000000001d5665d1000089899a9800001d5675d1007000001d566571000000000000000000000589a9500598a950059a8850059a9850
+00000000000000000000000000011d5665d110008898888900017d5665d1107000011756657110000000000000000000059a7a50059a7a5005a7a95005a7a950
+00000000000000000000000000011d5665d11000899898a800017d5665d110000001175665d1100000000000000000000619a1600619a160061a9160061a9160
+00000000000000000000000000011d5665d1100098889aaa00017d5665d110000001175665d11000000000000000000000655600006556000065560000655600
+00000000000000000000000000011d5665d11000008988a900011d5665d1100000011d5665d11000000000000000000000000000000000000000000000000000
 __gff__
 0000000000000000000000000000000000000000000000000001010102020201000000000000000000000202020102010000000000000000000002020202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -58,7 +58,7 @@ function reset_game()
   lock_cursor = false
   
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
-  manifest_mode = true
+  manifest_mode = false
   sell_mode = false
   manifested_tower_ref = nil
 
@@ -66,7 +66,7 @@ function reset_game()
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
   direction = Vec:new(0, -1)
-  grid, towers, enemies, particles, animators, incoming_hint, menus = {}, {}, {}, {}, {}, {}, {}
+  grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   selected_menu_tower_id = 1
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
@@ -74,5 +74,6 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
+  Animator.set_direction(manifest_selector, -1)
   get_menu("map").enable = true
 end

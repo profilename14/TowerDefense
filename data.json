@@ -81,6 +81,10 @@
       "data": [{ "sprite": 48 }, { "sprite": 49 }, { "sprite": 50 }],
       "ticks_per_frame": 2
     },
+    "blast": {
+      "data": [{ "sprite": 117 }, { "sprite": 101 }, { "sprite": 85 }],
+      "ticks_per_frame": 2
+    },
     "burn": {
       "data": [{ "sprite": 51 }, { "sprite": 52 }, { "sprite": 53 }],
       "ticks_per_frame": 2
@@ -123,6 +127,14 @@
         { "sprite": 125 }
       ],
       "ticks_per_frame": 5
+    },
+    "sharp_shooter": {
+      "data": [{ "sprite": 83 }],
+      "ticks_per_frame": 5
+    },
+    "rocket": {
+      "data": [{ "sprite": 102 }, { "sprite": 104 }],
+      "ticks_per_frame": 2
     },
     "menu_selector": {
       "data": [
@@ -170,6 +182,15 @@
         { "sprite": 9 }
       ],
       "ticks_per_frame": 3
+    }
+  },
+  "projectiles": {
+    "rocket": {
+      "animation_key": "rocket",
+      "pixel_size": 16,
+      "speed": 5,
+      "damage": 10,
+      "trail_animation_key": "blast"
     }
   },
   "tower_templates": [
@@ -228,6 +249,20 @@
       "icon_data": 22,
       "disable_icon_rotation": true,
       "cooldown": 0
+    },
+    {
+      "name": "sharp shooter",
+      "text_color": [6, 7],
+      "damage": 5,
+      "prefix": "damage",
+      "radius": 10,
+      "animation_key": "sharp_shooter",
+      "cost": 0,
+      "type": "sharp",
+      "attack_delay": 15,
+      "icon_data": 99,
+      "disable_icon_rotation": false,
+      "cooldown": 0
     }
   ],
   "enemy_templates": [
@@ -235,7 +270,7 @@
       "hp": 12,
       "step_delay": 10,
       "sprite_index": 3,
-      "reward": 3,
+      "type": 3,
       "damage": 1,
       "height": 2
     },
@@ -243,7 +278,7 @@
       "hp": 10,
       "step_delay": 8,
       "sprite_index": 4,
-      "reward": 2,
+      "type": 2,
       "damage": 2,
       "height": 6
     },
@@ -251,7 +286,7 @@
       "hp": 25,
       "step_delay": 12,
       "sprite_index": 5,
-      "reward": 3,
+      "type": 3,
       "damage": 4,
       "height": 2
     },
@@ -259,7 +294,7 @@
       "hp": 8,
       "step_delay": 12,
       "sprite_index": 64,
-      "reward": 4,
+      "type": 4,
       "damage": 1,
       "height": 2
     },
@@ -267,7 +302,7 @@
       "hp": 40,
       "step_delay": 12,
       "sprite_index": 65,
-      "reward": 5,
+      "type": 5,
       "damage": 6,
       "height": 2
     },
@@ -275,7 +310,7 @@
       "hp": 15,
       "step_delay": 6,
       "sprite_index": 66,
-      "reward": 6,
+      "type": 6,
       "damage": 4,
       "height": 6
     }
