@@ -12,6 +12,7 @@ function Tower:new(pos, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
+    rot = parse_direction(direction),
     enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
@@ -35,6 +36,8 @@ function Tower:attack()
     local hits = {}
     add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
+  elseif self.type == "sharp" then 
+    printh("fire!")
   elseif not self.being_manifested then
     if self.type == "rail" then
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
@@ -79,7 +82,14 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   if (not self.enable) return
-  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
+
+  if self.type == "sharp" then 
+    theta = self.rot 
+  else 
+    theta = parse_direction(self.dir)
+  end
+  
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -152,6 +162,13 @@ function Tower:manifested_torch_trap()
   grid[prev.y][prev.x] = "path"
   self.enable = true 
 end
+function Tower:manifested_sharp_rotation()
+  local dx, _ = controls()
+  self.rot += dx*10
+  if (self.rot < 0) self.rot += 360
+  if (self.rot > 360) self.rot -= 360
+  printh(self.rot)
+end
 
 function raycast(position, radius, dir)
   if (dir == Vec:new(0, 0)) return
@@ -175,6 +192,8 @@ function manifest_tower_at(position)
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
+      elseif tower.type == "sharp" then 
+        lock_cursor = true
       end
     end
   end
@@ -183,8 +202,8 @@ end
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
   Animator.set_direction(manifest_selector, -1)
+  lock_cursor = false
   if manifested_tower_ref.type == "tack" then
-    lock_cursor = false
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
@@ -263,4 +282,20 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
       spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
     end
   end
+end
+
+function draw_tower_ray(position, theta, range)
+  pal(global_table_data.palettes.sharp_shooter)
+  local rot = theta - 147
+  local sine, cosine = sin(rot / 360), cos(rot / 360)
+  local p = position
+  local xx = flr(p.x*cosine-p.y*sine)
+  local yy = flr(p.x*sine+p.y*cosine)
+  local dir = Vec:new(yy, xx)/8
+  local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
+  for i=1, range do 
+    local pos = dir * i + position
+    spr(mget(Vec.unpack(pos+shift)), Vec.unpack(pos))
+  end
+  pal()
 end

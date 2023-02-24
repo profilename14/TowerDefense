@@ -13,6 +13,9 @@ function game_draw_loop()
   map(unpack(map_data.mget_shift))
   -- tower attack hint overlay
   if (manifested_tower_ref == nil and not sell_mode) draw_tower_attack_overlay(tower_details)
+  if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+    draw_tower_ray(manifested_tower_ref.position*8, manifested_tower_ref.rot, manifested_tower_ref.radius)
+  end
   -- towers
   foreach(towers, Tower.draw)
   -- enemy shadows

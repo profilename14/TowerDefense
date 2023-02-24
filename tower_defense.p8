@@ -127,7 +127,7 @@ function load_game(map_id)
   end
   music(0)
 end
-global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
+global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},sharp_shooter={0=2,1=2,2=2,3=2,4=2,5=2,6=2,7=2,8=2,9=2,10=2,11=2,12=2,13=2,14=2,15=2},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=5,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=3,icon_data=99,disable_icon_rotation=True,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
 function reset_game()
   global_table_data = unpack_table(global_table_str)
   menu_data = {
@@ -351,6 +351,7 @@ function Tower:new(pos, tower_template_data, direction)
     cost = tower_template_data.cost,
     type = tower_template_data.type,
     dir = direction,
+    rot = parse_direction(direction),
     enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
@@ -372,6 +373,8 @@ function Tower:attack()
     local hits = {}
     add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
+  elseif self.type == "sharp" then 
+    printh("fire!")
   elseif not self.being_manifested then
     if self.type == "rail" then
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
@@ -416,7 +419,13 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   if (not self.enable) return
-  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator),parse_direction(self.dir)
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
+  if self.type == "sharp" then 
+    theta = self.rot 
+  else 
+    theta = parse_direction(self.dir)
+  end
+  
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -482,6 +491,13 @@ function Tower:manifested_torch_trap()
   grid[prev.y][prev.x] = "path"
   self.enable = true 
 end
+function Tower:manifested_sharp_rotation()
+  local dx, _ = controls()
+  self.rot += dx*10
+  if (self.rot < 0) self.rot += 360
+  if (self.rot > 360) self.rot -= 360
+  printh(self.rot)
+end
 function raycast(position, radius, dir)
   if (dir == Vec:new(0, 0)) return
   local hits, particle_locations = {}, {}
@@ -503,6 +519,8 @@ function manifest_tower_at(position)
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
+      elseif tower.type == "sharp" then 
+        lock_cursor = true
       end
     end
   end
@@ -510,8 +528,8 @@ end
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
   Animator.set_direction(manifest_selector, -1)
+  lock_cursor = false
   if manifested_tower_ref.type == "tack" then
-    lock_cursor = false
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
@@ -582,6 +600,21 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
     end
   end
 end
+function draw_tower_ray(position, theta, range)
+  pal(global_table_data.palettes.sharp_shooter)
+  local rot = theta - 147
+  local sine, cosine = sin(rot / 360), cos(rot / 360)
+  local p = position
+  local xx = flr(p.x*cosine-p.y*sine)
+  local yy = flr(p.x*sine+p.y*cosine)
+  local dir = Vec:new(yy, xx)/8
+  local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
+  for i=1, range do 
+    local pos = dir * i + position
+    spr(mget(Vec.unpack(pos+shift)), Vec.unpack(pos))
+  end
+  pal()
+end
 Particle = {}
 function Particle:new(pos, pixel_perfect, animator_)
   obj = {
@@ -631,8 +664,6 @@ function Animator:new(animation_data, continuous_)
   obj = {
     data = animation_data.data,
     sprite_size = animation_data.size or 8,
-    spin_enable = animation_data.rotation,
-    theta = 0,
     animation_frame = 1,
     frame_duration = animation_data.ticks_per_frame,
     tick = 0,
@@ -645,7 +676,6 @@ function Animator:new(animation_data, continuous_)
 end
 function Animator:update()
   self.tick = (self.tick + 1) % self.frame_duration
-  self.theta = (self.theta + 5) % 360
   if (self.tick ~= 0) return false
   if Animator.finished(self) then 
     if (self.continuous) Animator.reset(self)
@@ -664,11 +694,7 @@ end
 function Animator:draw(dx, dy)
   local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]
   if (frame.offset) position += Vec:new(frame.offset)
-  if self.spin_enable then 
-    draw_sprite_rotated(frame.sprite, position, self.sprite_size, self.theta)
-  else
-    spr(Animator.get_sprite(self),Vec.unpack(position))
-  end
+  spr(Animator.get_sprite(self),Vec.unpack(position))
 end
 function Animator:get_sprite()
   return self.data[self.animation_frame].sprite
@@ -892,6 +918,9 @@ function game_draw_loop()
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
   map(unpack(map_data.mget_shift))
   if (manifested_tower_ref == nil and not sell_mode) draw_tower_attack_overlay(tower_details)
+  if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+    draw_tower_ray(manifested_tower_ref.position*8, manifested_tower_ref.rot, manifested_tower_ref.radius)
+  end
   foreach(towers, Tower.draw)
   foreach(enemies, function (enemy) Enemy.draw(enemy, true) end)
   foreach(enemies, Enemy.draw)
@@ -928,8 +957,6 @@ function ui_draw_loop(tower_details)
       Animator.draw(manifest_selector, Vec.unpack(selector.position))
     end
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
-    if (not manifested_tower_ref and manifest_mode) or (sell_mode and not tower_in_table_state) then 
-    end
     if not tower_in_table_state then 
       Animator.set_direction(sell_selector, -1)
     else
@@ -1027,7 +1054,12 @@ function game_loop()
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
     if manifested_tower_ref and manifested_tower_ref.type == "floor" then
-      Tower.manifested_torch_trap(manifested_tower_ref)
+        Tower.manifested_torch_trap(manifested_tower_ref)
+      else
+    end
+  else
+    if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+      Tower.manifested_sharp_rotation(manifested_tower_ref)
     end
   end
   foreach(towers, Tower.cooldown)
@@ -1272,29 +1304,30 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 057776500676676028288282000000000000000000000000000000000000000000000000000000000000000000000000021d11d00d11210022d11d00021d11d0
 057777505676676522a9a92200000000000000000000000000000000000000000000000000000000000000000000000002d0122d0002dd00dd0122d002d0122d
 0000000056066065200a90020000000000000000000000000000000000000000000000000000000000000000000000000d0000000000d000000002d00d000000
-000770000000000000077000000000000000000000000000000000000000000000000000000000000000000000000000067c606000ccc7000000000000000000
-00788700000000000078870000000000000000000000000000000000000000000000000000000000000000000000000067ccc670077c77700000000000000000
-078668700000000007866870000000000000000000000000000000000000000000000000000000000000000000000000607c77077777c7760000000000000000
-0760067000000000076006700000000000000000000000000000000000000000000000000000000000000000000000000177c7107177c7160000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117c110611771100000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110011111100000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110011111100000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111100001111000000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000090490a00a0940a00000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a09a00a090a90000000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a05776009067750a0000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a90000009a0090000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000577600006775000000000000000000
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009aa900009aa9000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006777550057776600000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000094000000490000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000080000000800000000800
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000698600006896000065890000659800
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000068a9160068a916006189a6006198960
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000589a9500598a950059a8850059a9850
-000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000059a7a50059a7a5005a7a95005a7a950
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000619a1600619a160061a9160061a9160
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000655600006556000065560000655600
+000770000000000000077000000560000000000000000000000000000000000000000000000000000000000000000000067c606000ccc7000000000000000000
+00788700000000000078870000956900000000000000000000000000000000000000000000000000000000000000000067ccc670077c77700000000000000000
+078668700000000007866870000560000000000000000000000000000000000000000000000000000000000000000000607c77077777c7760000000000000000
+0760067000000000076006700095690000000000000000000000000000000000000000000000000000000000000000000177c7107177c7160000000000000000
+0000000000000000000000000005600000000000000000000000000000000000000000000000000000000000000000000117c110611771100000000000000000
+00000000000000000000000000d56d00000000000000000000000000000000000000000000000000000000000000000001111110011111100000000000000000
+00000000000000000000000000d56d00000000000000000000000000000000000000000000000000000000000000000001111110011111100000000000000000
+00000000000000000000000000d56d00000000000000000000000000000000000000000000000000000000000000000000111100001111000000000000000000
+000000000000000000000000000000077000000000000000000000000000000000000000000000000000000000000000090490a00a0940a00000000000000000
+0000000000000000000000000000000660000000000000000000000000000000000000000000000000000000000000000a09a00a090a90000000000000000000
+00000000000000000000000000000f5665f0000000000000000000000000000000000000000000000000000000000000a05776009067750a0000000000000000
+000000000000000000000000000009566590000000000000000000000000000000000000000000000000000000000000000a90000009a0090000000000000000
+00000000000000000000000000000456654000000000000000000000000000000000000000000000000000000000000000577600006775000000000000000000
+000000000000000000000000000000566500000000000000000000000000000000000000000000000000000000000000009aa900009aa9000000000000000000
+00000000000000000000000000000f5665f000000000000000000000000000000000000000000000000000000000000006777550057776600000000000000000
+00000000000000000000000000000956659000000000000000000000000000000000000000000000000000000000000000094000000490000000000000000000
+00000000000000000000000000000456654000000000000000000000000000000000000000000000000000000000000000080000000080000000800000000800
+00000000000000000000000000000056650000000000000000000000000000000000000000000000000000000000000000698600006896000065890000659800
+00000000000000000000000000000d5665d0000000000000000000000000000000000000000000000000000000000000068a9160068a916006189a6006198960
+00000000000000000000000000001d5665d10000000000000000000000000000000000000000000000000000000000000589a9500598a950059a8850059a9850
+00000000000000000000000000011d5665d1100000000000000000000000000000000000000000000000000000000000059a7a50059a7a5005a7a95005a7a950
+00000000000000000000000000011d5665d11000000000000000000000000000000000000000000000000000000000000619a1600619a160061a9160061a9160
+00000000000000000000000000011d5665d110000000000000000000000000000000000000000000000000000000000000655600006556000065560000655600
+00000000000000000000000000011d5665d110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __gff__
 0000000000000000000000000000000000000000000000000001010102020201000000000000000000000202020102010000000000000000000002020202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

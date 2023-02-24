@@ -72,7 +72,12 @@ function game_loop()
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
     if manifested_tower_ref and manifested_tower_ref.type == "floor" then
-      Tower.manifested_torch_trap(manifested_tower_ref)
+        Tower.manifested_torch_trap(manifested_tower_ref)
+      else
+    end
+  else
+    if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+      Tower.manifested_sharp_rotation(manifested_tower_ref)
     end
   end
 
