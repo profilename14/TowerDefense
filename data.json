@@ -3,24 +3,6 @@
   "palettes": {
     "transparent_color_id": 0,
     "dark_mode": { "1": 0, "5": 1, "6": 5, "7": 6 },
-    "sharp_shooter": {
-      "0": 2,
-      "1": 2,
-      "2": 2,
-      "3": 2,
-      "4": 2,
-      "5": 2,
-      "6": 2,
-      "7": 2,
-      "8": 2,
-      "9": 2,
-      "10": 2,
-      "11": 2,
-      "12": 2,
-      "13": 2,
-      "14": 2,
-      "15": 2
-    },
     "attack_tile": {
       "0": 2,
       "7": 14
@@ -99,6 +81,10 @@
       "data": [{ "sprite": 48 }, { "sprite": 49 }, { "sprite": 50 }],
       "ticks_per_frame": 2
     },
+    "blast": {
+      "data": [{ "sprite": 117 }, { "sprite": 101 }, { "sprite": 85 }],
+      "ticks_per_frame": 2
+    },
     "burn": {
       "data": [{ "sprite": 51 }, { "sprite": 52 }, { "sprite": 53 }],
       "ticks_per_frame": 2
@@ -146,6 +132,10 @@
       "data": [{ "sprite": 83 }],
       "ticks_per_frame": 5
     },
+    "rocket": {
+      "data": [{ "sprite": 102 }, { "sprite": 104 }],
+      "ticks_per_frame": 2
+    },
     "menu_selector": {
       "data": [
         { "sprite": 6, "offset": [0, 0] },
@@ -192,6 +182,15 @@
         { "sprite": 9 }
       ],
       "ticks_per_frame": 3
+    }
+  },
+  "projectiles": {
+    "rocket": {
+      "animation_key": "rocket",
+      "pixel_size": 16,
+      "speed": 5,
+      "damage": 10,
+      "trail_animation_key": "blast"
     }
   },
   "tower_templates": [
@@ -260,9 +259,9 @@
       "animation_key": "sharp_shooter",
       "cost": 0,
       "type": "sharp",
-      "attack_delay": 3,
+      "attack_delay": 15,
       "icon_data": 99,
-      "disable_icon_rotation": true,
+      "disable_icon_rotation": false,
       "cooldown": 0
     }
   ],

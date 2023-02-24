@@ -13,6 +13,7 @@
 #include src/borderRect.lua
 #include src/menu.lua
 #include src/vec.lua
+#include src/projectile.lua
 
 -- Pico8
 function _init() reset_game() end

@@ -14,7 +14,7 @@ function game_draw_loop()
   -- tower attack hint overlay
   if (manifested_tower_ref == nil and not sell_mode) draw_tower_attack_overlay(tower_details)
   if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
-    draw_tower_ray(manifested_tower_ref.position*8, manifested_tower_ref.rot, manifested_tower_ref.radius)
+    draw_line_overlay(manifested_tower_ref)
   end
   -- towers
   foreach(towers, Tower.draw)
@@ -23,6 +23,7 @@ function game_draw_loop()
   -- enemies
   foreach(enemies, Enemy.draw)
   -- particles
+  foreach(projectiles, Projectile.draw)
   foreach(particles, Particle.draw)
   -- shop
   if (shop_enable) foreach(menus, Menu.draw)

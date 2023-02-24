@@ -66,7 +66,7 @@ function reset_game()
   enemy_current_spawn_tick = 0
   map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
   direction = Vec:new(0, -1)
-  grid, towers, enemies, particles, animators, incoming_hint, menus = {}, {}, {}, {}, {}, {}, {}
+  grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   selected_menu_tower_id = 1
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end

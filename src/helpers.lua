@@ -51,7 +51,7 @@ function add_enemy_at_to_table(pos, table, multitarget)
   for enemy in all(enemies) do
     if enemy.position == pos then
       add(table, enemy)
-      if (multitarget) return
+      if (not multitarget) return
     end
   end
 end
@@ -124,3 +124,8 @@ end
 function check_tile_flag_at(position, flag)
   return fget(mget(Vec.unpack(position)), flag)
 end
+
+-- https://www.lexaloffle.com/bbs/?tid=3142
+function acos(x)
+  return atan2(x,-sqrt(1-x*x))
+ end

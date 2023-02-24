@@ -36,13 +36,13 @@ function Tower:attack()
     local hits = {}
     add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
-  elseif self.type == "sharp" then 
-    printh("fire!")
   elseif not self.being_manifested then
     if self.type == "rail" then
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
     elseif self.type == "frontal" then 
       Tower.freeze_enemies(self, Tower.frontal_collision(self))
+    elseif self.type == "sharp" then 
+      add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
     end
   end
 end
@@ -163,11 +163,11 @@ function Tower:manifested_torch_trap()
   self.enable = true 
 end
 function Tower:manifested_sharp_rotation()
-  local dx, _ = controls()
-  self.rot += dx*10
+  self.dir = (selector.position / 8 - self.position)
+  self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
+  if (self.dir.x > 0) self.rot *= -1
   if (self.rot < 0) self.rot += 360
   if (self.rot > 360) self.rot -= 360
-  printh(self.rot)
 end
 
 function raycast(position, radius, dir)
@@ -192,8 +192,6 @@ function manifest_tower_at(position)
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
-      elseif tower.type == "sharp" then 
-        lock_cursor = true
       end
     end
   end
@@ -284,18 +282,12 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
   end
 end
 
-function draw_tower_ray(position, theta, range)
-  pal(global_table_data.palettes.sharp_shooter)
-  local rot = theta -- 147
-  local sine, cosine = sin(rot / 360), cos(rot / 360)
-  local p = Vec:new(0, -1)
-  local xx = flr(p.x*cosine-p.y*sine)
-  local yy = flr(p.x*sine+p.y*cosine)
-  local dir = Vec:new(xx, yy)*8
-  local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-  for i=1, 3 do 
-    local pos = dir * i + position
-    spr(mget(Vec.unpack(pos+shift)), Vec.unpack(pos))
+function draw_line_overlay(tower)
+  local pos = tower.position + Vec:new(0.5, 0.5)
+  pos *= 8
+  local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
+  if ray ~= pos then 
+    printh(pos.." | "..ray)
+    line(pos.x, pos.y, ray.x, ray.y, 8)
   end
-  pal()
 end

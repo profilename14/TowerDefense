@@ -71,13 +71,12 @@ function game_loop()
   if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
-    if manifested_tower_ref and manifested_tower_ref.type == "floor" then
+    if manifested_tower_ref then 
+      if manifested_tower_ref.type == "floor" then
         Tower.manifested_torch_trap(manifested_tower_ref)
-      else
-    end
-  else
-    if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
-      Tower.manifested_sharp_rotation(manifested_tower_ref)
+      elseif manifested_tower_ref.type == "sharp" then 
+        Tower.manifested_sharp_rotation(manifested_tower_ref)
+      end
     end
   end
 
@@ -98,6 +97,7 @@ function game_loop()
     end
   end
   -- update particles
+  foreach(projectiles, Projectile.update)
   foreach(particles, Particle.tick)
   foreach(animators, Animator.update)
   if (not enemies_active and incoming_hint) foreach(incoming_hint, Animator.update)
