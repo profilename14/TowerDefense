@@ -286,14 +286,14 @@ end
 
 function draw_tower_ray(position, theta, range)
   pal(global_table_data.palettes.sharp_shooter)
-  local rot = theta - 147
+  local rot = theta -- 147
   local sine, cosine = sin(rot / 360), cos(rot / 360)
-  local p = position
+  local p = Vec:new(0, -1)
   local xx = flr(p.x*cosine-p.y*sine)
   local yy = flr(p.x*sine+p.y*cosine)
-  local dir = Vec:new(yy, xx)/8
+  local dir = Vec:new(xx, yy)*8
   local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
-  for i=1, range do 
+  for i=1, 3 do 
     local pos = dir * i + position
     spr(mget(Vec.unpack(pos+shift)), Vec.unpack(pos))
   end
