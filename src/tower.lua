@@ -83,9 +83,9 @@ end
 function Tower:draw()
   if (not self.enable) return
   local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
-
+  
   if self.type == "sharp" then 
-    theta = self.rot 
+    theta = self.rot
   else 
     theta = parse_direction(self.dir)
   end
@@ -97,8 +97,8 @@ function Tower:cooldown()
   self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
 end
 function Tower:get_cooldown_str()
-  if (self.type == "floor") return "⬆️⬇️⬅️➡️ move"
-  if (self.type == "tack") return "❎ activate ("..self.dmg.."d)"
+  if (self.type == "floor" or self.type == "sharp") return "⬆️⬇️⬅️➡️ position"
+  if (self.type == "tack") return "❎ activate ("..self.dmg.."D)"
   if (self.manifest_cooldown == 0) return "❎ activate"
   return "❎ activate ("..self.manifest_cooldown.."t)"
 end
@@ -286,8 +286,5 @@ function draw_line_overlay(tower)
   local pos = tower.position + Vec:new(0.5, 0.5)
   pos *= 8
   local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
-  if ray ~= pos then 
-    printh(pos.." | "..ray)
-    line(pos.x, pos.y, ray.x, ray.y, 8)
-  end
+  if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end

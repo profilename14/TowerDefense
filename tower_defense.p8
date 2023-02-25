@@ -420,8 +420,9 @@ end
 function Tower:draw()
   if (not self.enable) return
   local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
+  
   if self.type == "sharp" then 
-    theta = self.rot 
+    theta = self.rot
   else 
     theta = parse_direction(self.dir)
   end
@@ -433,8 +434,8 @@ function Tower:cooldown()
   self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
 end
 function Tower:get_cooldown_str()
-  if (self.type == "floor") return "⬆️⬇️⬅️➡️ move"
-  if (self.type == "tack") return "❎ activate ("..self.dmg.."d)"
+  if (self.type == "floor" or self.type == "sharp") return "⬆️⬇️⬅️➡️ position"
+  if (self.type == "tack") return "❎ activate ("..self.dmg.."D)"
   if (self.manifest_cooldown == 0) return "❎ activate"
   return "❎ activate ("..self.manifest_cooldown.."t)"
 end
@@ -602,10 +603,7 @@ function draw_line_overlay(tower)
   local pos = tower.position + Vec:new(0.5, 0.5)
   pos *= 8
   local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
-  if ray ~= pos then 
-    printh(pos.." | "..ray)
-    line(pos.x, pos.y, ray.x, ray.y, 8)
-  end
+  if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end
 Particle = {}
 function Particle:new(pos, pixel_perfect, animator_)
@@ -901,7 +899,6 @@ function Projectile:new(start, dir_, rot, data)
     trail = global_table_data.animation_data[data.trail_animation_key],
     ticks = 0
   }
-  printh(obj.dir.." = "..dir_.." / "..max_d_v)
   setmetatable(obj, self)
   self.__index = self
   return obj
@@ -912,10 +909,7 @@ function Projectile:update()
   local hits = {}
   add_enemy_at_to_table(self.position, hits, true)
   if #hits > 0 then 
-    for enemy in all(hits) do 
-      enemy.hp -= self.damage
-      printh(enemy.hp)
-    end 
+    for enemy in all(hits) do enemy.hp -= self.damage end 
     add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
     del(projectiles, self)
     return
@@ -927,7 +921,6 @@ function Projectile:update()
   else 
     self.position = Vec.ceil(self.position + self.dir)
   end
-  printh("pos: "..self.position)
   if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 then 
     del(projectiles, self)
   end

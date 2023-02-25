@@ -6,7 +6,13 @@ function debug_print_table(table, prefix, log_to_file)
       debug_print_table(v, "__"..prefix, log_to_file)
       printh(prefix.."}", log_to_file)
     else
-      printh(prefix.."["..type(v).."] "..key.." = "..v, log_to_file)
+      local v_out
+      if type(v) == "boolean" then 
+        v_out = v and "true" or "false"
+      else 
+        v_out = v 
+      end
+      printh(prefix.."["..type(v).."] "..key.." = "..v_out, log_to_file)
     end
   end
 end

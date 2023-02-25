@@ -24,10 +24,7 @@ function Projectile:update()
   local hits = {}
   add_enemy_at_to_table(self.position, hits, true)
   if #hits > 0 then 
-    for enemy in all(hits) do 
-      enemy.hp -= self.damage
-      printh(enemy.hp)
-    end 
+    for enemy in all(hits) do enemy.hp -= self.damage end 
     add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
     del(projectiles, self)
     return
