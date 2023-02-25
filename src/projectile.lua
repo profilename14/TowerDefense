@@ -1,10 +1,11 @@
 Projectile = {}
 function Projectile:new(start, dir_, rot, data)
+  local max_d_v = max(abs(dir_.x), abs(dir_.y))
   obj = {
     position = Vec:new(Vec.unpack(start)),
-    dir = Vec:new(mid(dir_.x, -1, 1), mid(dir_.y, -1, 1)),
+    dir = Vec:new(dir_.x / max_d_v, dir_.y / max_d_v),
     theta = rot,
-    sprite_animator = Animator:new(global_table_data.animation_data[data.animation_key], true),
+    sprite = data.sprite,
     size = data.pixel_size,
     speed = data.speed,
     damage = data.damage,
@@ -17,7 +18,6 @@ function Projectile:new(start, dir_, rot, data)
   return obj
 end
 function Projectile:update()
-  Animator.update(self.sprite_animator)
   self.ticks = (self.ticks + 1) % self.speed
   if (self.ticks > 0) return
 
@@ -34,11 +34,15 @@ function Projectile:update()
   end
   add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
   
-  self.position = Vec.floor(self.position + self.dir)
+  if self.dir.x < 0 then 
+    self.position = Vec.floor(self.position + self.dir)
+  else 
+    self.position = Vec.ceil(self.position + self.dir)
+  end
   if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 then 
     del(projectiles, self)
   end
 end
 function Projectile:draw()
-  draw_sprite_rotated(Animator.get_sprite(self.sprite_animator), self.position*8, self.size, self.theta) 
+  draw_sprite_rotated(self.sprite, self.position*8, self.size, self.theta) 
 end

@@ -83,7 +83,7 @@
     },
     "blast": {
       "data": [{ "sprite": 117 }, { "sprite": 101 }, { "sprite": 85 }],
-      "ticks_per_frame": 2
+      "ticks_per_frame": 4
     },
     "burn": {
       "data": [{ "sprite": 51 }, { "sprite": 52 }, { "sprite": 53 }],
@@ -131,10 +131,6 @@
     "sharp_shooter": {
       "data": [{ "sprite": 83 }],
       "ticks_per_frame": 5
-    },
-    "rocket": {
-      "data": [{ "sprite": 102 }, { "sprite": 104 }],
-      "ticks_per_frame": 2
     },
     "menu_selector": {
       "data": [
@@ -186,8 +182,8 @@
   },
   "projectiles": {
     "rocket": {
-      "animation_key": "rocket",
-      "pixel_size": 16,
+      "sprite": 84,
+      "pixel_size": 8,
       "speed": 5,
       "damage": 10,
       "trail_animation_key": "blast"
