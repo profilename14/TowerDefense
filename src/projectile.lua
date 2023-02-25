@@ -3,7 +3,6 @@ function Projectile:new(start, dir_, rot, data)
   local max_d_v = max(abs(dir_.x), abs(dir_.y))
   obj = {
     position = Vec:new(Vec.unpack(start)),
-    real_position = Vec:new(Vec.unpack(start)),
     dir = Vec:new(dir_.x / max_d_v, dir_.y / max_d_v),
     theta = rot,
     sprite = data.sprite,
@@ -37,17 +36,12 @@ function Projectile:update()
     return
   end
 
-  add(particles, Particle:new(self.real_position, false, Animator:new(self.trail)))
-
-  -- Self.real_position keeps track of the exact, pixelwise cooridinates of the projectile.
-  -- self.position is its tile coordinate used in calculations, and is set to a rounded self.real_position each move.
-  -- self.real_position = self.real_position + self.dir
-  self.real_position = self.position + self.dir
-  
+  add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
+ 
   if self.dir.x < 0 then 
-    self.position = (self.real_position)
+    self.position = (self.position + self.dir)
   else 
-    self.position = (self.real_position)
+    self.position = (self.position + self.dir)
   end
   self.lifespan -= 1
   if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 or self.lifespan < 0 then 
