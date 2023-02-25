@@ -1,9 +1,8 @@
 Projectile = {}
 function Projectile:new(start, dir_, rot, data)
-  local max_d_v = max(abs(dir_.x), abs(dir_.y))
   obj = {
-    position = Vec:new(Vec.unpack(start)),
-    dir = Vec:new(dir_.x / max_d_v, dir_.y / max_d_v),
+    position = Vec.clone(start),
+    dir = Vec.clone(dir_),
     theta = rot,
     sprite = data.sprite,
     size = data.pixel_size,
@@ -31,11 +30,7 @@ function Projectile:update()
   end
   add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
   
-  if self.dir.x < 0 then 
-    self.position = Vec.floor(self.position + self.dir)
-  else 
-    self.position = Vec.ceil(self.position + self.dir)
-  end
+  self.position += self.dir
   if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 then 
     del(projectiles, self)
   end

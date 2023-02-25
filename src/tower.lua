@@ -149,7 +149,7 @@ function Tower:manifested_torch_trap()
   local sel_pos = selector.position / 8
   if (grid[sel_pos.y][sel_pos.x] == "empty") return
   
-  local prev = Vec:new(Vec.unpack(self.position))
+  local prev = Vec.clone(self.position)
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     -- torch tower on path
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
@@ -163,7 +163,9 @@ function Tower:manifested_torch_trap()
   self.enable = true 
 end
 function Tower:manifested_sharp_rotation()
-  self.dir = (selector.position / 8 - self.position)
+  local dir = (selector.position / 8 - self.position)
+  self.dir = dir/Vec.magnitude(dir)
+  self.dir = snap(Vec:new(round(self.dir.x), round(self.dir.y)))
   self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
   if (self.dir.x > 0) self.rot *= -1
   if (self.rot < 0) self.rot += 360
@@ -285,6 +287,6 @@ end
 function draw_line_overlay(tower)
   local pos = tower.position + Vec:new(0.5, 0.5)
   pos *= 8
-  local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
+  local ray = Vec.floor(tower.dir * 120 + pos)
   if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end

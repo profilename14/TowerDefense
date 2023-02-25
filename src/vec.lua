@@ -40,8 +40,11 @@ end
 function Vec:floor()
   return Vec:new(flr(self.x), flr(self.y))
 end
-function Vec:ceil()
-  return Vec:new(ceil(self.x), ceil(self.y))
+function Vec:magnitude()
+  return sqrt(self.x*self.x+self.y*self.y)
+end
+function Vec:clone()
+  return Vec:new(self.x, self.y)
 end
 
 function normalize(val)
@@ -54,4 +57,14 @@ function lerp(start, last, rate)
   else
     return start + (last - start) * rate
   end
+end
+
+function snap(vec)
+  local x, y = abs(vec.x), abs(vec.y)
+  if x == 0.5 and y == 1 then
+    return Vec:new(vec.x*2, vec.y/2)
+  elseif x == 1 and y == 0.5 then
+    return Vec:new(vec.x/2, vec.y*2)
+  end
+  return vec
 end

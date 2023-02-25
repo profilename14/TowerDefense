@@ -481,7 +481,7 @@ function Tower:manifested_torch_trap()
   local sel_pos = selector.position / 8
   if (grid[sel_pos.y][sel_pos.x] == "empty") return
   
-  local prev = Vec:new(Vec.unpack(self.position))
+  local prev = Vec.clone(self.position)
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
     if (check_tile_flag_at(sel_pos+shift, 0) and prev ~= sel_pos) self.enable = false
@@ -493,8 +493,11 @@ function Tower:manifested_torch_trap()
   self.enable = true 
 end
 function Tower:manifested_sharp_rotation()
-  self.dir = (selector.position / 8 - self.position)
+  local dir = (selector.position / 8 - self.position)
+  self.dir = dir/Vec.magnitude(dir)
+  self.dir = snap(Vec:new(round(self.dir.x), round(self.dir.y)))
   self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
+  printh(self.dir.." @ "..self.rot)
   if (self.dir.x > 0) self.rot *= -1
   if (self.rot < 0) self.rot += 360
   if (self.rot > 360) self.rot -= 360
@@ -602,7 +605,7 @@ end
 function draw_line_overlay(tower)
   local pos = tower.position + Vec:new(0.5, 0.5)
   pos *= 8
-  local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
+  local ray = Vec.floor(tower.dir * 120 + pos)
   if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end
 Particle = {}
@@ -872,8 +875,11 @@ end
 function Vec:floor()
   return Vec:new(flr(self.x), flr(self.y))
 end
-function Vec:ceil()
-  return Vec:new(ceil(self.x), ceil(self.y))
+function Vec:magnitude()
+  return sqrt(self.x*self.x+self.y*self.y)
+end
+function Vec:clone()
+  return Vec:new(self.x, self.y)
 end
 function normalize(val)
   return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
@@ -885,12 +891,20 @@ function lerp(start, last, rate)
     return start + (last - start) * rate
   end
 end
+function snap(vec)
+  local x, y = abs(vec.x), abs(vec.y)
+  if x == 0.5 and y == 1 then
+    return Vec:new(vec.x*2, vec.y/2)
+  elseif x == 1 and y == 0.5 then
+    return Vec:new(vec.x/2, vec.y*2)
+  end
+  return vec
+end
 Projectile = {}
 function Projectile:new(start, dir_, rot, data)
-  local max_d_v = max(abs(dir_.x), abs(dir_.y))
   obj = {
-    position = Vec:new(Vec.unpack(start)),
-    dir = Vec:new(dir_.x / max_d_v, dir_.y / max_d_v),
+    position = Vec.clone(start),
+    dir = Vec.clone(dir_),
     theta = rot,
     sprite = data.sprite,
     size = data.pixel_size,
@@ -916,11 +930,7 @@ function Projectile:update()
   end
   add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
   
-  if self.dir.x < 0 then 
-    self.position = Vec.floor(self.position + self.dir)
-  else 
-    self.position = Vec.ceil(self.position + self.dir)
-  end
+  self.position += self.dir
   if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 then 
     del(projectiles, self)
   end
@@ -1226,6 +1236,17 @@ function round_to(value, place)
   local val = value * places 
   val = flr(val)
   return val / places
+end
+function round(value)
+  local val = flr(value)
+  local dec = value-val 
+  if dec < 0.3 then 
+    return val 
+  elseif dec > 0.7 then 
+    return ceil(value) 
+  else
+    return val+0.5
+  end
 end
 function check_tile_flag_at(position, flag)
   return fget(mget(Vec.unpack(position)), flag)
