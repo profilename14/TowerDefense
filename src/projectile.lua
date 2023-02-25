@@ -6,6 +6,7 @@ function Projectile:new(start, dir_, rot, data)
     theta = rot,
     sprite = data.sprite,
     size = data.pixel_size,
+    height = data.height,
     speed = data.speed,
     damage = data.damage,
     trail = global_table_data.animation_data[data.trail_animation_key],
@@ -36,5 +37,6 @@ function Projectile:update()
   end
 end
 function Projectile:draw()
+  draw_sprite_shadow(self.sprite, self.position*8, self.height, self.size, self.theta)
   draw_sprite_rotated(self.sprite, self.position*8, self.size, self.theta) 
 end
