@@ -22,10 +22,14 @@ function Projectile:update()
   if (self.ticks > 0) return
 
   local hits = {}
-  add_enemy_at_to_table(self.position, hits, true)
+  for enemy in all(enemies) do 
+    if Projectile.collider(self, enemy) then 
+      add(hits, enemy)
+    end
+  end
   if #hits > 0 then 
     for enemy in all(hits) do enemy.hp -= self.damage end 
-    add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
+    add(particles, Particle:new(Vec.clone(self.position), false, Animator:new(self.trail)))
     del(projectiles, self)
     return
   end
@@ -39,4 +43,11 @@ end
 function Projectile:draw()
   draw_sprite_shadow(self.sprite, self.position*8, self.height, self.size, self.theta)
   draw_sprite_rotated(self.sprite, self.position*8, self.size, self.theta) 
+end
+function Projectile:collider(enemy)
+  local self_center = self.position*self.size + Vec:new(self.size, self.size)/2
+  local enemy_center = enemy.position*8 + Vec:new(4, 4)
+  local touching_distance = self.size+4
+  local dist = Vec.distance(self_center, enemy_center)
+  return dist <= touching_distance
 end

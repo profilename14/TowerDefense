@@ -339,6 +339,7 @@ function spawn_enemy()
 end
 Tower = {}
 function Tower:new(pos, tower_template_data, direction)
+  printh(tower_template_data.attack_delay)
   obj = { 
     position = pos,
     dmg = tower_template_data.damage,
@@ -355,6 +356,7 @@ function Tower:new(pos, tower_template_data, direction)
     enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
+  printh(obj.attack_delay)
   add(animators, obj.animator)
   setmetatable(obj, self)
   self.__index = self 
@@ -366,6 +368,7 @@ function Tower:attack()
     self.dmg = min(self.manifest_cooldown, 100) / 15
   end
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
+  printh(self.current_attack_ticks.." % "..self.attack_delay)
   if (self.current_attack_ticks > 0) return
   if self.type == "tack" then
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
@@ -373,13 +376,13 @@ function Tower:attack()
     local hits = {}
     add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
+  elseif self.type == "sharp" then 
+    add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
   elseif not self.being_manifested then
     if self.type == "rail" then
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
     elseif self.type == "frontal" then 
       Tower.freeze_enemies(self, Tower.frontal_collision(self))
-    elseif self.type == "sharp" then 
-      add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
     end
   end
 end
@@ -495,7 +498,6 @@ end
 function Tower:manifested_sharp_rotation()
   local dir = (selector.position / 8 - self.position)
   self.dir = dir/Vec.magnitude(dir)
-  self.dir = snap(Vec:new(round(self.dir.x), round(self.dir.y)))
   self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
   if (self.dir.x > 0) self.rot *= -1
   if (self.rot < 0) self.rot += 360
@@ -522,6 +524,8 @@ function manifest_tower_at(position)
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
+      elseif tower.type == "sharp" then 
+        tower.attack_delay \=2
       end
     end
   end
@@ -534,6 +538,8 @@ function unmanifest_tower()
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
+  elseif manifested_tower_ref.type == "sharp" then 
+    manifested_tower_ref.attack_delay = global_table_data.tower_templates[5].attack_delay
   end
   manifested_tower_ref.enable = true
   manifested_tower_ref = nil
@@ -880,6 +886,9 @@ end
 function Vec:clone()
   return Vec:new(self.x, self.y)
 end
+function Vec:distance(other)
+  return sqrt((self.x-other.x)^2 + (self.y-other.y)^2)
+end
 function normalize(val)
   return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
 end
@@ -921,10 +930,14 @@ function Projectile:update()
   self.ticks = (self.ticks + 1) % self.speed
   if (self.ticks > 0) return
   local hits = {}
-  add_enemy_at_to_table(self.position, hits, true)
+  for enemy in all(enemies) do 
+    if Projectile.collider(self, enemy) then 
+      add(hits, enemy)
+    end
+  end
   if #hits > 0 then 
     for enemy in all(hits) do enemy.hp -= self.damage end 
-    add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
+    add(particles, Particle:new(Vec.clone(self.position), false, Animator:new(self.trail)))
     del(projectiles, self)
     return
   end
@@ -938,6 +951,13 @@ end
 function Projectile:draw()
   draw_sprite_shadow(self.sprite, self.position*8, self.height, self.size, self.theta)
   draw_sprite_rotated(self.sprite, self.position*8, self.size, self.theta) 
+end
+function Projectile:collider(enemy)
+  local self_center = self.position*self.size + Vec:new(self.size, self.size)/2
+  local enemy_center = enemy.position*8 + Vec:new(4, 4)
+  local touching_distance = self.size+4
+  local dist = Vec.distance(self_center, enemy_center)
+  return dist <= touching_distance
 end
 function _init() reset_game() end
 function _draw()

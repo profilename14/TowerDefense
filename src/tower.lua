@@ -36,13 +36,13 @@ function Tower:attack()
     local hits = {}
     add_enemy_at_to_table(self.position, hits)
     foreach(hits, function(enemy) enemy.burning_tick += self.dmg end)
+  elseif self.type == "sharp" then 
+    add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
   elseif not self.being_manifested then
     if self.type == "rail" then
       Tower.apply_damage(self, raycast(self.position, self.radius, self.dir), self.dmg)
     elseif self.type == "frontal" then 
       Tower.freeze_enemies(self, Tower.frontal_collision(self))
-    elseif self.type == "sharp" then 
-      add(projectiles, Projectile:new(self.position, self.dir, self.rot, global_table_data.projectiles.rocket))
     end
   end
 end
@@ -165,7 +165,6 @@ end
 function Tower:manifested_sharp_rotation()
   local dir = (selector.position / 8 - self.position)
   self.dir = dir/Vec.magnitude(dir)
-  self.dir = snap(Vec:new(round(self.dir.x), round(self.dir.y)))
   self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
   if (self.dir.x > 0) self.rot *= -1
   if (self.rot < 0) self.rot += 360
@@ -194,6 +193,8 @@ function manifest_tower_at(position)
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
+      elseif tower.type == "sharp" then 
+        tower.attack_delay \=2
       end
     end
   end
@@ -207,6 +208,8 @@ function unmanifest_tower()
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
+  elseif manifested_tower_ref.type == "sharp" then 
+    manifested_tower_ref.attack_delay = global_table_data.tower_templates[5].attack_delay
   end
   manifested_tower_ref.enable = true
   manifested_tower_ref = nil
