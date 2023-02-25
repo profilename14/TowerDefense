@@ -40,6 +40,12 @@ end
 function Vec:floor()
   return Vec:new(flr(self.x), flr(self.y))
 end
+<<<<<<< Updated upstream
+=======
+function Vec:ceil()
+  return Vec:new(ceil(self.x), ceil(self.y))
+end
+>>>>>>> Stashed changes
 function Vec:magnitude()
   return sqrt(self.x*self.x+self.y*self.y)
 end
@@ -49,7 +55,10 @@ end
 function Vec:distance(other)
   return sqrt((self.x-other.x)^2 + (self.y-other.y)^2)
 end
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 function normalize(val)
   return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
 end

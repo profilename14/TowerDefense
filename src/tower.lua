@@ -142,14 +142,22 @@ end
 function Tower:manifested_nova()
   -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 
   -- rotation speed (to a max of 100/25=4 damage, with 3x attack speed).
+<<<<<<< Updated upstream
   self.manifest_cooldown = min(self.manifest_cooldown + 7, 110)
+=======
+  self.manifest_cooldown = min(self.manifest_cooldown + 9, 110)
+>>>>>>> Stashed changes
   self.dmg = round_to(min(self.manifest_cooldown, 100) / 15, 2)
 end
 function Tower:manifested_torch_trap()
   local sel_pos = selector.position / 8
   if (grid[sel_pos.y][sel_pos.x] == "empty") return
   
+<<<<<<< Updated upstream
   local prev = Vec.clone(self.position)
+=======
+  local prev = Vec:new(Vec.unpack(self.position))
+>>>>>>> Stashed changes
   if grid[sel_pos.y][sel_pos.x] == "tower" then
     -- torch tower on path
     local shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
@@ -163,8 +171,12 @@ function Tower:manifested_torch_trap()
   self.enable = true 
 end
 function Tower:manifested_sharp_rotation()
+<<<<<<< Updated upstream
   local dir = (selector.position / 8 - self.position)
   self.dir = dir/Vec.magnitude(dir)
+=======
+  self.dir = (selector.position / 8 - self.position)
+>>>>>>> Stashed changes
   self.rot = acos(self.dir.y / sqrt(self.dir.x*self.dir.x + self.dir.y*self.dir.y))*360-180
   if (self.dir.x > 0) self.rot *= -1
   if (self.rot < 0) self.rot += 360
@@ -193,8 +205,13 @@ function manifest_tower_at(position)
         lock_cursor = true
         tower.attack_delay = 10
         tower.dmg = 0
+<<<<<<< Updated upstream
       elseif tower.type == "sharp" then 
         tower.attack_delay \=2
+=======
+      elseif tower.type == "sharp" then
+        tower.attack_delay /= 2
+>>>>>>> Stashed changes
       end
     end
   end
@@ -208,7 +225,11 @@ function unmanifest_tower()
     local tower_details = global_table_data.tower_templates[1]
     manifested_tower_ref.attack_delay = tower_details.attack_delay
     manifested_tower_ref.dmg = tower_details.damage
+<<<<<<< Updated upstream
   elseif manifested_tower_ref.type == "sharp" then 
+=======
+  elseif manifested_tower_ref.type == "sharp" then
+>>>>>>> Stashed changes
     manifested_tower_ref.attack_delay = global_table_data.tower_templates[5].attack_delay
   end
   manifested_tower_ref.enable = true
@@ -290,6 +311,10 @@ end
 function draw_line_overlay(tower)
   local pos = tower.position + Vec:new(0.5, 0.5)
   pos *= 8
+<<<<<<< Updated upstream
   local ray = Vec.floor(tower.dir * 120 + pos)
+=======
+  local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
+>>>>>>> Stashed changes
   if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end
