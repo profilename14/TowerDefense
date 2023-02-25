@@ -46,6 +46,9 @@ end
 function Vec:clone()
   return Vec:new(self.x, self.y)
 end
+function Vec:distance(other)
+  return sqrt((self.x-other.x)^2 + (self.y-other.y)^2)
+end
 
 function normalize(val)
   return (type(val) == "table") and Vec:new(normalize(val.x), normalize(val.y)) or flr(mid(val, -1, 1))
