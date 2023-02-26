@@ -61,13 +61,3 @@ function lerp(start, last, rate)
     return start + (last - start) * rate
   end
 end
-
-function snap(vec)
-  local x, y = abs(vec.x), abs(vec.y)
-  if x == 0.5 and y == 1 then
-    return Vec:new(vec.x*2, vec.y/2)
-  elseif x == 1 and y == 0.5 then
-    return Vec:new(vec.x/2, vec.y*2)
-  end
-  return vec
-end
