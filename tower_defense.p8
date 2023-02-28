@@ -339,7 +339,6 @@ function spawn_enemy()
 end
 Tower = {}
 function Tower:new(pos, tower_template_data, direction)
-  printh(tower_template_data.attack_delay)
   obj = { 
     position = pos,
     dmg = tower_template_data.damage,
@@ -356,7 +355,6 @@ function Tower:new(pos, tower_template_data, direction)
     enable = true,
     animator = Animator:new(global_table_data.animation_data[tower_template_data.animation_key], true)
   }
-  printh(obj.attack_delay)
   add(animators, obj.animator)
   setmetatable(obj, self)
   self.__index = self 
@@ -368,7 +366,6 @@ function Tower:attack()
     self.dmg = min(self.manifest_cooldown, 100) / 15
   end
   self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
-  printh(self.current_attack_ticks.." % "..self.attack_delay)
   if (self.current_attack_ticks > 0) return
   if self.type == "tack" then
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
@@ -898,15 +895,6 @@ function lerp(start, last, rate)
   else
     return start + (last - start) * rate
   end
-end
-function snap(vec)
-  local x, y = abs(vec.x), abs(vec.y)
-  if x == 0.5 and y == 1 then
-    return Vec:new(vec.x*2, vec.y/2)
-  elseif x == 1 and y == 0.5 then
-    return Vec:new(vec.x/2, vec.y*2)
-  end
-  return vec
 end
 Projectile = {}
 function Projectile:new(start, dir_, rot, data)
