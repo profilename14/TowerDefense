@@ -52,7 +52,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins = 50
+  coins = 30
   player_health = 50
   enemy_required_spawn_ticks = 10
   lock_cursor = false

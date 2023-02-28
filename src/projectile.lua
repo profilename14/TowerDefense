@@ -1,8 +1,9 @@
 Projectile = {}
 function Projectile:new(start, dir_, rot, data)
+  local max_d_v = max(abs(dir_.x), abs(dir_.y))
   obj = {
-    position = Vec.clone(start),
-    dir = Vec.clone(dir_),
+    position = Vec:new(Vec.unpack(start)),
+    dir = Vec:new(dir_.x / max_d_v, dir_.y / max_d_v),
     theta = rot,
     sprite = data.sprite,
     size = data.pixel_size,
@@ -10,6 +11,7 @@ function Projectile:new(start, dir_, rot, data)
     speed = data.speed,
     damage = data.damage,
     trail = global_table_data.animation_data[data.trail_animation_key],
+    lifespan = data.lifespan,
     -- internal
     ticks = 0
   }
@@ -33,16 +35,22 @@ function Projectile:update()
     del(projectiles, self)
     return
   end
+
   add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
-  
-  self.position += self.dir
-  if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 then 
+ 
+  if self.dir.x < 0 then 
+    self.position = (self.position + self.dir)
+  else 
+    self.position = (self.position + self.dir)
+  end
+  self.lifespan -= 1
+  if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 or self.lifespan < 0 then 
     del(projectiles, self)
   end
 end
 function Projectile:draw()
   draw_sprite_shadow(self.sprite, self.position*8, self.height, self.size, self.theta)
-  draw_sprite_rotated(self.sprite, self.position*8, self.size, self.theta) 
+  draw_sprite_rotated(self.sprite, self.position*8, self.size, self.theta)
 end
 function Projectile:collider(enemy)
   local self_center = self.position*self.size + Vec:new(self.size, self.size)/2
