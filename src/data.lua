@@ -56,6 +56,12 @@ function reset_game()
   player_health = 50
   enemy_required_spawn_ticks = 10
   lock_cursor = false
+
+  -- temp 
+  text = [[hi, this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.]]
+  text_scroller = TextScroller:new(2, text, {7, 0}, {
+    Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
+  })
   
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = false
