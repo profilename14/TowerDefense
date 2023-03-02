@@ -58,8 +58,8 @@ function reset_game()
   lock_cursor = false
 
   -- temp 
-  text = [[hi, this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.]]
-  text_scroller = TextScroller:new(2, text, {7, 0}, {
+  text_place_holder = global_table_data.dialogue.placeholder
+  text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
     Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
   })
   

@@ -127,7 +127,7 @@ function load_game(map_id)
   end
   music(0)
 end
-global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=10,trail_animation_key=rocket_burn}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=5,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}}"
+global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=10,trail_animation_key=rocket_burn}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=5,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}}}"
 function reset_game()
   global_table_data = unpack_table(global_table_str)
   menu_data = {
@@ -181,8 +181,8 @@ function reset_game()
   player_health = 50
   enemy_required_spawn_ticks = 10
   lock_cursor = false
-  text = [[hi, this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.]]
-  text_scroller = TextScroller:new(2, text, {7, 0}, {
+  text_place_holder = global_table_data.dialogue.placeholder
+  text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
     Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
   })
   
@@ -975,8 +975,7 @@ function TextScroller:draw()
   if (not self.enable) return
   BorderRect.draw(self.rect)
   local before = sub(self.data[self.text_pos], 1, self.char_pos)
-  local lines = split(before, "\n")
-  local end_text = sub(self.data[self.text_pos], self.char_pos+1, #self.data[self.text_pos])
+  local lines, end_text = split(before, "\n"), sub(self.data[self.text_pos], self.char_pos+1, #self.data[self.text_pos])
   local text = before..generate_garbage(end_text, self.rect.size.x, #lines[#lines], self.max_lines, #lines\2)
   print_with_outline(text, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
   if self.is_done then 
@@ -985,23 +984,19 @@ function TextScroller:draw()
   end
 end
 function TextScroller:update()
-  if (not self.enable) return
-  if (self.is_done) return 
-  if (self.text_pos > #self.data) return
+  if (not self.enable or self.is_done or self.text_pos > #self.data) return
   self.internal_tick = (self.internal_tick + 1) % self.speed
-  if self.internal_tick == 0 then 
-    self.char_pos += 1
-  end
+  if (self.internal_tick == 0) self.char_pos += 1
   self.is_done = self.char_pos > #self.data[self.text_pos]
 end
 function TextScroller:next()
-  if (not self.enable) return
-  if(not self.is_done) return 
+  if (not self.enable or not self.is_done) return 
   if(self.text_pos + 1 > #self.data) return true
   self.text_pos += 1
   self.char_pos, self.is_done = 1
 end
-function TextScroller:load(text)
+function TextScroller:load(text, color_palette)
+  if (color_palette) self.color = color_palette
   local counter, buffer = self.width, ""
   for _, word in pairs(split(text, " ")) do
     if #word + 1 <= counter then 
@@ -1015,10 +1010,8 @@ function TextScroller:load(text)
       counter = self.width - #word + 1 
     end
   end
-  self.data = {}
-  local line_buffer = ""
-  counter = 0
-  local lines = split(buffer, "\n")
+  self.data, counter = {}, 0
+  local line_buffer, lines = "", split(buffer, "\n")
   for i, line in pairs(lines) do
     if counter <= self.max_lines then
       line_buffer ..= line.."\n\n"
@@ -1032,15 +1025,13 @@ function TextScroller:load(text)
   self.char_pos, self.text_pos, self.internal_tick, self.is_done = 1, 1, 0
 end
 function generate_garbage(data, line_width, curr_width, line_amount, curr_lines)
-  local result = ""
-  local line, pos, buffer = curr_lines, 1, curr_width*5
+  local result, line, pos, buffer = "", curr_lines, 1, curr_width*5
   for i=1, #data do 
     if (line > line_amount) break
     if (buffer + pos*9) > line_width then 
       result ..= "\n\n"
       line += 1
-      pos = 1
-      buffer = 0
+      pos, buffer = 1, 0
     else
       result ..= chr(204 + flr(rnd(49))) 
     end
@@ -1060,7 +1051,7 @@ function _update()
       if flag then 
         text_scroller.enable = false
       else
-        TextScroller.load(text_scroller, "chicken butt")
+        TextScroller.load(text_scroller, "chicken butt", {8, 1})
         flag = true
       end
     end

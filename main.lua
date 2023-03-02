@@ -26,6 +26,7 @@ function _draw()
 end
 
 function _update()
+  -- TEMP
   TextScroller.update(text_scroller)
 
   if btnp(❎) then 
@@ -33,7 +34,7 @@ function _update()
       if flag then 
         text_scroller.enable = false
       else
-        TextScroller.load(text_scroller, "chicken butt")
+        TextScroller.load(text_scroller, "chicken butt", {8, 1})
         flag = true
       end
     end

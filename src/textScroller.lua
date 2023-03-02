@@ -22,8 +22,7 @@ function TextScroller:draw()
   if (not self.enable) return
   BorderRect.draw(self.rect)
   local before = sub(self.data[self.text_pos], 1, self.char_pos)
-  local lines = split(before, "\n")
-  local end_text = sub(self.data[self.text_pos], self.char_pos+1, #self.data[self.text_pos])
+  local lines, end_text = split(before, "\n"), sub(self.data[self.text_pos], self.char_pos+1, #self.data[self.text_pos])
   local text = before..generate_garbage(end_text, self.rect.size.x, #lines[#lines], self.max_lines, #lines\2)
   print_with_outline(text, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
   if self.is_done then 
@@ -32,23 +31,19 @@ function TextScroller:draw()
   end
 end
 function TextScroller:update()
-  if (not self.enable) return
-  if (self.is_done) return 
-  if (self.text_pos > #self.data) return
+  if (not self.enable or self.is_done or self.text_pos > #self.data) return
   self.internal_tick = (self.internal_tick + 1) % self.speed
-  if self.internal_tick == 0 then 
-    self.char_pos += 1
-  end
+  if (self.internal_tick == 0) self.char_pos += 1
   self.is_done = self.char_pos > #self.data[self.text_pos]
 end
 function TextScroller:next()
-  if (not self.enable) return
-  if(not self.is_done) return 
+  if (not self.enable or not self.is_done) return 
   if(self.text_pos + 1 > #self.data) return true
   self.text_pos += 1
   self.char_pos, self.is_done = 1
 end
-function TextScroller:load(text)
+function TextScroller:load(text, color_palette)
+  if (color_palette) self.color = color_palette
   local counter, buffer = self.width, ""
   for _, word in pairs(split(text, " ")) do
     if #word + 1 <= counter then 
@@ -62,10 +57,8 @@ function TextScroller:load(text)
       counter = self.width - #word + 1 
     end
   end
-  self.data = {}
-  local line_buffer = ""
-  counter = 0
-  local lines = split(buffer, "\n")
+  self.data, counter = {}, 0
+  local line_buffer, lines = "", split(buffer, "\n")
   for i, line in pairs(lines) do
     if counter <= self.max_lines then
       line_buffer ..= line.."\n\n"
@@ -80,15 +73,13 @@ function TextScroller:load(text)
 end
 
 function generate_garbage(data, line_width, curr_width, line_amount, curr_lines)
-  local result = ""
-  local line, pos, buffer = curr_lines, 1, curr_width*5
+  local result, line, pos, buffer = "", curr_lines, 1, curr_width*5
   for i=1, #data do 
     if (line > line_amount) break
     if (buffer + pos*9) > line_width then 
       result ..= "\n\n"
       line += 1
-      pos = 1
-      buffer = 0
+      pos, buffer = 1, 0
     else
       result ..= chr(204 + flr(rnd(49))) 
     end
