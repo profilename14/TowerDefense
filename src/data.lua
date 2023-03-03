@@ -19,11 +19,10 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, lock_cursor = 30, 50, 10
-
-  credit_y_offsets = {
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 30, 50, 10, {
     30, 45, 75, 105, 140
   }
+
   -- -- temp 
   -- text_place_holder = global_table_data.dialogue.placeholder
   -- text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {

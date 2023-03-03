@@ -12,12 +12,11 @@ end
 
 function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
-  local x_offset = 10
   print_text_center("credits", credit_y_offsets[1], 7, 1)
-  print_with_outline("jasper:\n  • game director\n  • programmer", x_offset, credit_y_offsets[2], 7, 1)
-  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", x_offset, credit_y_offsets[3], 7, 1)
-  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", x_offset, credit_y_offsets[4], 7, 1)
-  print_with_outline("kaoushik:\n  • programmer", x_offset, credit_y_offsets[5], 7, 1)
+  print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
+  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", 10, credit_y_offsets[3], 7, 1)
+  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
+  print_with_outline("kaoushik:\n  • programmer", 10, credit_y_offsets[5], 7, 1)
 end
 
 function map_draw_loop()
@@ -65,25 +64,27 @@ function ui_draw_loop(tower_details)
   -- static/always present
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
-  local mode = manifest_mode and "manifest" or "sell"
-  print_with_outline("mode: "..mode, 1, 108, 7, 0)
+  print_with_outline("mode: "..(manifest_mode and "manifest" or "sell"), 1, 108, 7, 0)
 
   -- shop ui
   if shop_enable and get_active_menu() then
     print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
-    local text = get_active_menu().prev and "❎ select\n🅾️ go back to previous menu" or "❎ select\n🅾️ close menu"
-    print_with_outline(text, 1, 115, 7, 0)
+    print_with_outline((get_active_menu().prev and "❎ select\n🅾️ go back to previous menu" or "❎ select\n🅾️ close menu"), 1, 115, 7, 0)
   else -- game ui
-    if manifest_mode and manifested_tower_ref then 
-      print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
-      local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
-      print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
-    else
-      if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
-    end
-    if manifest_mode then 
+    if manifest_mode then
+      if manifested_tower_ref then 
+        print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+        print_with_outline(
+          Tower.get_cooldown_str(manifested_tower_ref), 
+          1, 115, 
+          (manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)), 
+          0
+        )
+      end
       Animator.update(manifest_selector)
       Animator.draw(manifest_selector, Vec.unpack(selector.position))
+    else
+      if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
     end
 
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
@@ -97,21 +98,20 @@ function ui_draw_loop(tower_details)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
       end
     else
-      if (not manifested_tower_ref and not sell_mode) ui_buy_and_place_draw_loop(tower_details)
       if sell_mode then 
         Animator.update(sell_selector)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
+      else
+        if not manifested_tower_ref then 
+          local position, color, text = selector.position/8, 7, "❎ buy & place "..tower_details.name
+          if tower_details.cost > coins then
+            text, color = "can't afford "..tower_details.name, 8
+          elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
+            text, color = "can't place "..tower_details.name.." here", 8
+          end
+          print_with_outline(text, 1, 115, color, 0)
+        end
       end
     end
   end
-end
-
-function ui_buy_and_place_draw_loop(tower_details)
-  local position, color, text = selector.position/8, 7, "❎ buy & place "..tower_details.name
-  if tower_details.cost > coins then
-    text, color = "can't afford "..tower_details.name, 8
-  elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
-    text, color = "can't place "..tower_details.name.." here", 8
-  end
-  print_with_outline(text, 1, 115, color, 0)
 end
