@@ -519,6 +519,13 @@
       "height": 2
     }
   ],
+  "wave_set": [
+    "wave_data",
+    "wave_data_l2",
+    "wave_data_l3",
+    "wave_data_l4",
+    "wave_data_l5"
+  ],
   "wave_data": [
     [4, 4, 4],
     [1, 4, 1, 4, 1, 4],
