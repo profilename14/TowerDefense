@@ -2,4 +2,6 @@
 *.png
 *.txt
 /pico8_compiler/src/__pycache__
+/pico8_compiler/shrinko8-main/__pycache__
+/pico8_compiler/shrinko8-main/test*
 /pico8_compiler/test

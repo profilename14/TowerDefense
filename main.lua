@@ -18,8 +18,8 @@
 
 -- Pico8
 function _init() 
-  global_table_data = unpack_table(global_table_str)
-  cartdata(global_table_data.cart_name)
+  --[[preserve]]global_table_data=unpack_table(global_table_str)
+  --[[preserve]]cartdata(global_table_data.cart_name)
   reset_game() 
 end
 
