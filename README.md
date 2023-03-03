@@ -6,7 +6,7 @@
 - [Shrinko8](https://github.com/thisismypassport/shrinko8)
 
 ## Credits
-### Main Cart
+### Project
 - Jasper [Game Director, Programmer]
 - Jeren [Core Programmer, Code Designer, Devops]
 - Jimmy [Art Designer, Artist, Sound Director, Sound Engineer]
