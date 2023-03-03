@@ -1,3 +1,14 @@
+function main_menu_loop()
+  local main_menu = get_menu("main")
+  Menu.update(main_menu)
+
+  if btnp(❎) then 
+    Menu.invoke(main_menu)
+  end
+
+  Menu.move(main_menu)
+end
+
 function map_loop()
   local map_menu = get_menu("map")
   Menu.update(map_menu)
@@ -5,7 +16,7 @@ function map_loop()
   if btnp(❎) then
     Menu.invoke(map_menu)
     map_menu.enable = false
-    map_menu_enable = false 
+    game_state = "game" 
     return
   end
 
@@ -37,7 +48,7 @@ function game_loop()
   if btnp(🅾️) then
     if manifested_tower_ref == nil then
       shop_enable = true
-      menus[1].enable = true
+      get_menu("game").enable = true
       return
     else
       unmanifest_tower()

@@ -60,6 +60,10 @@ function display_tower_rotation(menu_pos, position)
   end
 end
 
+function rotate_clockwise()
+  direction = Vec:new(-direction.y, direction.x)
+end
+
 -- Enemy Related
 function start_round()
   if (start_next_wave or #enemies ~= 0) return
@@ -134,14 +138,37 @@ function get_map_data_for_menu()
   local menu_content = {}
   for i, map_data in pairs(global_table_data.map_data) do
     add(menu_content, 
-      {text = map_data.name, color = {7, 0}, callback = load_game, args = {i}}
+      {text = map_data.name, color = {7, 0}, callback = load_map, args = {i}}
     )
   end
   return menu_content
 end
 
+function parse_menu_content(content)
+  if type(content) == "table" then 
+    local cons = {}
+    for con in all(content) do
+      add(cons, {
+        text = con.text,
+        color = con.color,
+        callback = forward_declares[con.callback],
+        args = con.args
+      }) 
+    end
+    return cons
+  else
+    return forward_declares[content]()
+  end
+end
+
 -- Game State Related
-function load_game(map_id)
+function new_game()
+  reset_game()
+  game_state="map"
+  swap_menu_context("map")
+end
+
+function load_map(map_id)
   pal()
   auto_start_wave = false
   manifest_mode = true
@@ -167,3 +194,80 @@ function load_game(map_id)
   else music(0)
   end
 end
+
+function save_game()
+  local start_address = 0x5e00
+  -- health
+  start_address = save_byte(start_address, player_health)
+  -- scrap
+  local tower_full_refund = 0
+  for tower in all(towers) do 
+    tower_full_refund += tower.cost
+  end
+  start_address = save_int(start_address, coins + tower_full_refund)
+  -- map id
+  start_address = save_byte(start_address, loaded_map)
+  -- wave
+  start_address = save_byte(start_address, wave_round)
+  -- freeplay round
+  save_int(start_address, freeplay_rounds)
+end
+
+function load_game()
+  local start_address = 0x5e00
+  local hp, scrap, map_id, wav, freeplay
+  -- health
+  hp = @start_address
+  start_address += 1
+  -- scrap
+  scrap = $start_address
+  start_address += 4
+  -- map id
+  map_id = @start_address
+  start_address += 1
+  -- wave
+  wav = @start_address
+  start_address += 1
+  -- freeplay round
+  freeplay = $start_address
+
+  return hp, scrap, map_id, wav, freeplay
+end
+
+function load_game_state()
+  reset_game()
+  get_menu("main").enable = false
+  local hp, scrap, map_id, wav, freeplay = load_game()
+  load_map(map_id)
+  player_health = hp 
+  coins = scrap
+  wave_round = wav 
+  freeplay_rounds = freeplay
+  -- TODO: calculate what the freeplay enemies will be
+  game_state = "game"
+end
+
+forward_declares = {
+  func_display_tower_info = display_tower_info,
+  func_display_tower_rotation = display_tower_rotation,
+  func_rotate_clockwise = rotate_clockwise,
+  func_start_round = start_round,
+  func_swap_menu_context = swap_menu_context,
+  func_get_tower_data_for_menu = get_tower_data_for_menu,
+  func_get_map_data_for_menu = get_map_data_for_menu,
+  func_new_game = new_game,
+  func_save=function()
+    save_game()
+    get_active_menu().enable = false
+    shop_enable = false
+  end,
+  func_save_quit=function()
+    save_game()
+    reset_game()
+  end,
+  func_load_game = load_game_state,
+  func_toggle_mode = function()
+    manifest_mode = not manifest_mode
+    sell_mode = not sell_mode
+  end
+}

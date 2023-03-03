@@ -14,22 +14,49 @@
 #include src/menu.lua
 #include src/vec.lua
 #include src/projectile.lua
+#include src/textScroller.lua
 
 -- Pico8
-function _init() reset_game() end
+function _init() 
+  global_table_data = unpack_table(global_table_str)
+  cartdata(global_table_data.cart_name)
+  reset_game() 
+end
 
 function _draw()
   cls()
-  if map_menu_enable then map_draw_loop() else game_draw_loop() end
+  if game_state == "menu" then 
+    main_menu_draw_loop()
+  elseif game_state == "map" then 
+    map_draw_loop()
+  elseif game_state == "game" then 
+    game_draw_loop()
+  end
+  -- TextScroller.draw(text_scroller)
 end
 
 function _update()
-  if map_menu_enable then 
+  if game_state == "menu" then 
+    main_menu_loop()
+  elseif game_state == "map" then 
     map_loop()
-  else 
+  elseif game_state == "game" then 
     if (player_health <= 0) reset_game()
     if shop_enable then shop_loop() else game_loop() end
   end
+  -- TEMP
+  -- TextScroller.update(text_scroller)
+
+  -- if btnp(❎) then 
+  --   if TextScroller.next(text_scroller) then 
+  --     if flag then 
+  --       text_scroller.enable = false
+  --     else
+  --       TextScroller.load(text_scroller, "chicken butt", {8, 1})
+  --       flag = true
+  --     end
+  --   end
+  -- end
 end
 
 -- Draw Calls

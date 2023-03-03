@@ -164,13 +164,12 @@ function spawn_enemy()
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
     if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
     if enemy_current_spawn_tick == 0 then
-      local wave_set
+      local wave_set = 'wave_data'
       -- This is pretty weird but it saves 40 tokens.
       if cur_level == 2 then wave_set = 'wave_data_l2'
       elseif cur_level == 3 then wave_set = 'wave_data_l3'
       elseif cur_level == 4 then wave_set = 'wave_data_l4'
       elseif cur_level == 5 then wave_set = 'wave_data_l5'
-      else wave_set = 'wave_data'
       end
       local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[wave_set][wave_round][enemies_remaining]])
       add(enemies, Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location, unpack(enemy_data)))

@@ -7,7 +7,7 @@ class Stitcher():
         self.hazards = set({
             "function", "if", "for", "while", "return",
             "[[", "]]", "local", "pico-8 cartridge // http://www.pico-8.com", 
-            "version 39", '" "', "and", "or", '"', "goto"
+            "version 39", '" "', "and", "or", '"', "goto", "else", "not"
         })
         pass
 
@@ -86,7 +86,7 @@ class Stitcher():
                 if line == "\n": continue
                 if line.lstrip().startswith("--"): continue
 
-                # line = self._Sanitize(line) # Basic mimifying
+                line = self._Sanitize(line) # Basic mimifying
         
             result += line
         if not result.endswith("\n"):
