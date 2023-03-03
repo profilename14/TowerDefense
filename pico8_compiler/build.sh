@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pico8_file="tower_defense_out"
+pico8_file="output_tower_defense"
 pico8_file_output="tower_defense.p8"
 root_directory=".."
 
