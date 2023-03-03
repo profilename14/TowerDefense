@@ -1,6 +1,6 @@
 -- FOR REFERENCE IN DATA.LUA:
--- 1 = car, 2 = plane, 3 = tank, 4 = lab cart, 5 = ice truck, 6 = trailblazer
--- 7 = auxillium bot, 8 = carrier, 9 = cargo car, 10 = first boss, 11 = spy plane, 12 = swarmer
+-- 1 = car, 2 = plane, 3 = tank, 4 = lab cart, 5 = ice truck, 6 = trailblazer, 7 = auxillium bot
+-- 8 = carrier, 9 = cargo car, 10 = first boss, 11 = spy plane (type 0 when invisible), 12 = swarmer
 -- 13 = remote missile, 14 = shield generator, 15 = mech, 16 = robber, 17 = The Emperor (last boss)
 Enemy = {}
 function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
@@ -64,9 +64,20 @@ function Enemy:get_pixel_location()
 end
 function Enemy:draw(is_shadows)
   if (self.hp <= 0) return
+  -- Spyplanes will spawn visible, and every tick they have a chance to go invisible (then a lower chance to reappear)
+  -- While RNG based, it works pretty well in gameplay for making them threatening (but never unfair, especially as unmanifested towers see them).
+  if self.type == 11 then
+    local go_invisible = flr(rnd(7))
+    if (go_invisible == 0) self.type = 0
+  elseif self.type == 0 then
+    local go_visible = flr(rnd(12))
+    if (go_visible == 0) self.type = 11
+    return
+  end
   local p, n = Enemy.get_pixel_location(self)
   local theta = parse_direction(normalize(n-self.position))
   if is_shadows then
+    if (self.type == 0) return
     draw_sprite_shadow(self.gfx, p, self.height, 8, theta)
   else
     draw_sprite_rotated(self.gfx, p, 8, theta)
@@ -75,7 +86,16 @@ end
 
 function kill_enemy(enemy)
   if (enemy.hp > 0) return
-  del(enemies, enemy)
+  -- To save tokens, the Carrier literally just morphs into a car.
+  if enemy.type == 8 then
+    enemy.gfx = 94
+    enemy.type = 9
+    enemy.height = 2
+    enemy.hp = 20
+    enemy.step_delay = 10
+  else
+    del(enemies, enemy)
+  end
 end
 
 function update_enemy_position(enemy)
