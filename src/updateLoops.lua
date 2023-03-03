@@ -29,6 +29,17 @@ function main_menu_loop()
   Menu.move(get_menu("main"))
 end
 
+function credits_loop()
+  if (btnp(🅾️)) game_state = "menu"
+
+  for i=1, 5 do 
+    credit_y_offsets[i] -= 1
+    if credit_y_offsets[i] < -15 then 
+      credit_y_offsets[i] += 157
+    end
+  end
+end
+
 function map_loop()
   local map_menu = get_menu("map")
   Menu.update(map_menu)
