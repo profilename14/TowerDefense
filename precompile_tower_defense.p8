@@ -1476,8 +1476,7 @@ function combine_and_unpack(data1, data2)
 end
 function round_to(value, place)
   local places = 10 * place
-  local val = value * places 
-  val = flr(val)
+  local val = flr(value * places)
   return val / places
 end
 function check_tile_flag_at(position, flag)
@@ -1485,7 +1484,7 @@ function check_tile_flag_at(position, flag)
 end
 function acos(x)
   return atan2(x,-sqrt(1-x*x))
- end
+end
 function save_byte(address, value)
   poke(address, value)
   return address + 1

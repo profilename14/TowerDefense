@@ -177,7 +177,7 @@ if(e.x>0)return 90
 if(e.x<0)return 270
 if(e.y>0)return 180
 if(e.y<0)return 0
-end function parse_frontal_bounds(e,r)local n,t,o,i,a,l=-1,1,1,e,1,1if r.x>0then n,t,o,i=1,-1,e,1elseif r.x<0then n,t,o,i,a=-1,-1,-e,1,-1elseif r.y<0then n,t,o,i,l=-1,-1,1,-e,-1end return n,t,o,i,a,l end function combine_and_unpack(n,t)local e={}for t in all(n)do add(e,t)end for n in all(t)do add(e,n)end return unpack(e)end function round_to(t,e)local n=10*e local e=t*n e=flr(e)return e/n end function check_tile_flag_at(e,n)return fget(mget(Vec.unpack(e)),n)end function acos(e)return atan2(e,-sqrt(1-e*e))end function save_byte(e,n)poke(e,n)return e+1end function save_int(e,n)poke4(e,n)return e+4end function unpack_table(n)local o,t,i,e={},1,0,1while e<=#n do if n[e]=="{"then i+=1elseif n[e]=="}"then i-=1
+end function parse_frontal_bounds(e,r)local n,t,o,i,a,l=-1,1,1,e,1,1if r.x>0then n,t,o,i=1,-1,e,1elseif r.x<0then n,t,o,i,a=-1,-1,-e,1,-1elseif r.y<0then n,t,o,i,l=-1,-1,1,-e,-1end return n,t,o,i,a,l end function combine_and_unpack(n,t)local e={}for t in all(n)do add(e,t)end for n in all(t)do add(e,n)end return unpack(e)end function round_to(n,t)local e=10*t local t=flr(n*e)return t/e end function check_tile_flag_at(e,n)return fget(mget(Vec.unpack(e)),n)end function acos(e)return atan2(e,-sqrt(1-e*e))end function save_byte(e,n)poke(e,n)return e+1end function save_int(e,n)poke4(e,n)return e+4end function unpack_table(n)local o,t,i,e={},1,0,1while e<=#n do if n[e]=="{"then i+=1elseif n[e]=="}"then i-=1
 if(i>0)goto unpack_table_continue
 insert_key_val(sub(n,t,e),o)t=e+1
 if(e+2>#n)goto unpack_table_continue
