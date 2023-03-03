@@ -56,6 +56,12 @@ function reset_game()
   player_health = 50
   enemy_required_spawn_ticks = 10
   lock_cursor = false
+
+  -- temp 
+  text_place_holder = global_table_data.dialogue.placeholder
+  text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
+    Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
+  })
   
   -- If true, selecting towers manifests them. If false, selecting towers sells them.
   manifest_mode = false
