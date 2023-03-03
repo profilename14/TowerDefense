@@ -38,7 +38,7 @@
   "menu_data": [
     {
       "name": "main",
-      "position": [32, 64],
+      "position": [36, 69],
       "content": [
         {
           "text": "new game",
@@ -93,14 +93,14 @@
       "position": [5, 63],
       "content": [
         {
-          "text": "map select",
-          "color": [7, 0],
-          "callback": "func_new_game"
-        },
-        {
           "text": "toggle mode",
           "color": [7, 0],
           "callback": "func_toggle_mode"
+        },
+        {
+          "text": "map select",
+          "color": [7, 0],
+          "callback": "func_new_game"
         },
         {
           "text": "save",
@@ -111,6 +111,11 @@
           "text": "save and quit",
           "color": [7, 0],
           "callback": "func_save_quit"
+        },
+        {
+          "text": "quit without saving",
+          "color": [7, 0],
+          "callback": "func_quit"
         }
       ],
       "settings": [5, 8, 7, 3]
@@ -138,8 +143,8 @@
     {
       "name": "splash1",
       "mget_shift": [112, 16],
-      "enemy_spawn_location": [0, 1],
-      "enemy_end_location": [15, 11],
+      "enemy_spawn_location": [0, 7],
+      "enemy_end_location": [15, 7],
       "movement_direction": [1, 0]
     }
   ],

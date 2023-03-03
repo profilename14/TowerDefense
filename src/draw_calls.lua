@@ -1,6 +1,12 @@
 function main_menu_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
   print_text_center("untitled tower defense", 1, 7, 1)
+
+  if menu_enemy then 
+    Enemy.draw(menu_enemy, true)
+    Enemy.draw(menu_enemy)
+  end
+
   Menu.draw(get_menu("main"))
 end
 

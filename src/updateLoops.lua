@@ -1,12 +1,32 @@
 function main_menu_loop()
-  local main_menu = get_menu("main")
-  Menu.update(main_menu)
+  local map_dat, enemy_temps = global_table_data.splash_screens[1], global_table_data.enemy_templates
 
-  if btnp(❎) then 
-    Menu.invoke(main_menu)
+  if pathing == nil then 
+    pathing = parse_path(map_dat)
   end
 
-  Menu.move(main_menu)
+  if not menu_enemy then 
+    local enemy = enemy_temps[flr(rnd(#enemy_temps))+1]
+    menu_enemy = Enemy:new(
+      map_dat.enemy_spawn_location, 
+      enemy.hp,
+      enemy.step_delay \ 2,
+      enemy.sprite_index,
+      enemy.type,
+      enemy.damage,
+      enemy.height
+    )
+  else 
+    update_enemy_position(menu_enemy, true)
+  end
+
+  Menu.update(get_menu("main"))
+
+  if btnp(❎) then 
+    Menu.invoke(get_menu("main"))
+  end
+
+  Menu.move(get_menu("main"))
 end
 
 function map_loop()

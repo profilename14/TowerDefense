@@ -16,7 +16,8 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height
     type = type_,
     damage = damage_,
     height = height_,
-    pos = 1
+    pos = 1,
+    spawn_location = Vec:new(location)
   }
   setmetatable(obj, self)
   self.__index = self
@@ -56,7 +57,7 @@ function Enemy:step()
   return true
 end
 function Enemy:get_pixel_location()
-  local n, prev = pathing[self.pos], Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location)
+  local n, prev = pathing[self.pos], self.spawn_location
   if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
   local pos = self.position * 8
   if (not self.is_frozen) pos = lerp(prev*8, n*8, self.current_step / self.step_delay)
@@ -98,18 +99,22 @@ function kill_enemy(enemy)
   end
 end
 
-function update_enemy_position(enemy)
+function update_enemy_position(enemy, is_menu)
   if (not Enemy.step(enemy)) return
   enemy.position = pathing[enemy.pos]
   enemy.pos += 1
   if (enemy.pos < #pathing + 1) return
-  player_health -= enemy.damage 
-  if (enemy.type == 16) coins -= 10
-  del(enemies, enemy)
+  if is_menu then 
+    menu_enemy = nil
+  else
+    player_health -= enemy.damage 
+    if (enemy.type == 16) coins -= 10
+    del(enemies, enemy)
+  end
 end
 
-function parse_path()
-  local map_dat = global_table_data.map_data[loaded_map]
+function parse_path(map_override)
+  local map_dat = map_override or global_table_data.map_data[loaded_map]
   local map_shift = Vec:new(map_dat.mget_shift)
   local map_enemy_spawn_location = Vec:new(map_dat.enemy_spawn_location)
   local path_tiles = {}
@@ -130,13 +135,13 @@ function parse_path()
     local north,south,west,east = Vec:new(cur.x, cur.y-1),Vec:new(cur.x, cur.y+1),Vec:new(cur.x-1, cur.y),Vec:new(cur.x+1, cur.y)
     local state,direct = false
     if dir.x == 1 then -- east 
-      state, direct = check_direction(east, {north, south}, path_tiles, path)
+      state, direct = check_direction(east, {north, south}, path_tiles, path, map_shift)
     elseif dir.x == -1 then -- west
-      state, direct = check_direction(west, {north, south}, path_tiles, path)
+      state, direct = check_direction(west, {north, south}, path_tiles, path, map_shift)
     elseif dir.y == 1 then -- south
-      state, direct = check_direction(south, {west, east}, path_tiles, path)
+      state, direct = check_direction(south, {west, east}, path_tiles, path, map_shift)
     elseif dir.y == -1 then -- north
-      state, direct = check_direction(north, {west, east}, path_tiles, path)
+      state, direct = check_direction(north, {west, east}, path_tiles, path, map_shift)
     end
     assert(state, "Failed to find path at: "..cur.." in direction: "..dir.." end: "..ending)
     if state then 
@@ -148,13 +153,13 @@ function parse_path()
   return path
 end
 
-function check_direction(direct, fail_directions, path_tiles, path)
+function check_direction(direct, fail_directions, path_tiles, path, shift)
   if (direct == nil) return
   local state, index = is_in_table(direct, path_tiles)
   if state then
-    add(path, path_tiles[index] - Vec:new(global_table_data.map_data[loaded_map].mget_shift))
+    add(path, path_tiles[index] - shift)
   else 
-    return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path)
+    return check_direction(fail_directions[1], {fail_directions[2]}, path_tiles, path, shift)
   end
   return true, direct
 end
