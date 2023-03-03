@@ -484,6 +484,10 @@
     [8, 2, 2, 4, 2, 2, 1, 2, 2, 2]
   ],
   "dialogue": {
+    "placeholder": {
+      "text": "hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.",
+      "color": [7, 0]
+    },
     "dialogue_cutscene1": {
       "intro1": {
         "text": "I woke up today. It felt rather strange from 247 days of rest",
