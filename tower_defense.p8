@@ -98,7 +98,7 @@ end end end Animator={}function Animator:new(e,n)obj={data=e.data,sprite_size=e.
 if(self.tick~=0)return
 if Animator.finished(self)then
 if(self.continuous)Animator.reset(self)
-return true end self.animation_frame+=self.dir return end function Animator:set_direction(e)self.dir=e end function Animator:finished()
+return true end self.animation_frame+=self.dir return end function Animator:finished()
 if(self.dir==1)return self.animation_frame>=#self.data
 return self.animation_frame<=1end function Animator:draw(t,o)local n,e=Vec:new(t,o),self.data[self.animation_frame]
 if(e.offset)n+=Vec:new(e.offset)

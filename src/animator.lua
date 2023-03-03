@@ -23,9 +23,6 @@ function Animator:update()
   self.animation_frame += self.dir
   return
 end
-function Animator:set_direction(dir)
-  self.dir = dir
-end
 function Animator:finished()
   if (self.dir == 1) return self.animation_frame >= #self.data
   return self.animation_frame <= 1
