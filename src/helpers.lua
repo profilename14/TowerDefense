@@ -129,3 +129,13 @@ end
 function acos(x)
   return atan2(x,-sqrt(1-x*x))
  end
+
+function save_byte(address, value)
+  poke(address, value)
+  return address + 1
+end
+
+function save_int(address, value)
+  poke4(address, value)
+  return address + 4
+end

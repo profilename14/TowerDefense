@@ -150,20 +150,15 @@ end
 end
 function save_game()
 local start_address = 0x5e00
-poke(start_address,player_health)
-start_address+=1
+start_address=save_byte(start_address,player_health)
 local tower_full_refund = 0
 for tower in all(towers) do 
 tower_full_refund+=tower.cost
 end
-poke4(start_address,coins+tower_full_refund)
-start_address+=4
-poke(start_address,loaded_map)
-start_address+=1
-poke(start_address,wave_round)
-start_address+=1
-poke4(start_address,freeplay_rounds)
-start_address+=4
+start_address=save_int(start_address,coins+tower_full_refund)
+start_address=save_byte(start_address,loaded_map)
+start_address=save_byte(start_address,wave_round)
+save_int(start_address,freeplay_rounds)
 end
 function load_game()
 local start_address = 0x5e00
@@ -444,12 +439,11 @@ while enemies_remaining > 0 do
 enemy_current_spawn_tick=(enemy_current_spawn_tick+1)%enemy_required_spawn_ticks
 if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
 if enemy_current_spawn_tick == 0 then
-local wave_set
+local wave_set = 'wave_data'
 if cur_level == 2 then wave_set = 'wave_data_l2'
 elseif cur_level == 3 then wave_set = 'wave_data_l3'
 elseif cur_level == 4 then wave_set = 'wave_data_l4'
 elseif cur_level == 5 then wave_set = 'wave_data_l5'
-else wave_set = 'wave_data'
 end
 local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[wave_set][wave_round][enemies_remaining]])
 add(enemies,Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location,unpack(enemy_data)))
@@ -1506,6 +1500,14 @@ return fget(mget(Vec.unpack(position)), flag)
 end
 function acos(x)
 return atan2(x,-sqrt(1-x*x))
+end
+function save_byte(address, value)
+poke(address,value)
+return address + 1
+end
+function save_int(address, value)
+poke4(address,value)
+return address + 4
 end
 function unpack_table(str)
 local table,start,stack,i={},1,0,1

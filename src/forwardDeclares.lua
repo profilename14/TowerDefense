@@ -171,24 +171,19 @@ end
 function save_game()
   local start_address = 0x5e00
   -- health
-  poke(start_address, player_health) 
-  start_address += 1
+  start_address = save_byte(start_address, player_health)
   -- scrap
   local tower_full_refund = 0
   for tower in all(towers) do 
     tower_full_refund += tower.cost
   end
-  poke4(start_address, coins + tower_full_refund)
-  start_address += 4
+  start_address = save_int(start_address, coins + tower_full_refund)
   -- map id
-  poke(start_address, loaded_map)
-  start_address += 1
+  start_address = save_byte(start_address, loaded_map)
   -- wave
-  poke(start_address, wave_round)
-  start_address += 1
+  start_address = save_byte(start_address, wave_round)
   -- freeplay round
-  poke4(start_address, freeplay_rounds)
-  start_address += 4
+  save_int(start_address, freeplay_rounds)
 end
 
 function load_game()
