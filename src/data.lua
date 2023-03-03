@@ -41,6 +41,6 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   get_menu("main").enable = true
 end

@@ -267,7 +267,7 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   get_menu("main").enable = true
 end
 Enemy = {}
@@ -624,13 +624,9 @@ end
 function manifest_tower_at(position)
   for tower in all(towers) do
     if tower.position == position then 
-      tower.being_manifested = true 
-      manifested_tower_ref = tower
-      Animator.set_direction(manifest_selector, 1)
+      tower.being_manifested, manifested_tower_ref, manifest_selector.dir = true, tower, 1
       if tower.type == "tack" then
-        lock_cursor = true
-        tower.attack_delay = 10
-        tower.dmg = 0
+        lock_cursor, tower.attack_delay, tower.dmg = true, 10, 0
       elseif tower.type == "sharp" then
         tower.attack_delay /= 2
       end
@@ -639,7 +635,7 @@ function manifest_tower_at(position)
 end
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   lock_cursor = false
   if manifested_tower_ref.type == "tack" then
     local tower_details = global_table_data.tower_templates[1]
@@ -781,13 +777,13 @@ function Animator:new(animation_data, continuous_)
 end
 function Animator:update()
   self.tick = (self.tick + 1) % self.frame_duration
-  if (self.tick ~= 0) return false
+  if (self.tick ~= 0) return
   if Animator.finished(self) then 
     if (self.continuous) Animator.reset(self)
     return true
   end
   self.animation_frame += self.dir
-  return false
+  return
 end
 function Animator:set_direction(dir)
   self.dir = dir
@@ -1262,11 +1258,7 @@ function ui_draw_loop(tower_details)
       Animator.draw(manifest_selector, Vec.unpack(selector.position))
     end
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
-    if not tower_in_table_state then 
-      Animator.set_direction(sell_selector, -1)
-    else
-      Animator.set_direction(sell_selector, 1)
-    end
+    sell_selector.dir = tower_in_table_state and 1 or -1
     if tower_in_table_state and not manifested_tower_ref then 
       if manifest_mode then
         print_with_outline("❎ manifest", 1, 115, 7, 0)

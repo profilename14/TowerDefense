@@ -87,12 +87,7 @@ function ui_draw_loop(tower_details)
     end
 
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
-    if not tower_in_table_state then 
-      Animator.set_direction(sell_selector, -1)
-    else
-      Animator.set_direction(sell_selector, 1)
-    end
-
+    sell_selector.dir = tower_in_table_state and 1 or -1
     if tower_in_table_state and not manifested_tower_ref then 
       if manifest_mode then
         print_with_outline("❎ manifest", 1, 115, 7, 0)

@@ -197,13 +197,9 @@ end
 function manifest_tower_at(position)
   for tower in all(towers) do
     if tower.position == position then 
-      tower.being_manifested = true 
-      manifested_tower_ref = tower
-      Animator.set_direction(manifest_selector, 1)
+      tower.being_manifested, manifested_tower_ref, manifest_selector.dir = true, tower, 1
       if tower.type == "tack" then
-        lock_cursor = true
-        tower.attack_delay = 10
-        tower.dmg = 0
+        lock_cursor, tower.attack_delay, tower.dmg = true, 10, 0
       elseif tower.type == "sharp" then
         tower.attack_delay /= 2
       end
@@ -213,7 +209,7 @@ end
 
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   lock_cursor = false
   if manifested_tower_ref.type == "tack" then
     local tower_details = global_table_data.tower_templates[1]

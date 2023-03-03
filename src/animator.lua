@@ -15,13 +15,13 @@ function Animator:new(animation_data, continuous_)
 end
 function Animator:update()
   self.tick = (self.tick + 1) % self.frame_duration
-  if (self.tick ~= 0) return false
+  if (self.tick ~= 0) return
   if Animator.finished(self) then 
     if (self.continuous) Animator.reset(self)
     return true
   end
   self.animation_frame += self.dir
-  return false
+  return
 end
 function Animator:set_direction(dir)
   self.dir = dir
