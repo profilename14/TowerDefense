@@ -265,6 +265,7 @@ forward_declares = {
     save_game()
     reset_game()
   end,
+  func_quit = function() reset_game() end,
   func_load_game = load_game_state,
   func_toggle_mode = function()
     manifest_mode = not manifest_mode

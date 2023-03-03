@@ -34,7 +34,7 @@ function Animator:draw(dx, dy)
   local position,frame = Vec:new(dx, dy),self.data[self.animation_frame]
   -- if positions were given to the animation array
   if (frame.offset) position += Vec:new(frame.offset)
-  spr(Animator.get_sprite(self),Vec.unpack(position))
+  spr(frame.sprite,Vec.unpack(position))
 end
 function Animator:get_sprite()
   return self.data[self.animation_frame].sprite
