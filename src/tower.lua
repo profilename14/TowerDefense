@@ -71,16 +71,13 @@ function Tower:apply_damage(targets, damage)
   local tower_type = self.type
   for enemy in all(targets) do
     if enemy.hp > 0 then
-      local enemy_type = enemy.type
-      -- damage is just temporarily modified to save tokens
-      old_damage = damage
+      local enemy_type, dmg = enemy.type, damage
       if (tower_type == "tack" and enemy_type == 7) or (tower_type == "rail" and enemy_type == 14) then
-        damage = damage \ 2
+        dmg = damage \ 2
       elseif (tower_type == "rail" and enemy_type == 7) or (tower_type == "tack" and enemy_type == 15) then
-        damage *= 2
+        dmg *= 2
       end
-      enemy.hp -= damage
-      damage = old_damage
+      enemy.hp -= dmg
     end
   end
 end
@@ -94,14 +91,7 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   if (not self.enable) return
-  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
-  
-  if self.type == "sharp" then 
-    theta = self.rot
-  else 
-    theta = parse_direction(self.dir)
-  end
-  
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator), self.type == "sharp" and self.rot or parse_direction(self.dir)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -118,9 +108,7 @@ function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
   self.manifest_cooldown = self.cooldown
 
-  local dir = (selector.position / 8 - self.position) / 8
-  local anchor = self.position + Vec:new(1, 0)
-  local damage = self.dmg * 2
+  local dir, anchor, damage = (selector.position / 8 - self.position) / 8, self.position + Vec:new(1, 0), self.dmg * 2
 
   for i=1, 3 do 
     Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
@@ -295,8 +283,7 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
 end
 
 function draw_line_overlay(tower)
-  local pos = tower.position + Vec:new(0.5, 0.5)
-  pos *= 8
+  local pos = (tower.position + Vec:new(0.5, 0.5))*8
   local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
   if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end
