@@ -30,6 +30,7 @@
   "sfx_data": {
     "round_complete": 6
   },
+  "music_data": [0, 15, 22, 27],
   "freeplay_stats": {
     "hp": 2,
     "speed": 1,
