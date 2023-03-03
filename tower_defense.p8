@@ -97,12 +97,12 @@ if(n~=0or e~=0)add(particles,Particle:new(t+Vec:new(n,e),false,Animator:new(o,fa
 end end end Animator={}function Animator:new(e,n)obj={data=e.data,sprite_size=e.size or 8,animation_frame=1,frame_duration=e.ticks_per_frame,tick=0,dir=1,continuous=n}setmetatable(obj,self)self.__index=self return obj end function Animator:update()self.tick=(self.tick+1)%self.frame_duration
 if(self.tick~=0)return
 if Animator.finished(self)then
-if(self.continuous)Animator.reset(self)
+if(self.continuous)self.animation_frame=1
 return true end self.animation_frame+=self.dir return end function Animator:finished()
 if(self.dir==1)return self.animation_frame>=#self.data
 return self.animation_frame<=1end function Animator:draw(t,o)local n,e=Vec:new(t,o),self.data[self.animation_frame]
 if(e.offset)n+=Vec:new(e.offset)
-spr(e.sprite,Vec.unpack(n))end function Animator:get_sprite()return self.data[self.animation_frame].sprite end function Animator:reset()self.animation_frame=1end BorderRect={}function BorderRect:new(e,n,t,o,i)obj={position=e,size=e+n,border=t,base=o,thickness=i}setmetatable(obj,self)self.__index=self return obj end function BorderRect:draw()rectfill(self.position.x-self.thickness,self.position.y-self.thickness,self.size.x+self.thickness,self.size.y+self.thickness,self.border)rectfill(self.position.x,self.position.y,self.size.x,self.size.y,self.base)end function BorderRect:resize(e,n)
+spr(e.sprite,Vec.unpack(n))end function Animator:get_sprite()return self.data[self.animation_frame].sprite end BorderRect={}function BorderRect:new(e,n,t,o,i)obj={position=e,size=e+n,border=t,base=o,thickness=i}setmetatable(obj,self)self.__index=self return obj end function BorderRect:draw()rectfill(self.position.x-self.thickness,self.position.y-self.thickness,self.size.x+self.thickness,self.size.y+self.thickness,self.border)rectfill(self.position.x,self.position.y,self.size.x,self.size.y,self.base)end function BorderRect:resize(e,n)
 if(self.position~=e)self.position=e
 if(self.size~=n+e)self.size=n+e
 end function BorderRect:reposition(e)

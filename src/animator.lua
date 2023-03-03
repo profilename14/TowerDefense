@@ -17,7 +17,7 @@ function Animator:update()
   self.tick = (self.tick + 1) % self.frame_duration
   if (self.tick ~= 0) return
   if Animator.finished(self) then 
-    if (self.continuous) Animator.reset(self)
+    if (self.continuous) self.animation_frame = 1
     return true
   end
   self.animation_frame += self.dir
@@ -35,7 +35,4 @@ function Animator:draw(dx, dy)
 end
 function Animator:get_sprite()
   return self.data[self.animation_frame].sprite
-end
-function Animator:reset()
-  self.animation_frame = 1
 end
