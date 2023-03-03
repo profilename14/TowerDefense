@@ -113,14 +113,14 @@ function get_map_data_for_menu()
   local menu_content = {}
   for i, map_data in pairs(global_table_data.map_data) do
     add(menu_content, 
-      {text = map_data.name, color = {7, 0}, callback = load_game, args = {i}}
+      {text = map_data.name, color = {7, 0}, callback = load_map, args = {i}}
     )
   end
   return menu_content
 end
 
 -- Game State Related
-function load_game(map_id)
+function load_map(map_id)
   pal()
   auto_start_wave = false
   manifest_mode = true
@@ -139,4 +139,48 @@ function load_game(map_id)
     end
   end
   music(0)
+end
+
+function save_game()
+  local start_address = 0x5e00
+  -- health
+  poke(start_address, player_health) 
+  start_address += 1
+  -- scrap
+  local tower_full_refund = 0
+  for tower in all(towers) do 
+    tower_full_refund += tower.cost
+  end
+  poke4(start_address, coins + tower_full_refund)
+  start_address += 4
+  -- map id
+  poke(start_address, loaded_map)
+  start_address += 1
+  -- wave
+  poke(start_address, wave_round)
+  start_address += 1
+  -- freeplay round
+  poke4(start_address, freeplay_rounds)
+  start_address += 4
+end
+
+function load_game()
+  local start_address = 0x5e00
+  local hp, scrap, map_id, wav, freeplay
+  -- health
+  hp = @start_address
+  start_address += 1
+  -- scrap
+  scrap = $start_address
+  start_address += 4
+  -- map id
+  map_id = @start_address
+  start_address += 1
+  -- wave
+  wav = @start_address
+  start_address += 1
+  -- freeplay round
+  freeplay = $start_address
+
+  return hp, scrap, map_id, wav, freeplay
 end

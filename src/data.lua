@@ -3,11 +3,40 @@ local global_table_str --[[remove]]
 
 -- Game
 function reset_game()
-  global_table_data = unpack_table(global_table_str)
   -- Game Data -- Modify at will
   menu_data = {
     {
       "main", nil,
+      32, 64,
+      {
+        {
+          text="new game", color={7, 0}, 
+          callback=function()
+            game_state = "map"
+            swap_menu_context("map")
+          end
+        },
+        {
+          text="load game", color={7, 0},
+          callback=function()
+            reset_game()
+            local hp, scrap, map_id, wav, freeplay = load_game()
+            load_map(map_id)
+            player_health = hp 
+            coins = scrap
+            wave_round = wav 
+            freeplay_rounds = freeplay
+            -- TODO: calculate what the freeplay enemies will be
+            game_state = "game"
+          end
+        },
+        {text="credits", color={7, 0}},
+      },
+      nil,
+      5, 8, 7, 3
+    },
+    {
+      "game", nil,
       5, 63, 
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
@@ -22,16 +51,16 @@ function reset_game()
       display_tower_rotation,
       5, 8, 7, 3
     },
-    { "towers", "main", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
+    { "towers", "game", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
     {
-      "misc", "main",
+      "misc", "game",
       5, 63, 
       {
         {text = "map select", color = {7, 0}, 
           callback = function()
-            get_active_menu().enable = false
             reset_game()
-            map_menu_enable = true
+            game_state = "map"
+            swap_menu_context("map")
           end
         },
         {
@@ -39,6 +68,21 @@ function reset_game()
           callback = function()
             manifest_mode = not manifest_mode
             sell_mode = not sell_mode
+          end
+        },
+        {
+          text="save", color={7, 0},
+          callback = function()
+            save_game()
+            get_active_menu().enable = false
+            shop_enable = false
+          end
+        },
+        {
+          text="save and quit", color={7, 0},
+          callback = function()
+            save_game()
+            reset_game()
           end
         }
       },
@@ -63,14 +107,13 @@ function reset_game()
     Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
   })
   
-  -- If true, selecting towers manifests them. If false, selecting towers sells them.
-  manifest_mode = false
-  sell_mode = false
-  manifested_tower_ref = nil
-
+  
   -- Internal Data -- Don't modify
+  -- If true, selecting towers manifests them. If false, selecting towers sells them.
+  manifest_mode, sell_mode, manifested_tower_ref = false
+  game_state = "menu"  
   enemy_current_spawn_tick = 0
-  map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
+  enemies_active, shop_enable, start_next_wave, wave_cor = false
   direction = Vec:new(0, -1)
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
@@ -81,5 +124,5 @@ function reset_game()
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   Animator.set_direction(manifest_selector, -1)
-  get_menu("map").enable = true
+  get_menu("main").enable = true
 end

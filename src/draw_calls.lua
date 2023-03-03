@@ -1,3 +1,8 @@
+function main_menu_draw_loop()
+  print_text_center("untitled tower defense", 1, 7, 1)
+  Menu.draw(get_menu("main"))
+end
+
 function map_draw_loop()
   local map_menu = get_menu("map")
   pal(global_table_data.palettes.dark_mode)

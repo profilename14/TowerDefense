@@ -102,12 +102,12 @@ function get_map_data_for_menu()
   local menu_content = {}
   for i, map_data in pairs(global_table_data.map_data) do
     add(menu_content, 
-      {text = map_data.name, color = {7, 0}, callback = load_game, args = {i}}
+      {text = map_data.name, color = {7, 0}, callback = load_map, args = {i}}
     )
   end
   return menu_content
 end
-function load_game(map_id)
+function load_map(map_id)
   pal()
   auto_start_wave = false
   manifest_mode = true
@@ -127,12 +127,71 @@ function load_game(map_id)
   end
   music(0)
 end
-global_table_str="tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=10,trail_animation_key=rocket_burn}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=5,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}}}"
+function save_game()
+  local start_address = 0x5e00
+  poke(start_address, player_health) 
+  start_address += 1
+  local tower_full_refund = 0
+  for tower in all(towers) do 
+    tower_full_refund += tower.cost
+  end
+  poke4(start_address, coins + tower_full_refund)
+  start_address += 4
+  poke(start_address, loaded_map)
+  start_address += 1
+  poke(start_address, wave_round)
+  start_address += 1
+  poke4(start_address, freeplay_rounds)
+  start_address += 4
+end
+function load_game()
+  local start_address = 0x5e00
+  local hp, scrap, map_id, wav, freeplay
+  hp = @start_address
+  start_address += 1
+  scrap = $start_address
+  start_address += 4
+  map_id = @start_address
+  start_address += 1
+  wav = @start_address
+  start_address += 1
+  freeplay = $start_address
+  return hp, scrap, map_id, wav, freeplay
+end
+global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=10},freeplay_stats={hp=2,speed=1,min_step_delay=3},map_meta_data={path_flag_id=0,non_path_flag_id=1},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=10,trail_animation_key=rocket_burn}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=25,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=5,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{6,6,6,6,6,6,6,6},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{3,3,3,3,3,3,1,4,1,3,3,3,3,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1},{1,3,3,3,3,3,2,2,2,2,2,2,2,3,3,3,3,3},{2,3,3,3,3,3,2,3,3,3,3,2,2,4,1},{2,2,3,3,3,2,2,4,4,2,2,3,3,3,3,2,2,2},{2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,2,2,2,2,2},{3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}}}"
 function reset_game()
-  global_table_data = unpack_table(global_table_str)
   menu_data = {
     {
       "main", nil,
+      32, 64,
+      {
+        {
+          text="new game", color={7, 0}, 
+          callback=function()
+            game_state = "map"
+            swap_menu_context("map")
+          end
+        },
+        {
+          text="load game", color={7, 0},
+          callback=function()
+            reset_game()
+            local hp, scrap, map_id, wav, freeplay = load_game()
+            load_map(map_id)
+            player_health = hp 
+            coins = scrap
+            wave_round = wav 
+            freeplay_rounds = freeplay
+            game_state = "game"
+          end
+        },
+        {text="credits", color={7, 0}},
+      },
+      nil,
+      5, 8, 7, 3
+    },
+    {
+      "game", nil,
       5, 63, 
       {
         {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
@@ -147,16 +206,16 @@ function reset_game()
       display_tower_rotation,
       5, 8, 7, 3
     },
-    { "towers", "main", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
+    { "towers", "game", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
     {
-      "misc", "main",
+      "misc", "game",
       5, 63, 
       {
         {text = "map select", color = {7, 0}, 
           callback = function()
-            get_active_menu().enable = false
             reset_game()
-            map_menu_enable = true
+            game_state = "map"
+            swap_menu_context("map")
           end
         },
         {
@@ -164,6 +223,21 @@ function reset_game()
           callback = function()
             manifest_mode = not manifest_mode
             sell_mode = not sell_mode
+          end
+        },
+        {
+          text="save", color={7, 0},
+          callback = function()
+            save_game()
+            get_active_menu().enable = false
+            shop_enable = false
+          end
+        },
+        {
+          text="save and quit", color={7, 0},
+          callback = function()
+            save_game()
+            reset_game()
           end
         }
       },
@@ -186,11 +260,11 @@ function reset_game()
     Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
   })
   
-  manifest_mode = false
-  sell_mode = false
-  manifested_tower_ref = nil
+  
+  manifest_mode, sell_mode, manifested_tower_ref = false
+  game_state = "menu"  
   enemy_current_spawn_tick = 0
-  map_menu_enable, enemies_active, shop_enable, start_next_wave, wave_cor = true
+  enemies_active, shop_enable, start_next_wave, wave_cor = false
   direction = Vec:new(0, -1)
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
@@ -201,7 +275,7 @@ function reset_game()
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   Animator.set_direction(manifest_selector, -1)
-  get_menu("map").enable = true
+  get_menu("main").enable = true
 end
 Enemy = {}
 function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
@@ -1039,23 +1113,34 @@ function generate_garbage(data, line_width, curr_width, line_amount, curr_lines)
   end
   return result
 end
-function _init() reset_game() end
+function _init() 
+  global_table_data = unpack_table(global_table_str)
+  cartdata(global_table_data.cart_name)
+  reset_game() 
+end
 function _draw()
   cls()
-  TextScroller.draw(text_scroller)
+  if game_state == "menu" then 
+    main_menu_draw_loop()
+  elseif game_state == "map" then 
+    map_draw_loop()
+  elseif game_state == "game" then 
+    game_draw_loop()
+  end
 end
 function _update()
-  TextScroller.update(text_scroller)
-  if btnp(❎) then 
-    if TextScroller.next(text_scroller) then 
-      if flag then 
-        text_scroller.enable = false
-      else
-        TextScroller.load(text_scroller, "chicken butt", {8, 1})
-        flag = true
-      end
-    end
+  if game_state == "menu" then 
+    main_menu_loop()
+  elseif game_state == "map" then 
+    map_loop()
+  elseif game_state == "game" then 
+    if (player_health <= 0) reset_game()
+    if shop_enable then shop_loop() else game_loop() end
   end
+end
+function main_menu_draw_loop()
+  print_text_center("untitled tower defense", 1, 7, 1)
+  Menu.draw(get_menu("main"))
 end
 function map_draw_loop()
   local map_menu = get_menu("map")
@@ -1141,13 +1226,21 @@ function ui_buy_and_place_draw_loop(tower_details)
   end
   print_with_outline(text, 1, 115, color, 0)
 end
+function main_menu_loop()
+  local main_menu = get_menu("main")
+  Menu.update(main_menu)
+  if btnp(❎) then 
+    Menu.invoke(main_menu)
+  end
+  Menu.move(main_menu)
+end
 function map_loop()
   local map_menu = get_menu("map")
   Menu.update(map_menu)
   if btnp(❎) then
     Menu.invoke(map_menu)
     map_menu.enable = false
-    map_menu_enable = false 
+    game_state = "game" 
     return
   end
   Menu.move(map_menu)
@@ -1174,7 +1267,7 @@ function game_loop()
   if btnp(🅾️) then
     if manifested_tower_ref == nil then
       shop_enable = true
-      menus[1].enable = true
+      get_menu("game").enable = true
       return
     else
       unmanifest_tower()
