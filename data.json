@@ -134,6 +134,15 @@
     "path_flag_id": 0,
     "non_path_flag_id": 1
   },
+  "splash_screens": [
+    {
+      "name": "splash1",
+      "mget_shift": [112, 16],
+      "enemy_spawn_location": [0, 1],
+      "enemy_end_location": [15, 11],
+      "movement_direction": [1, 0]
+    }
+  ],
   "map_data": [
     {
       "name": "curves",

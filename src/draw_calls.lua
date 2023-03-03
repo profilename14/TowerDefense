@@ -1,4 +1,5 @@
 function main_menu_draw_loop()
+  map(unpack(global_table_data.splash_screens[1].mget_shift))
   print_text_center("untitled tower defense", 1, 7, 1)
   Menu.draw(get_menu("main"))
 end
