@@ -121,18 +121,6 @@ function round_to(value, place)
   return val / places
 end
 
-function round(value)
-  local val = flr(value)
-  local dec = value-val 
-  if dec < 0.3 then 
-    return val 
-  elseif dec > 0.7 then 
-    return ceil(value) 
-  else
-    return val+0.5
-  end
-end
-
 function check_tile_flag_at(position, flag)
   return fget(mget(Vec.unpack(position)), flag)
 end

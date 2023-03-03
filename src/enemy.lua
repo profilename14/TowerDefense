@@ -1,5 +1,7 @@
 -- FOR REFERENCE IN DATA.LUA:
 -- 1 = car, 2 = plane, 3 = tank, 4 = lab cart, 5 = ice truck, 6 = trailblazer
+-- 7 = auxillium bot, 8 = carrier, 9 = cargo car, 10 = first boss, 11 = spy plane, 12 = swarmer
+-- 13 = remote missile, 14 = shield generator, 15 = mech, 16 = robber, 17 = The Emperor (last boss)
 Enemy = {}
 function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
   obj = { 
@@ -82,6 +84,7 @@ function update_enemy_position(enemy)
   enemy.pos += 1
   if (enemy.pos < #pathing + 1) return
   player_health -= enemy.damage 
+  if (enemy.type == 16) coins -= 10
   del(enemies, enemy)
 end
 
@@ -141,7 +144,15 @@ function spawn_enemy()
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
     if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
     if enemy_current_spawn_tick == 0 then
-      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data.wave_data[wave_round][enemies_remaining]])
+      local wave_set
+      -- This is pretty weird but it saves 40 tokens.
+      if cur_level == 2 then wave_set = 'wave_data_l2'
+      elseif cur_level == 3 then wave_set = 'wave_data_l3'
+      elseif cur_level == 4 then wave_set = 'wave_data_l4'
+      elseif cur_level == 5 then wave_set = 'wave_data_l5'
+      else wave_set = 'wave_data'
+      end
+      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[wave_set][wave_round][enemies_remaining]])
       add(enemies, Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location, unpack(enemy_data)))
       enemies_remaining -= 1
     end

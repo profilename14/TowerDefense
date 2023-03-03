@@ -68,8 +68,20 @@ function Tower:frontal_collision()
   return hits
 end
 function Tower:apply_damage(targets, damage)
+  local tower_type = self.type
   for enemy in all(targets) do
-    if (enemy.hp > 0) enemy.hp -= damage
+    if enemy.hp > 0 then
+      local enemy_type = enemy.type
+      -- damage is just temporarily modified to save tokens
+      old_damage = damage
+      if (tower_type == "tack" and enemy_type == 7) or (tower_type == "rail" and enemy_type == 14) then
+        damage = damage \ 2
+      elseif (tower_type == "rail" and enemy_type == 7) or (tower_type == "tack" and enemy_type == 15) then
+        damage *= 2
+      end
+      enemy.hp -= damage
+      damage = old_damage
+    end
   end
 end
 function Tower:freeze_enemies(targets)
