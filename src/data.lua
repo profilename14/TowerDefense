@@ -4,93 +4,16 @@ local global_table_str --[[remove]]
 -- Game
 function reset_game()
   -- Game Data -- Modify at will
-  menu_data = {
-    {
-      "main", nil,
-      32, 64,
-      {
-        {
-          text="new game", color={7, 0}, 
-          callback=function()
-            game_state = "map"
-            swap_menu_context("map")
-          end
-        },
-        {
-          text="load game", color={7, 0},
-          callback=function()
-            reset_game()
-            local hp, scrap, map_id, wav, freeplay = load_game()
-            load_map(map_id)
-            player_health = hp 
-            coins = scrap
-            wave_round = wav 
-            freeplay_rounds = freeplay
-            -- TODO: calculate what the freeplay enemies will be
-            game_state = "game"
-          end
-        },
-        {text="credits", color={7, 0}},
-      },
-      nil,
-      5, 8, 7, 3
-    },
-    {
-      "game", nil,
-      5, 63, 
-      {
-        {text = "towers", color = {7, 0}, callback = swap_menu_context, args = {"towers"}},
-        {text = "misc", color = {7, 0}, callback = swap_menu_context, args = {"misc"}},
-        {text = "rotate clockwise", color = {7, 0}, 
-          callback = function()
-            direction = Vec:new(-direction.y, direction.x)
-          end
-        },
-        {text = "start round", color = {7, 0}, callback = start_round}
-      },
-      display_tower_rotation,
-      5, 8, 7, 3
-    },
-    { "towers", "game", 5, 63, get_tower_data_for_menu(), display_tower_info, 5, 8, 7, 3 },
-    {
-      "misc", "game",
-      5, 63, 
-      {
-        {text = "map select", color = {7, 0}, 
-          callback = function()
-            reset_game()
-            game_state = "map"
-            swap_menu_context("map")
-          end
-        },
-        {
-          text="toggle mode", color={7, 0},
-          callback = function()
-            manifest_mode = not manifest_mode
-            sell_mode = not sell_mode
-          end
-        },
-        {
-          text="save", color={7, 0},
-          callback = function()
-            save_game()
-            get_active_menu().enable = false
-            shop_enable = false
-          end
-        },
-        {
-          text="save and quit", color={7, 0},
-          callback = function()
-            save_game()
-            reset_game()
-          end
-        }
-      },
-      nil,
-      5, 8, 7, 3
-    },
-    { "map", nil, 5, 84, get_map_data_for_menu(), nil, 5, 8, 7, 3 }
-  }
+  menu_data = {}
+  for menu_dat in all(global_table_data.menu_data) do 
+    add(menu_data, {
+      menu_dat.name, menu_dat.prev, 
+      menu_dat.position[1], menu_dat.position[2],
+      parse_menu_content(menu_dat.content),
+      forward_declares[menu_dat.hint],
+      unpack(menu_dat.settings)
+    })
+  end
   selector = {
     position = Vec:new(64, 64),
     sprite_index = 1,

@@ -60,6 +60,10 @@ function display_tower_rotation(menu_pos, position)
   end
 end
 
+function rotate_clockwise()
+  direction = Vec:new(-direction.y, direction.x)
+end
+
 -- Enemy Related
 function start_round()
   if (start_next_wave or #enemies ~= 0) return
@@ -140,7 +144,30 @@ function get_map_data_for_menu()
   return menu_content
 end
 
+function parse_menu_content(content)
+  if type(content) == "table" then 
+    local cons = {}
+    for con in all(content) do
+      add(cons, {
+        text = con.text,
+        color = con.color,
+        callback = forward_declares[con.callback],
+        args = con.args
+      }) 
+    end
+    return cons
+  else
+    return forward_declares[content]()
+  end
+end
+
 -- Game State Related
+function new_game()
+  reset_game()
+  game_state="map"
+  swap_menu_context("map")
+end
+
 function load_map(map_id)
   pal()
   auto_start_wave = false
@@ -206,3 +233,41 @@ function load_game()
 
   return hp, scrap, map_id, wav, freeplay
 end
+
+function load_game_state()
+  reset_game()
+  get_menu("main").enable = false
+  local hp, scrap, map_id, wav, freeplay = load_game()
+  load_map(map_id)
+  player_health = hp 
+  coins = scrap
+  wave_round = wav 
+  freeplay_rounds = freeplay
+  -- TODO: calculate what the freeplay enemies will be
+  game_state = "game"
+end
+
+forward_declares = {
+  func_display_tower_info = display_tower_info,
+  func_display_tower_rotation = display_tower_rotation,
+  func_rotate_clockwise = rotate_clockwise,
+  func_start_round = start_round,
+  func_swap_menu_context = swap_menu_context,
+  func_get_tower_data_for_menu = get_tower_data_for_menu,
+  func_get_map_data_for_menu = get_map_data_for_menu,
+  func_new_game = new_game,
+  func_save=function()
+    save_game()
+    get_active_menu().enable = false
+    shop_enable = false
+  end,
+  func_save_quit=function()
+    save_game()
+    reset_game()
+  end,
+  func_load_game = load_game_state,
+  func_toggle_mode = function()
+    manifest_mode = not manifest_mode
+    sell_mode = not sell_mode
+  end
+}
