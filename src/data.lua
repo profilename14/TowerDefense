@@ -36,7 +36,7 @@ function reset_game()
   manifest_mode, sell_mode, manifested_tower_ref = false
   game_state = "menu"  
   enemy_current_spawn_tick = 0
-  enemies_active, shop_enable, start_next_wave, wave_cor = false
+  enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = false
   direction = Vec:new(0, -1)
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
