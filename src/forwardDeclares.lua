@@ -270,5 +270,6 @@ forward_declares = {
   func_toggle_mode = function()
     manifest_mode = not manifest_mode
     sell_mode = not sell_mode
-  end
+  end,
+  func_credits=function() game_state = "credits" end
 }

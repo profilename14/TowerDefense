@@ -27,6 +27,8 @@ function _draw()
   cls()
   if game_state == "menu" then 
     main_menu_draw_loop()
+  elseif game_state == "credits" then 
+    credits_draw_loop()
   elseif game_state == "map" then 
     map_draw_loop()
   elseif game_state == "game" then 
@@ -38,6 +40,8 @@ end
 function _update()
   if game_state == "menu" then 
     main_menu_loop()
+  elseif game_state == "credits" then 
+    credits_loop()
   elseif game_state == "map" then 
     map_loop()
   elseif game_state == "game" then 

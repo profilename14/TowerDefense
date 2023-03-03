@@ -10,6 +10,16 @@ function main_menu_draw_loop()
   Menu.draw(get_menu("main"))
 end
 
+function credits_draw_loop()
+  map(unpack(global_table_data.splash_screens[1].mget_shift))
+  local x_offset = 10
+  print_text_center("credits", credit_y_offsets[1], 7, 1)
+  print_with_outline("jasper:\n  • game director\n  • programmer", x_offset, credit_y_offsets[2], 7, 1)
+  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", x_offset, credit_y_offsets[3], 7, 1)
+  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", x_offset, credit_y_offsets[4], 7, 1)
+  print_with_outline("kaoushik:\n  • programmer", x_offset, credit_y_offsets[5], 7, 1)
+end
+
 function map_draw_loop()
   local map_menu = get_menu("map")
   pal(global_table_data.palettes.dark_mode)
