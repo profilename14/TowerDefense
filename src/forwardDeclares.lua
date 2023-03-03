@@ -64,9 +64,30 @@ end
 function start_round()
   if (start_next_wave or #enemies ~= 0) return
   start_next_wave,enemies_active = true,true
-  wave_round = min(wave_round + 1, #global_table_data.wave_data)
-  if (wave_round == #global_table_data.wave_data) freeplay_rounds += 1
-  enemies_remaining = #global_table_data.wave_data[wave_round]
+
+  if cur_level == 2 then
+    wave_set_for_num = 'wave_data_l2'
+  elseif cur_level == 3 then
+    wave_set_for_num = 'wave_data_l3'
+  elseif cur_level == 4 then
+    wave_set_for_num = 'wave_data_l4'
+  elseif cur_level == 5 then
+    wave_set_for_num = 'wave_data_l5'
+  else
+    wave_set_for_num = 'wave_data'
+  end
+
+  max_waves = #global_table_data[wave_set_for_num]
+
+  wave_round = min(wave_round + 1, max_waves)
+  if (wave_round == max_waves or freeplay_rounds > 0) freeplay_rounds += 1
+  if (freeplay_rounds > 0) then
+    -- During freeplay, one of the last 3 waves are played randomly. Don't make a level with only 2 waves.
+    wave_round = max_waves
+    wave_round -= flr(rnd(3))
+  end
+
+  enemies_remaining = #global_table_data[wave_set_for_num][wave_round]
   get_active_menu().enable = false
   shop_enable = false
 end
@@ -127,6 +148,7 @@ function load_map(map_id)
   wave_round = 0
   freeplay_rounds = 0
   loaded_map = map_id
+  cur_level = map_id
   pathing = parse_path()
   for i=1, 3 do
     add(incoming_hint, Animator:new(global_table_data.animation_data.incoming_hint, true))
@@ -138,7 +160,12 @@ function load_map(map_id)
       if (not check_tile_flag_at(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift), global_table_data.map_meta_data.non_path_flag_id)) grid[y][x] = "path" 
     end
   end
-  music(0)
+  if cur_level == 2 then music(15)
+  elseif cur_level == 3 then music(22)
+  elseif cur_level == 4 then music(27)
+  -- Level 1 and 5
+  else music(0)
+  end
 end
 
 function save_game()

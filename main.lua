@@ -1,5 +1,5 @@
 -- Tower Defence v1.14.10
--- By Jeren (Code), Jasper (Art & Sound), Jimmy (Art & Music)
+-- By Jeren (Code), Jasper (Art, Code, & Design), Jimmy (Art & Music), and Kaoushik (Code)
 
 -- Forward Declaring Functions
 #include src/forwardDeclares.lua

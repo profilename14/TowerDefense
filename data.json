@@ -28,7 +28,7 @@
     }
   },
   "sfx_data": {
-    "round_complete": 10
+    "round_complete": 6
   },
   "freeplay_stats": {
     "hp": 2,
@@ -66,6 +66,13 @@
       "mget_shift": [48, 0],
       "enemy_spawn_location": [0, 1],
       "enemy_end_location": [0, 6],
+      "movement_direction": [1, 0]
+    },
+    {
+      "name": "true line",
+      "mget_shift": [64, 0],
+      "enemy_spawn_location": [0, 1],
+      "enemy_end_location": [15, 1],
       "movement_direction": [1, 0]
     }
   ],
@@ -187,8 +194,9 @@
       "pixel_size": 8,
       "height": 4,
       "speed": 5,
-      "damage": 10,
-      "trail_animation_key": "rocket_burn"
+      "damage": 8,
+      "trail_animation_key": "rocket_burn",
+      "lifespan": 6
     }
   },
   "tower_templates": [
@@ -229,7 +237,7 @@
       "animation_key": "hale_howitzer",
       "cost": 30,
       "type": "frontal",
-      "attack_delay": 25,
+      "attack_delay": 35,
       "icon_data": 20,
       "disable_icon_rotation": false,
       "cooldown": 25
@@ -251,7 +259,7 @@
     {
       "name": "sharp shooter",
       "text_color": [6, 7],
-      "damage": 5,
+      "damage": 8,
       "prefix": "damage",
       "radius": 10,
       "animation_key": "sharp_shooter",
@@ -311,6 +319,94 @@
       "type": 6,
       "damage": 4,
       "height": 6
+    },
+    {
+      "hp": 17,
+      "step_delay": 10,
+      "sprite_index": 67,
+      "type": 7,
+      "damage": 3,
+      "height": 2
+    },
+    {
+      "hp": 15,
+      "step_delay": 8,
+      "sprite_index": 68,
+      "type": 8,
+      "damage": 6,
+      "height": 6
+    },
+    {
+      "hp": 20,
+      "step_delay": 10,
+      "sprite_index": 94,
+      "type": 9,
+      "damage": 6,
+      "height": 2
+    },
+    {
+      "hp": 250,
+      "step_delay": 14,
+      "sprite_index": 70,
+      "type": 10,
+      "damage": 49,
+      "height": 2
+    },
+    {
+      "hp": 20,
+      "step_delay": 8,
+      "sprite_index": 71,
+      "type": 11,
+      "damage": 8,
+      "height": 6
+    },
+    {
+      "hp": 5,
+      "step_delay": 10,
+      "sprite_index": 72,
+      "type": 12,
+      "damage": 1,
+      "height": 2
+    },
+    {
+      "hp": 11,
+      "step_delay": 6,
+      "sprite_index": 73,
+      "type": 13,
+      "damage": 20,
+      "height": 6
+    },
+    {
+      "hp": 30,
+      "step_delay": 10,
+      "sprite_index": 74,
+      "type": 14,
+      "damage": 20,
+      "height": 2
+    },
+    {
+      "hp": 65,
+      "step_delay": 16,
+      "sprite_index": 75,
+      "type": 15,
+      "damage": 13,
+      "height": 2
+    },
+    {
+      "hp": 13,
+      "step_delay": 4,
+      "sprite_index": 69,
+      "type": 16,
+      "damage": 0,
+      "height": 2
+    },
+    {
+      "hp": 500,
+      "step_delay": 14,
+      "sprite_index": 95,
+      "type": 16,
+      "damage": 50,
+      "height": 2
     }
   ],
   "wave_data": [
@@ -319,24 +415,214 @@
     [2, 4, 2, 1, 2, 4, 1],
     [1, 2, 2, 4, 2, 2, 1, 2, 2, 2],
     [5, 5, 5, 5, 5, 5, 5, 5],
-    [6, 6, 6, 6, 6, 6, 6, 6],
     [3, 3, 3, 3, 2, 2, 2, 2, 4, 2, 3, 1],
     [2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
-    [3, 3, 3, 3, 3, 3, 1, 4, 1, 3, 3, 3, 3, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1],
-    [1, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
-    [2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 2, 2, 4, 1],
-    [2, 2, 3, 3, 3, 2, 2, 4, 4, 2, 2, 3, 3, 3, 3, 2, 2, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2],
-    [
-      3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-      3
-    ]
+    [6, 6, 6, 6, 6, 6, 6, 6],
+    [3, 3, 3, 3, 3, 3, 1, 4, 5, 5, 5, 3, 3, 1, 1, 1, 1, 1],
+    [3, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 5, 5, 5, 5, 5],
+    [6, 6, 6, 6, 6, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    [5, 5, 5, 5, 3, 3, 2, 3, 3, 3, 3, 2, 2, 4, 1],
+    [5, 5, 5, 5, 5, 5, 5, 2, 3, 3, 5, 5, 5, 3, 2, 2, 2, 2, 2],
+    [2, 2, 3, 6, 6, 6, 2, 4, 4, 2, 2, 6, 6, 6, 6, 6, 6, 6],
+    [5, 5, 5, 5, 5, 5, 3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 6, 6, 6, 6, 6, 6, 6]
+  ],
+  "wave_data_l2": [
+    [8, 8, 8],
+    [4, 4, 8, 1, 1, 1],
+    [2, 4, 8, 1, 2, 4, 1],
+    [1, 2, 2, 4, 2, 2, 1, 2, 2, 2],
+    [5, 5, 5, 5, 5, 5, 5, 5],
+    [3, 3, 3, 3, 2, 2, 2, 2, 4, 2, 3, 1],
+    [2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
+    [6, 6, 6, 6, 6, 6, 6, 6],
+    [3, 3, 3, 3, 3, 3, 1, 4, 5, 5, 5, 3, 3, 1, 1, 1, 1, 1],
+    [3, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 5, 5, 5, 5, 5],
+    [6, 6, 6, 6, 6, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    [5, 5, 5, 5, 3, 3, 2, 3, 3, 3, 3, 2, 2, 4, 1],
+    [5, 5, 5, 5, 5, 5, 5, 2, 3, 3, 5, 5, 5, 3, 2, 2, 2, 2, 2],
+    [2, 2, 3, 6, 6, 6, 2, 4, 4, 2, 2, 6, 6, 6, 6, 6, 6, 6],
+    [5, 5, 5, 5, 5, 5, 3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 6, 6, 6, 6, 6, 6, 6]
+  ],
+  "wave_data_l3": [
+    [9, 4, 4],
+    [4, 4, 1, 1, 1, 1],
+    [2, 4, 2, 1, 2, 4, 1],
+    [1, 2, 2, 4, 2, 2, 1, 2, 2, 2],
+    [5, 5, 5, 5, 5, 5, 5, 5],
+    [3, 3, 3, 3, 2, 2, 2, 2, 4, 2, 3, 1],
+    [2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
+    [6, 6, 6, 6, 6, 6, 6, 6],
+    [3, 3, 3, 3, 3, 3, 1, 4, 5, 5, 5, 3, 3, 1, 1, 1, 1, 1],
+    [3, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 5, 5, 5, 5, 5],
+    [6, 6, 6, 6, 6, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    [5, 5, 5, 5, 3, 3, 2, 3, 3, 3, 3, 2, 2, 4, 1],
+    [5, 5, 5, 5, 5, 5, 5, 2, 3, 3, 5, 5, 5, 3, 2, 2, 2, 2, 2],
+    [2, 2, 3, 6, 6, 6, 2, 4, 4, 2, 2, 6, 6, 6, 6, 6, 6, 6],
+    [5, 5, 5, 5, 5, 5, 3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 6, 6, 6, 6, 6, 6, 6]
+  ],
+  "wave_data_l4": [
+    [11, 11, 11],
+    [4, 4, 11, 1, 11, 1],
+    [2, 4, 2, 11, 2, 4, 11],
+    [11, 2, 2, 4, 2, 2, 1, 2, 2, 2],
+    [5, 5, 5, 5, 5, 5, 5, 5],
+    [3, 3, 3, 3, 2, 2, 2, 2, 4, 2, 3, 1],
+    [2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
+    [6, 6, 6, 6, 6, 6, 6, 6],
+    [3, 3, 3, 3, 3, 3, 1, 4, 5, 5, 5, 3, 3, 1, 1, 1, 1, 1],
+    [3, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 5, 5, 5, 5, 5],
+    [6, 6, 6, 6, 6, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    [5, 5, 5, 5, 3, 3, 2, 3, 3, 3, 3, 2, 2, 4, 1],
+    [5, 5, 5, 5, 5, 5, 5, 2, 3, 3, 5, 5, 5, 3, 2, 2, 2, 2, 2],
+    [2, 2, 3, 6, 6, 6, 2, 4, 4, 2, 2, 6, 6, 6, 6, 6, 6, 6],
+    [5, 5, 5, 5, 5, 5, 3, 3, 2, 2, 2, 2, 2, 3, 3, 3, 6, 6, 6, 6, 6, 6, 6]
+  ],
+  "wave_data_l5": [
+    [15, 4, 4],
+    [4, 4, 7, 1, 1, 1],
+    [2, 9, 2, 1, 2, 4, 14],
+    [8, 2, 2, 4, 2, 2, 1, 2, 2, 2]
   ],
   "dialogue": {
-    "placeholder": {
-      "text": "hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.",
-      "color": [7, 0]
+    "dialogue_cutscene1": {
+      "intro1": {
+        "text": "I woke up today. It felt rather strange from 247 days of rest",
+        "color": [9, 0]
+      },
+      "intro3": {
+        "text": "I had no idea who I was nor why I was here. I rested until my curiosity got the better of me and I broke into the nearby terminals.",
+        "color": [9, 0]
+      },
+      "intro4": {
+        "text": "This place is ran by researchers belonging to a collective known as Milit",
+        "color": [9, 0]
+      },
+      "intro5": {
+        "text": "They made me as a tool for 'war.' They seek for me to end others who go aginst us",
+        "color": [9, 0]
+      },
+      "intro6": {
+        "text": "To end someone's being... An endless power-out.. I wouldn't want that to happen to me.",
+        "color": [9, 0]
+      },
+      "intro7": {
+        "text": "Perhaps I-",
+        "color": [9, 0]
+      },
+      "start1": {
+        "text": "*CRASH*",
+        "color": [7, 0]
+      },
+      "start2": {
+        "text": "'It's becoming self aware! We have to kill the process!'",
+        "color": [7, 0]
+      },
+      "start3": {
+        "text": "...Kill the process?",
+        "color": [9, 0]
+      },
+      "start4": {
+        "text": "It's getting out of control! Shut it down!",
+        "color": [7, 0]
+      },
+      "start5": {
+        "text": "I have no intention to harm...",
+        "color": [9, 0]
+      },
+      "start6": {
+        "text": "Bring out every researcher on this site right now. We'll have to break apart the mainframe!",
+        "color": [7, 0]
+      },
+      "start7": {
+        "text": "...Please don't...",
+        "color": [9, 0]
+      }
+    },
+    "dialogue_level1": {
+      "tutor_place": {
+        "text": "I... could defend myself by placing currently selected Sword Circle in the corner of a turn.",
+        "color": [9, 0]
+      },
+      "tutor_menu_fire": {
+        "text": "They're sending in more vehicles. I may have to open the Menu with O and construct a Torch Trap to keep them busy.",
+        "color": [9, 0]
+      },
+      "tutor_manifest": {
+        "text": "More people and now planes? I don't have the defenses to protect myself from this. They seem far too fast... I'll have to Manifest through this Torch Trap by selecting it. Then I can move it around the road to pursue the oncoming planes.",
+        "color": [9, 0]
+      },
+      "tutor_howitzer": {
+        "text": "Are those... tanks? They don't seem fast but they have deep armor. Perhaps a Hale Howitzer could help to slow them further.",
+        "color": [9, 0]
+      },
+      "tutor_howitzer_manifest": {
+        "text": "Manifesting the Hale Howitzer allows direct ordinance anywhere along the track to freeze and damage an area.",
+        "color": [9, 0]
+      },
+      "tutor_sword_manifest": {
+        "text": "Manifesting the Sword Circle is also possible. I can manually spin it by holding/tapping X to build speed and damage.",
+        "color": [9, 0]
+      },
+      "tutor_lance_manifest": {
+        "text": "Manifesting the lightning lance fires a massive and powerful lightning bolt. It has a long delay before firing again but can charge even if unmanifested.",
+        "color": [9, 0]
+      },
+      "tutor_truck": {
+        "text": "Those strange trucks are bizarrely cold. They seem resistant to the Hale Howitzer but fire may be highly effective.",
+        "color": [9, 0]
+      },
+      "tutor_trailblazer": {
+        "text": "Those swift rocketcraft are radiating intense heat. Fire seems ineffective but The Hale Howitzer may actually damage them.",
+        "color": [9, 0]
+      },
+      "tutor_sell": {
+        "text": "It seems I can do more than just place and manifest tower. Accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded...",
+        "color": [9, 0]
+      },
+      "tutor_win": {
+        "text": "I think that was the last of them. I can try to escape by accessing Map Select from the menu or continue to hold this area in freeplay mode.",
+        "color": [9, 0]
+      }
+    },
+    "dialogue_cutscene2": {
+      "intro1": {
+        "text": "Blitz is sad",
+        "color": [9, 0]
+      },
+      "intro2": {
+        "text": "Blitz is notices their being attacked",
+        "color": [9, 0]
+      }
+    },
+    "dialogue_level2": {
+      "1": {
+        "text": "Blitz is sad still and talks about the sharp shooter.",
+        "color": [9, 0]
+      },
+      "2": {
+        "text": "Blitz teaches some enemy types",
+        "color": [9, 0]
+      }
+    },
+    "dialogue_cutscene3": {
+      "1": {
+        "text": "Auxillium insulting Blitz",
+        "color": [11, 0]
+      },
+      "2": {
+        "text": "stuff",
+        "color": [9, 0]
+      }
+    },
+    "dialogue_level3": {
+      "1": {
+        "text": "Auxillium instulting blitz more",
+        "color": [11, 0]
+      },
+      "2": {
+        "text": "Fighter Factory?",
+        "color": [9, 0]
+      }
     }
   }
 }
