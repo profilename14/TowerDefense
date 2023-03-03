@@ -19,11 +19,10 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, lock_cursor = 30, 50, 10
-
-  credit_y_offsets = {
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 30, 50, 10, {
     30, 45, 75, 105, 140
   }
+
   -- -- temp 
   -- text_place_holder = global_table_data.dialogue.placeholder
   -- text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
@@ -41,6 +40,6 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   get_menu("main").enable = true
 end

@@ -40,12 +40,6 @@ end
 function Vec:floor()
   return Vec:new(flr(self.x), flr(self.y))
 end
-function Vec:ceil()
-  return Vec:new(ceil(self.x), ceil(self.y))
-end
-function Vec:magnitude()
-  return sqrt(self.x*self.x+self.y*self.y)
-end
 function Vec:clone()
   return Vec:new(self.x, self.y)
 end

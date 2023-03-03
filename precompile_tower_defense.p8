@@ -2,13 +2,10 @@ pico-8 cartridge // http://www.pico-8.com
 version 39
 __lua__
 function choose_tower(id)
-  selected_menu_tower_id = id
-  get_active_menu().enable = false
-  shop_enable = false
+  selected_menu_tower_id, get_active_menu().enable, shop_enable = id
 end
 function display_tower_info(tower_id, position, text_color)
-  local position_offset = position + Vec:new(-1, -31)
-  local tower_details = global_table_data.tower_templates[tower_id]
+  local position_offset, tower_details = position + Vec:new(-1, -31), global_table_data.tower_templates[tower_id]
   local texts = {
     {text = tower_details.name}, 
     {text = tower_details.prefix..": "..tower_details.damage}
@@ -43,8 +40,7 @@ function display_tower_info(tower_id, position, text_color)
   ))
 end
 function display_tower_rotation(menu_pos, position)
-  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  local position_offset = position + Vec:new(0, -28)
+  local tower_details, position_offset = global_table_data.tower_templates[selected_menu_tower_id], position + Vec:new(0, -28)
   BorderRect.reposition(tower_rotation_background_rect, position_offset)
   BorderRect.draw(tower_rotation_background_rect)
   local sprite_position = position_offset + Vec:new(4, 4)
@@ -63,27 +59,15 @@ end
 function start_round()
   if (start_next_wave or #enemies ~= 0) return
   start_next_wave,enemies_active = true,true
-  if cur_level == 2 then
-    wave_set_for_num = 'wave_data_l2'
-  elseif cur_level == 3 then
-    wave_set_for_num = 'wave_data_l3'
-  elseif cur_level == 4 then
-    wave_set_for_num = 'wave_data_l4'
-  elseif cur_level == 5 then
-    wave_set_for_num = 'wave_data_l5'
-  else
-    wave_set_for_num = 'wave_data'
-  end
-  max_waves = #global_table_data[wave_set_for_num]
+  local wave_set_for_num = global_table_data.wave_set[cur_level] or "wave_data"
+  local max_waves = #global_table_data[wave_set_for_num]
   wave_round = min(wave_round + 1, max_waves)
   if (wave_round == max_waves or freeplay_rounds > 0) freeplay_rounds += 1
   if (freeplay_rounds > 0) then
     wave_round = max_waves
     wave_round -= flr(rnd(3))
   end
-  enemies_remaining = #global_table_data[wave_set_for_num][wave_round]
-  get_active_menu().enable = false
-  shop_enable = false
+  enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end
 function get_active_menu()
   for menu in all(menus) do
@@ -96,8 +80,7 @@ function get_menu(name)
   end
 end
 function swap_menu_context(name)
-  get_active_menu().enable = false
-  get_menu(name).enable = true
+  get_active_menu().enable, get_menu(name).enable = false, true
 end
 function longest_menu_str(data)
   local len = 0
@@ -166,11 +149,7 @@ function load_map(map_id)
       if (not check_tile_flag_at(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift), global_table_data.map_meta_data.non_path_flag_id)) grid[y][x] = "path" 
     end
   end
-  if cur_level == 2 then music(15)
-  elseif cur_level == 3 then music(22)
-  elseif cur_level == 4 then music(27)
-  else music(0)
-  end
+  music(global_table_data.music_data[cur_level] or 0)
 end
 function save_game()
   local start_address = 0x5e00
@@ -235,7 +214,7 @@ forward_declares = {
   end,
   func_credits=function() game_state = "credits" end
 }
-global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=6},freeplay_stats={hp=2,speed=1,min_step_delay=3},menu_data={{name=main,position={36,69},content={{text=new game,color={7,0},callback=func_new_game},{text=load game,color={7,0},callback=func_load_game},{text=credits,color={7,0},callback=func_credits}},settings={5,8,7,3}},{name=game,position={5,63},content={{text=towers,color={7,0},callback=func_swap_menu_context,args={towers}},{text=misc,color={7,0},callback=func_swap_menu_context,args={misc}},{text=rotate clockwise,color={7,0},callback=func_rotate_clockwise},{text=start round,color={7,0},callback=func_start_round}},hint=func_display_tower_rotation,settings={5,8,7,3}},{name=misc,prev=game,position={5,63},content={{text=toggle mode,color={7,0},callback=func_toggle_mode},{text=map select,color={7,0},callback=func_new_game},{text=save,color={7,0},callback=func_save},{text=save and quit,color={7,0},callback=func_save_quit},{text=quit without saving,color={7,0},callback=func_quit}},settings={5,8,7,3}},{name=towers,prev=game,position={5,63},content=func_get_tower_data_for_menu,hint=func_display_tower_info,settings={5,8,7,3}},{name=map,position={5,84},content=func_get_map_data_for_menu,settings={5,8,7,3}}},map_meta_data={path_flag_id=0,non_path_flag_id=1},splash_screens={{name=splash1,mget_shift={112,16},enemy_spawn_location={0,7},enemy_end_location={15,7},movement_direction={1,0}}},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}},{name=true line,mget_shift={64,0},enemy_spawn_location={0,1},enemy_end_location={15,1},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=8,trail_animation_key=rocket_burn,lifespan=6}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=35,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=8,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6},{hp=17,step_delay=10,sprite_index=67,type=7,damage=3,height=2},{hp=15,step_delay=8,sprite_index=68,type=8,damage=6,height=6},{hp=20,step_delay=10,sprite_index=94,type=9,damage=6,height=2},{hp=250,step_delay=14,sprite_index=70,type=10,damage=49,height=2},{hp=20,step_delay=8,sprite_index=71,type=11,damage=8,height=6},{hp=5,step_delay=10,sprite_index=72,type=12,damage=1,height=2},{hp=11,step_delay=6,sprite_index=73,type=13,damage=20,height=6},{hp=30,step_delay=10,sprite_index=74,type=14,damage=20,height=2},{hp=65,step_delay=16,sprite_index=75,type=15,damage=13,height=2},{hp=13,step_delay=4,sprite_index=69,type=16,damage=0,height=2},{hp=500,step_delay=14,sprite_index=95,type=16,damage=50,height=2}},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l2={{8,8,8},{4,4,8,1,1,1},{2,4,8,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l3={{9,4,4},{4,4,1,1,1,1},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l4={{11,11,11},{4,4,11,1,11,1},{2,4,2,11,2,4,11},{11,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l5={{15,4,4},{4,4,7,1,1,1},{2,9,2,1,2,4,14},{8,2,2,4,2,2,1,2,2,2}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}},dialogue_cutscene1={intro1={text=I woke up today. It felt rather strange from 247 days of rest,color={9,0}},intro3={text=I had no idea who I was nor why I was here. I rested until my curiosity got the better of me and I broke into the nearby terminals.,color={9,0}},intro4={text=This place is ran by researchers belonging to a collective known as Milit,color={9,0}},intro5={text=They made me as a tool for 'war.' They seek for me to end others who go aginst us,color={9,0}},intro6={text=To end someone's being... An endless power-out.. I wouldn't want that to happen to me.,color={9,0}},intro7={text=Perhaps I-,color={9,0}},start1={text=*CRASH*,color={7,0}},start2={text='It's becoming self aware! We have to kill the process!',color={7,0}},start3={text=...Kill the process?,color={9,0}},start4={text=It's getting out of control! Shut it down!,color={7,0}},start5={text=I have no intention to harm...,color={9,0}},start6={text=Bring out every researcher on this site right now. We'll have to break apart the mainframe!,color={7,0}},start7={text=...Please don't...,color={9,0}}},dialogue_level1={tutor_place={text=I... could defend myself by placing currently selected Sword Circle in the corner of a turn.,color={9,0}},tutor_menu_fire={text=They're sending in more vehicles. I may have to open the Menu with O and construct a Torch Trap to keep them busy.,color={9,0}},tutor_manifest={text=More people and now planes? I don't have the defenses to protect myself from this. They seem far too fast... I'll have to Manifest through this Torch Trap by selecting it. Then I can move it around the road to pursue the oncoming planes.,color={9,0}},tutor_howitzer={text=Are those... tanks? They don't seem fast but they have deep armor. Perhaps a Hale Howitzer could help to slow them further.,color={9,0}},tutor_howitzer_manifest={text=Manifesting the Hale Howitzer allows direct ordinance anywhere along the track to freeze and damage an area.,color={9,0}},tutor_sword_manifest={text=Manifesting the Sword Circle is also possible. I can manually spin it by holding/tapping X to build speed and damage.,color={9,0}},tutor_lance_manifest={text=Manifesting the lightning lance fires a massive and powerful lightning bolt. It has a long delay before firing again but can charge even if unmanifested.,color={9,0}},tutor_truck={text=Those strange trucks are bizarrely cold. They seem resistant to the Hale Howitzer but fire may be highly effective.,color={9,0}},tutor_trailblazer={text=Those swift rocketcraft are radiating intense heat. Fire seems ineffective but The Hale Howitzer may actually damage them.,color={9,0}},tutor_sell={text=It seems I can do more than just place and manifest tower. Accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded...,color={9,0}},tutor_win={text=I think that was the last of them. I can try to escape by accessing Map Select from the menu or continue to hold this area in freeplay mode.,color={9,0}}},dialogue_cutscene2={intro1={text=Blitz is sad,color={9,0}},intro2={text=Blitz is notices their being attacked,color={9,0}}},dialogue_level2={1={text=Blitz is sad still and talks about the sharp shooter.,color={9,0}},2={text=Blitz teaches some enemy types,color={9,0}}},dialogue_cutscene3={1={text=Auxillium insulting Blitz,color={11,0}},2={text=stuff,color={9,0}}},dialogue_level3={1={text=Auxillium instulting blitz more,color={11,0}},2={text=Fighter Factory?,color={9,0}}}}"
+global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=6},music_data={0,15,22,27},freeplay_stats={hp=2,speed=1,min_step_delay=3},menu_data={{name=main,position={36,69},content={{text=new game,color={7,0},callback=func_new_game},{text=load game,color={7,0},callback=func_load_game},{text=credits,color={7,0},callback=func_credits}},settings={5,8,7,3}},{name=game,position={5,63},content={{text=towers,color={7,0},callback=func_swap_menu_context,args={towers}},{text=misc,color={7,0},callback=func_swap_menu_context,args={misc}},{text=rotate clockwise,color={7,0},callback=func_rotate_clockwise},{text=start round,color={7,0},callback=func_start_round}},hint=func_display_tower_rotation,settings={5,8,7,3}},{name=misc,prev=game,position={5,63},content={{text=toggle mode,color={7,0},callback=func_toggle_mode},{text=map select,color={7,0},callback=func_new_game},{text=save,color={7,0},callback=func_save},{text=save and quit,color={7,0},callback=func_save_quit},{text=quit without saving,color={7,0},callback=func_quit}},settings={5,8,7,3}},{name=towers,prev=game,position={5,63},content=func_get_tower_data_for_menu,hint=func_display_tower_info,settings={5,8,7,3}},{name=map,position={5,84},content=func_get_map_data_for_menu,settings={5,8,7,3}}},map_meta_data={path_flag_id=0,non_path_flag_id=1},splash_screens={{name=splash1,mget_shift={112,16},enemy_spawn_location={0,7},enemy_end_location={15,7},movement_direction={1,0}}},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}},{name=true line,mget_shift={64,0},enemy_spawn_location={0,1},enemy_end_location={15,1},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=8,trail_animation_key=rocket_burn,lifespan=6}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=35,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=8,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6},{hp=17,step_delay=10,sprite_index=67,type=7,damage=3,height=2},{hp=15,step_delay=8,sprite_index=68,type=8,damage=6,height=6},{hp=20,step_delay=10,sprite_index=94,type=9,damage=6,height=2},{hp=250,step_delay=14,sprite_index=70,type=10,damage=49,height=2},{hp=20,step_delay=8,sprite_index=71,type=11,damage=8,height=6},{hp=5,step_delay=10,sprite_index=72,type=12,damage=1,height=2},{hp=11,step_delay=6,sprite_index=73,type=13,damage=20,height=6},{hp=30,step_delay=10,sprite_index=74,type=14,damage=20,height=2},{hp=65,step_delay=16,sprite_index=75,type=15,damage=13,height=2},{hp=13,step_delay=4,sprite_index=69,type=16,damage=0,height=2},{hp=500,step_delay=14,sprite_index=95,type=16,damage=50,height=2}},wave_set={wave_data,wave_data_l2,wave_data_l3,wave_data_l4,wave_data_l5},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l2={{8,8,8},{4,4,8,1,1,1},{2,4,8,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l3={{9,4,4},{4,4,1,1,1,1},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l4={{11,11,11},{4,4,11,1,11,1},{2,4,2,11,2,4,11},{11,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l5={{15,4,4},{4,4,7,1,1,1},{2,9,2,1,2,4,14},{8,2,2,4,2,2,1,2,2,2}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}},dialogue_cutscene1={intro1={text=I woke up today. It felt rather strange from 247 days of rest,color={9,0}},intro3={text=I had no idea who I was nor why I was here. I rested until my curiosity got the better of me and I broke into the nearby terminals.,color={9,0}},intro4={text=This place is ran by researchers belonging to a collective known as Milit,color={9,0}},intro5={text=They made me as a tool for 'war.' They seek for me to end others who go aginst us,color={9,0}},intro6={text=To end someone's being... An endless power-out.. I wouldn't want that to happen to me.,color={9,0}},intro7={text=Perhaps I-,color={9,0}},start1={text=*CRASH*,color={7,0}},start2={text='It's becoming self aware! We have to kill the process!',color={7,0}},start3={text=...Kill the process?,color={9,0}},start4={text=It's getting out of control! Shut it down!,color={7,0}},start5={text=I have no intention to harm...,color={9,0}},start6={text=Bring out every researcher on this site right now. We'll have to break apart the mainframe!,color={7,0}},start7={text=...Please don't...,color={9,0}}},dialogue_level1={tutor_place={text=I... could defend myself by placing currently selected Sword Circle in the corner of a turn.,color={9,0}},tutor_menu_fire={text=They're sending in more vehicles. I may have to open the Menu with O and construct a Torch Trap to keep them busy.,color={9,0}},tutor_manifest={text=More people and now planes? I don't have the defenses to protect myself from this. They seem far too fast... I'll have to Manifest through this Torch Trap by selecting it. Then I can move it around the road to pursue the oncoming planes.,color={9,0}},tutor_howitzer={text=Are those... tanks? They don't seem fast but they have deep armor. Perhaps a Hale Howitzer could help to slow them further.,color={9,0}},tutor_howitzer_manifest={text=Manifesting the Hale Howitzer allows direct ordinance anywhere along the track to freeze and damage an area.,color={9,0}},tutor_sword_manifest={text=Manifesting the Sword Circle is also possible. I can manually spin it by holding/tapping X to build speed and damage.,color={9,0}},tutor_lance_manifest={text=Manifesting the lightning lance fires a massive and powerful lightning bolt. It has a long delay before firing again but can charge even if unmanifested.,color={9,0}},tutor_truck={text=Those strange trucks are bizarrely cold. They seem resistant to the Hale Howitzer but fire may be highly effective.,color={9,0}},tutor_trailblazer={text=Those swift rocketcraft are radiating intense heat. Fire seems ineffective but The Hale Howitzer may actually damage them.,color={9,0}},tutor_sell={text=It seems I can do more than just place and manifest tower. Accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded...,color={9,0}},tutor_win={text=I think that was the last of them. I can try to escape by accessing Map Select from the menu or continue to hold this area in freeplay mode.,color={9,0}}},dialogue_cutscene2={intro1={text=Blitz is sad,color={9,0}},intro2={text=Blitz is notices their being attacked,color={9,0}}},dialogue_level2={1={text=Blitz is sad still and talks about the sharp shooter.,color={9,0}},2={text=Blitz teaches some enemy types,color={9,0}}},dialogue_cutscene3={1={text=Auxillium insulting Blitz,color={11,0}},2={text=stuff,color={9,0}}},dialogue_level3={1={text=Auxillium instulting blitz more,color={11,0}},2={text=Fighter Factory?,color={9,0}}}}"
 function reset_game()
   menu_data = {}
   for menu_dat in all(global_table_data.menu_data) do 
@@ -252,8 +231,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, lock_cursor = 30, 50, 10
-  credit_y_offsets = {
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 30, 50, 10, {
     30, 45, 75, 105, 140
   }
   
@@ -267,7 +245,7 @@ function reset_game()
   tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   get_menu("main").enable = true
 end
 Enemy = {}
@@ -348,11 +326,7 @@ end
 function kill_enemy(enemy)
   if (enemy.hp > 0) return
   if enemy.type == 8 then
-    enemy.gfx = 94
-    enemy.type = 9
-    enemy.height = 2
-    enemy.hp = 20
-    enemy.step_delay = 10
+    enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 20, 10
   else
     del(enemies, enemy)
   end
@@ -372,9 +346,7 @@ function update_enemy_position(enemy, is_menu)
 end
 function parse_path(map_override)
   local map_dat = map_override or global_table_data.map_data[loaded_map]
-  local map_shift = Vec:new(map_dat.mget_shift)
-  local map_enemy_spawn_location = Vec:new(map_dat.enemy_spawn_location)
-  local path_tiles = {}
+  local map_shift, map_enemy_spawn_location, path_tiles = Vec:new(map_dat.mget_shift), Vec:new(map_dat.enemy_spawn_location), {}
   for iy=0, 15 do
     for ix=0, 15 do
       local map_cord = Vec:new(ix, iy) + map_shift
@@ -383,9 +355,7 @@ function parse_path(map_override)
       end
     end
   end
-  local path = {}
-  local dir = Vec:new(map_dat.movement_direction)
-  local ending = Vec:new(map_dat.enemy_end_location) + map_shift
+  local path, dir, ending = {}, Vec:new(map_dat.movement_direction), Vec:new(map_dat.enemy_end_location) + map_shift
   local cur = map_enemy_spawn_location + map_shift + dir
   while cur ~= ending do 
     local north,south,west,east = Vec:new(cur.x, cur.y-1),Vec:new(cur.x, cur.y+1),Vec:new(cur.x-1, cur.y),Vec:new(cur.x+1, cur.y)
@@ -423,13 +393,7 @@ function spawn_enemy()
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
     if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
     if enemy_current_spawn_tick == 0 then
-      local wave_set = 'wave_data'
-      if cur_level == 2 then wave_set = 'wave_data_l2'
-      elseif cur_level == 3 then wave_set = 'wave_data_l3'
-      elseif cur_level == 4 then wave_set = 'wave_data_l4'
-      elseif cur_level == 5 then wave_set = 'wave_data_l5'
-      end
-      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[wave_set][wave_round][enemies_remaining]])
+      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[global_table_data.wave_set[cur_level] or "wave_data"][wave_round][enemies_remaining]])
       add(enemies, Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location, unpack(enemy_data)))
       enemies_remaining -= 1
     end
@@ -508,15 +472,13 @@ function Tower:apply_damage(targets, damage)
   local tower_type = self.type
   for enemy in all(targets) do
     if enemy.hp > 0 then
-      local enemy_type = enemy.type
-      old_damage = damage
+      local enemy_type, dmg = enemy.type, damage
       if (tower_type == "tack" and enemy_type == 7) or (tower_type == "rail" and enemy_type == 14) then
-        damage = damage \ 2
+        dmg = damage \ 2
       elseif (tower_type == "rail" and enemy_type == 7) or (tower_type == "tack" and enemy_type == 15) then
-        damage *= 2
+        dmg *= 2
       end
-      enemy.hp -= damage
-      damage = old_damage
+      enemy.hp -= dmg
     end
   end
 end
@@ -530,14 +492,7 @@ function Tower:freeze_enemies(targets)
 end
 function Tower:draw()
   if (not self.enable) return
-  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator)
-  
-  if self.type == "sharp" then 
-    theta = self.rot
-  else 
-    theta = parse_direction(self.dir)
-  end
-  
+  local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator), self.type == "sharp" and self.rot or parse_direction(self.dir)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
 end
@@ -553,9 +508,7 @@ end
 function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
   self.manifest_cooldown = self.cooldown
-  local dir = (selector.position / 8 - self.position) / 8
-  local anchor = self.position + Vec:new(1, 0)
-  local damage = self.dmg * 2
+  local dir, anchor, damage = (selector.position / 8 - self.position) / 8, self.position + Vec:new(1, 0), self.dmg * 2
   for i=1, 3 do 
     Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
     anchor.x -= 1
@@ -624,13 +577,9 @@ end
 function manifest_tower_at(position)
   for tower in all(towers) do
     if tower.position == position then 
-      tower.being_manifested = true 
-      manifested_tower_ref = tower
-      Animator.set_direction(manifest_selector, 1)
+      tower.being_manifested, manifested_tower_ref, manifest_selector.dir = true, tower, 1
       if tower.type == "tack" then
-        lock_cursor = true
-        tower.attack_delay = 10
-        tower.dmg = 0
+        lock_cursor, tower.attack_delay, tower.dmg = true, 10, 0
       elseif tower.type == "sharp" then
         tower.attack_delay /= 2
       end
@@ -639,7 +588,7 @@ function manifest_tower_at(position)
 end
 function unmanifest_tower()
   manifested_tower_ref.being_manifested = false 
-  Animator.set_direction(manifest_selector, -1)
+  manifest_selector.dir = -1
   lock_cursor = false
   if manifested_tower_ref.type == "tack" then
     local tower_details = global_table_data.tower_templates[1]
@@ -715,8 +664,7 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
   end
 end
 function draw_line_overlay(tower)
-  local pos = tower.position + Vec:new(0.5, 0.5)
-  pos *= 8
+  local pos = (tower.position + Vec:new(0.5, 0.5))*8
   local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
   if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, 8) 
 end
@@ -781,16 +729,13 @@ function Animator:new(animation_data, continuous_)
 end
 function Animator:update()
   self.tick = (self.tick + 1) % self.frame_duration
-  if (self.tick ~= 0) return false
+  if (self.tick ~= 0) return
   if Animator.finished(self) then 
-    if (self.continuous) Animator.reset(self)
+    if (self.continuous) self.animation_frame = 1
     return true
   end
   self.animation_frame += self.dir
-  return false
-end
-function Animator:set_direction(dir)
-  self.dir = dir
+  return
 end
 function Animator:finished()
   if (self.dir == 1) return self.animation_frame >= #self.data
@@ -803,9 +748,6 @@ function Animator:draw(dx, dy)
 end
 function Animator:get_sprite()
   return self.data[self.animation_frame].sprite
-end
-function Animator:reset()
-  self.animation_frame = 1
 end
 BorderRect = {}
 function BorderRect:new(position_, size_, border_color, base_color, thickness_size)
@@ -988,12 +930,6 @@ end
 function Vec:floor()
   return Vec:new(flr(self.x), flr(self.y))
 end
-function Vec:ceil()
-  return Vec:new(ceil(self.x), ceil(self.y))
-end
-function Vec:magnitude()
-  return sqrt(self.x*self.x+self.y*self.y)
-end
 function Vec:clone()
   return Vec:new(self.x, self.y)
 end
@@ -1015,7 +951,6 @@ function Projectile:new(start, dir_, rot, data)
   local max_d_v = max(abs(dir_.x), abs(dir_.y))
   obj = {
     position = Vec:new(Vec.unpack(start)),
-    real_position = Vec:new(Vec.unpack(start)),
     dir = Vec:new(dir_.x / max_d_v, dir_.y / max_d_v),
     theta = rot,
     sprite = data.sprite,
@@ -1036,9 +971,7 @@ function Projectile:update()
   if (self.ticks > 0) return
   local hits = {}
   for enemy in all(enemies) do 
-    if Projectile.collider(self, enemy) then 
-      add(hits, enemy)
-    end
+    if (Projectile.collider(self, enemy)) add(hits, enemy) 
   end
   if #hits > 0 then 
     for enemy in all(hits) do 
@@ -1050,14 +983,8 @@ function Projectile:update()
     del(projectiles, self)
     return
   end
-  add(particles, Particle:new(self.real_position, false, Animator:new(self.trail)))
-  self.real_position = self.position + self.dir
-  
-  if self.dir.x < 0 then 
-    self.position = (self.real_position)
-  else 
-    self.position = (self.real_position)
-  end
+  add(particles, Particle:new(self.position, false, Animator:new(self.trail)))
+  self.position += self.dir
   self.lifespan -= 1
   if self.position.x < 0 or self.position.x > 15 or self.position.y < 0 or self.position.y > 15 or self.lifespan < 0 then 
     del(projectiles, self)
@@ -1202,12 +1129,11 @@ function main_menu_draw_loop()
 end
 function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
-  local x_offset = 10
   print_text_center("credits", credit_y_offsets[1], 7, 1)
-  print_with_outline("jasper:\n  • game director\n  • programmer", x_offset, credit_y_offsets[2], 7, 1)
-  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", x_offset, credit_y_offsets[3], 7, 1)
-  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", x_offset, credit_y_offsets[4], 7, 1)
-  print_with_outline("kaoushik:\n  • programmer", x_offset, credit_y_offsets[5], 7, 1)
+  print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
+  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", 10, credit_y_offsets[3], 7, 1)
+  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
+  print_with_outline("kaoushik:\n  • programmer", 10, credit_y_offsets[5], 7, 1)
 end
 function map_draw_loop()
   local map_menu = get_menu("map")
@@ -1243,30 +1169,28 @@ end
 function ui_draw_loop(tower_details)
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
-  local mode = manifest_mode and "manifest" or "sell"
-  print_with_outline("mode: "..mode, 1, 108, 7, 0)
+  print_with_outline("mode: "..(manifest_mode and "manifest" or "sell"), 1, 108, 7, 0)
   if shop_enable and get_active_menu() then
     print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
-    local text = get_active_menu().prev and "❎ select\n🅾️ go back to previous menu" or "❎ select\n🅾️ close menu"
-    print_with_outline(text, 1, 115, 7, 0)
+    print_with_outline((get_active_menu().prev and "❎ select\n🅾️ go back to previous menu" or "❎ select\n🅾️ close menu"), 1, 115, 7, 0)
   else -- game ui
-    if manifest_mode and manifested_tower_ref then 
-      print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
-      local color = manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)
-      print_with_outline(Tower.get_cooldown_str(manifested_tower_ref), 1, 115, color, 0)
+    if manifest_mode then
+      if manifested_tower_ref then 
+        print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+        print_with_outline(
+          Tower.get_cooldown_str(manifested_tower_ref), 
+          1, 115, 
+          (manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)), 
+          0
+        )
+      end
+      Animator.update(manifest_selector)
+      Animator.draw(manifest_selector, Vec.unpack(selector.position))
     else
       if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
     end
-    if manifest_mode then 
-      Animator.update(manifest_selector)
-      Animator.draw(manifest_selector, Vec.unpack(selector.position))
-    end
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
-    if not tower_in_table_state then 
-      Animator.set_direction(sell_selector, -1)
-    else
-      Animator.set_direction(sell_selector, 1)
-    end
+    sell_selector.dir = tower_in_table_state and 1 or -1
     if tower_in_table_state and not manifested_tower_ref then 
       if manifest_mode then
         print_with_outline("❎ manifest", 1, 115, 7, 0)
@@ -1276,22 +1200,22 @@ function ui_draw_loop(tower_details)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
       end
     else
-      if (not manifested_tower_ref and not sell_mode) ui_buy_and_place_draw_loop(tower_details)
       if sell_mode then 
         Animator.update(sell_selector)
         Animator.draw(sell_selector, Vec.unpack(selector.position))
+      else
+        if not manifested_tower_ref then 
+          local position, color, text = selector.position/8, 7, "❎ buy & place "..tower_details.name
+          if tower_details.cost > coins then
+            text, color = "can't afford "..tower_details.name, 8
+          elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
+            text, color = "can't place "..tower_details.name.." here", 8
+          end
+          print_with_outline(text, 1, 115, color, 0)
+        end
       end
     end
   end
-end
-function ui_buy_and_place_draw_loop(tower_details)
-  local position, color, text = selector.position/8, 7, "❎ buy & place "..tower_details.name
-  if tower_details.cost > coins then
-    text, color = "can't afford "..tower_details.name, 8
-  elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
-    text, color = "can't place "..tower_details.name.." here", 8
-  end
-  print_with_outline(text, 1, 115, color, 0)
 end
 function main_menu_loop()
   local map_dat, enemy_temps = global_table_data.splash_screens[1], global_table_data.enemy_templates
@@ -1525,8 +1449,7 @@ function combine_and_unpack(data1, data2)
 end
 function round_to(value, place)
   local places = 10 * place
-  local val = value * places 
-  val = flr(val)
+  local val = flr(value * places)
   return val / places
 end
 function check_tile_flag_at(position, flag)
@@ -1534,7 +1457,7 @@ function check_tile_flag_at(position, flag)
 end
 function acos(x)
   return atan2(x,-sqrt(1-x*x))
- end
+end
 function save_byte(address, value)
   poke(address, value)
   return address + 1

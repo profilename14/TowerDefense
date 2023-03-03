@@ -89,11 +89,7 @@ function kill_enemy(enemy)
   if (enemy.hp > 0) return
   -- To save tokens, the Carrier literally just morphs into a car.
   if enemy.type == 8 then
-    enemy.gfx = 94
-    enemy.type = 9
-    enemy.height = 2
-    enemy.hp = 20
-    enemy.step_delay = 10
+    enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 20, 10
   else
     del(enemies, enemy)
   end
@@ -115,9 +111,7 @@ end
 
 function parse_path(map_override)
   local map_dat = map_override or global_table_data.map_data[loaded_map]
-  local map_shift = Vec:new(map_dat.mget_shift)
-  local map_enemy_spawn_location = Vec:new(map_dat.enemy_spawn_location)
-  local path_tiles = {}
+  local map_shift, map_enemy_spawn_location, path_tiles = Vec:new(map_dat.mget_shift), Vec:new(map_dat.enemy_spawn_location), {}
   for iy=0, 15 do
     for ix=0, 15 do
       local map_cord = Vec:new(ix, iy) + map_shift
@@ -127,9 +121,7 @@ function parse_path(map_override)
     end
   end
 
-  local path = {}
-  local dir = Vec:new(map_dat.movement_direction)
-  local ending = Vec:new(map_dat.enemy_end_location) + map_shift
+  local path, dir, ending = {}, Vec:new(map_dat.movement_direction), Vec:new(map_dat.enemy_end_location) + map_shift
   local cur = map_enemy_spawn_location + map_shift + dir
   while cur ~= ending do 
     local north,south,west,east = Vec:new(cur.x, cur.y-1),Vec:new(cur.x, cur.y+1),Vec:new(cur.x-1, cur.y),Vec:new(cur.x+1, cur.y)
@@ -169,14 +161,7 @@ function spawn_enemy()
     enemy_current_spawn_tick = (enemy_current_spawn_tick + 1) % enemy_required_spawn_ticks
     if (is_in_table(Vec:new(global_table_data.map_data[loaded_map].enemy_spawn_location), enemies, true)) goto spawn_enemy_continue
     if enemy_current_spawn_tick == 0 then
-      local wave_set = 'wave_data'
-      -- This is pretty weird but it saves 40 tokens.
-      if cur_level == 2 then wave_set = 'wave_data_l2'
-      elseif cur_level == 3 then wave_set = 'wave_data_l3'
-      elseif cur_level == 4 then wave_set = 'wave_data_l4'
-      elseif cur_level == 5 then wave_set = 'wave_data_l5'
-      end
-      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[wave_set][wave_round][enemies_remaining]])
+      local enemy_data = increase_enemy_health(global_table_data.enemy_templates[global_table_data[global_table_data.wave_set[cur_level] or "wave_data"][wave_round][enemies_remaining]])
       add(enemies, Enemy:new(global_table_data.map_data[loaded_map].enemy_spawn_location, unpack(enemy_data)))
       enemies_remaining -= 1
     end

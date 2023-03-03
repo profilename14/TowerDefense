@@ -1,13 +1,10 @@
 -- Tower Related
 function choose_tower(id)
-  selected_menu_tower_id = id
-  get_active_menu().enable = false
-  shop_enable = false
+  selected_menu_tower_id, get_active_menu().enable, shop_enable = id
 end
 
 function display_tower_info(tower_id, position, text_color)
-  local position_offset = position + Vec:new(-1, -31)
-  local tower_details = global_table_data.tower_templates[tower_id]
+  local position_offset, tower_details = position + Vec:new(-1, -31), global_table_data.tower_templates[tower_id]
   local texts = {
     {text = tower_details.name}, 
     {text = tower_details.prefix..": "..tower_details.damage}
@@ -43,8 +40,7 @@ function display_tower_info(tower_id, position, text_color)
 end
 
 function display_tower_rotation(menu_pos, position)
-  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  local position_offset = position + Vec:new(0, -28)
+  local tower_details, position_offset = global_table_data.tower_templates[selected_menu_tower_id], position + Vec:new(0, -28)
   BorderRect.reposition(tower_rotation_background_rect, position_offset)
   BorderRect.draw(tower_rotation_background_rect)
 
@@ -69,19 +65,8 @@ function start_round()
   if (start_next_wave or #enemies ~= 0) return
   start_next_wave,enemies_active = true,true
 
-  if cur_level == 2 then
-    wave_set_for_num = 'wave_data_l2'
-  elseif cur_level == 3 then
-    wave_set_for_num = 'wave_data_l3'
-  elseif cur_level == 4 then
-    wave_set_for_num = 'wave_data_l4'
-  elseif cur_level == 5 then
-    wave_set_for_num = 'wave_data_l5'
-  else
-    wave_set_for_num = 'wave_data'
-  end
-
-  max_waves = #global_table_data[wave_set_for_num]
+  local wave_set_for_num = global_table_data.wave_set[cur_level] or "wave_data"
+  local max_waves = #global_table_data[wave_set_for_num]
 
   wave_round = min(wave_round + 1, max_waves)
   if (wave_round == max_waves or freeplay_rounds > 0) freeplay_rounds += 1
@@ -91,9 +76,7 @@ function start_round()
     wave_round -= flr(rnd(3))
   end
 
-  enemies_remaining = #global_table_data[wave_set_for_num][wave_round]
-  get_active_menu().enable = false
-  shop_enable = false
+  enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end
 
 -- Menu Related
@@ -110,8 +93,7 @@ function get_menu(name)
 end
 
 function swap_menu_context(name)
-  get_active_menu().enable = false
-  get_menu(name).enable = true
+  get_active_menu().enable, get_menu(name).enable = false, true
 end
 
 function longest_menu_str(data)
@@ -187,12 +169,7 @@ function load_map(map_id)
       if (not check_tile_flag_at(Vec:new(x, y) + Vec:new(global_table_data.map_data[loaded_map].mget_shift), global_table_data.map_meta_data.non_path_flag_id)) grid[y][x] = "path" 
     end
   end
-  if cur_level == 2 then music(15)
-  elseif cur_level == 3 then music(22)
-  elseif cur_level == 4 then music(27)
-  -- Level 1 and 5
-  else music(0)
-  end
+  music(global_table_data.music_data[cur_level] or 0)
 end
 
 function save_game()

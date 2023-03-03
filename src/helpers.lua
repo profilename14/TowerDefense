@@ -116,8 +116,7 @@ end
 
 function round_to(value, place)
   local places = 10 * place
-  local val = value * places 
-  val = flr(val)
+  local val = flr(value * places)
   return val / places
 end
 
@@ -128,7 +127,7 @@ end
 -- https://www.lexaloffle.com/bbs/?tid=3142
 function acos(x)
   return atan2(x,-sqrt(1-x*x))
- end
+end
 
 function save_byte(address, value)
   poke(address, value)

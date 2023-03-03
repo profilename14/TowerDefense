@@ -30,6 +30,7 @@
   "sfx_data": {
     "round_complete": 6
   },
+  "music_data": [0, 15, 22, 27],
   "freeplay_stats": {
     "hp": 2,
     "speed": 1,
@@ -518,6 +519,13 @@
       "damage": 50,
       "height": 2
     }
+  ],
+  "wave_set": [
+    "wave_data",
+    "wave_data_l2",
+    "wave_data_l3",
+    "wave_data_l4",
+    "wave_data_l5"
   ],
   "wave_data": [
     [4, 4, 4],
