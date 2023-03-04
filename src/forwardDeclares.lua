@@ -66,11 +66,7 @@ function start_round()
   start_next_wave,enemies_active = true,true
 
   local wave_set_for_num = global_table_data.wave_set[cur_level] or "wave_data"
-<<<<<<< Updated upstream
-  local max_waves = #global_table_data[wave_set_for_num]
-=======
   max_waves = #global_table_data[wave_set_for_num]
->>>>>>> Stashed changes
 
   wave_round = min(wave_round + 1, max_waves)
   if freeplay_rounds > 0 then
@@ -190,16 +186,12 @@ function save_game()
   -- map id
   start_address = save_byte(start_address, loaded_map)
   -- wave
-<<<<<<< Updated upstream
-  start_address = save_byte(start_address, wave_round)
-=======
   if wave_finish then
     wave_to_save = wave_round
   else
     wave_to_save = wave_round - 1
   end
   start_address = save_byte(start_address, wave_to_Save)
->>>>>>> Stashed changes
   -- freeplay round
   save_int(start_address, freeplay_rounds)
 end
