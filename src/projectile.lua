@@ -29,7 +29,11 @@ function Projectile:update()
   end
   if #hits > 0 then 
     for enemy in all(hits) do 
-      enemy.hp -= self.damage
+      if enemy.type == 12 then
+        enemy.hp -= self.damage / 2
+      else
+        enemy.hp -= self.damage
+      end
       if (enemy.type == 8 and enemy.hp <= 0) del(enemies, enemy)
       -- Currently testing the balance of single target vs hitting all enemies on a tile.
       -- So far seems to be a good solution to the tower's current strength, but for enemy in all is left in case we revert.

@@ -1,6 +1,6 @@
 -- FOR REFERENCE IN DATA.LUA:
 -- 1 = car, 2 = plane, 3 = tank, 4 = lab cart, 5 = ice truck, 6 = trailblazer, 7 = auxillium bot
--- 8 = carrier, 9 = cargo car, 10 = first boss, 11 = spy plane (type 0 when invisible), 12 = swarmer
+-- 8 = carrier, 9 = cargo car, 10 = first boss, 11 = spy plane (type 0 when invisible), 12 = armored AV
 -- 13 = remote missile, 14 = shield generator, 15 = mech, 16 = robber, 17 = The Emperor (last boss)
 Enemy = {}
 function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height_)
@@ -29,7 +29,7 @@ function Enemy:step()
 
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
-    -- Sense the reward system was retired, I'm just recycling it into an ID system.
+    -- Since the reward system was retired, I'm just recycling it into an ID system.
     if self.type == 6 then
       self.hp -= 0.5
     elseif self.type == 5 then
@@ -89,7 +89,11 @@ function kill_enemy(enemy)
   if (enemy.hp > 0) return
   -- To save tokens, the Carrier literally just morphs into a car.
   if enemy.type == 8 then
+<<<<<<< Updated upstream
     enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 20, 10
+=======
+    enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 15, 10
+>>>>>>> Stashed changes
   else
     del(enemies, enemy)
   end

@@ -60,6 +60,7 @@ function start_round()
   if (start_next_wave or #enemies ~= 0) return
   start_next_wave,enemies_active = true,true
   local wave_set_for_num = global_table_data.wave_set[cur_level] or "wave_data"
+<<<<<<< Updated upstream
   local max_waves = #global_table_data[wave_set_for_num]
   wave_round = min(wave_round + 1, max_waves)
   if (wave_round == max_waves or freeplay_rounds > 0) freeplay_rounds += 1
@@ -67,6 +68,16 @@ function start_round()
     wave_round = max_waves
     wave_round -= flr(rnd(3))
   end
+=======
+  max_waves = #global_table_data[wave_set_for_num]
+  wave_round = min(wave_round + 1, max_waves)
+  if freeplay_rounds > 0 then
+    freeplay_rounds += 1
+    wave_round = max_waves
+    wave_round -= flr(rnd(3))
+  end
+  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds += 1
+>>>>>>> Stashed changes
   enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end
 function get_active_menu()
@@ -160,7 +171,16 @@ function save_game()
   end
   start_address = save_int(start_address, coins + tower_full_refund)
   start_address = save_byte(start_address, loaded_map)
+<<<<<<< Updated upstream
   start_address = save_byte(start_address, wave_round)
+=======
+  if wave_finish then
+    wave_to_save = wave_round
+  else
+    wave_to_save = wave_round - 1
+  end
+  start_address = save_byte(start_address, wave_to_Save)
+>>>>>>> Stashed changes
   save_int(start_address, freeplay_rounds)
 end
 function load_game()
@@ -214,7 +234,11 @@ forward_declares = {
   end,
   func_credits=function() game_state = "credits" end
 }
+<<<<<<< Updated upstream
 global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=6},music_data={0,15,22,27},freeplay_stats={hp=2,speed=1,min_step_delay=3},menu_data={{name=main,position={36,69},content={{text=new game,color={7,0},callback=func_new_game},{text=load game,color={7,0},callback=func_load_game},{text=credits,color={7,0},callback=func_credits}},settings={5,8,7,3}},{name=game,position={5,63},content={{text=towers,color={7,0},callback=func_swap_menu_context,args={towers}},{text=misc,color={7,0},callback=func_swap_menu_context,args={misc}},{text=rotate clockwise,color={7,0},callback=func_rotate_clockwise},{text=start round,color={7,0},callback=func_start_round}},hint=func_display_tower_rotation,settings={5,8,7,3}},{name=misc,prev=game,position={5,63},content={{text=toggle mode,color={7,0},callback=func_toggle_mode},{text=map select,color={7,0},callback=func_new_game},{text=save,color={7,0},callback=func_save},{text=save and quit,color={7,0},callback=func_save_quit},{text=quit without saving,color={7,0},callback=func_quit}},settings={5,8,7,3}},{name=towers,prev=game,position={5,63},content=func_get_tower_data_for_menu,hint=func_display_tower_info,settings={5,8,7,3}},{name=map,position={5,84},content=func_get_map_data_for_menu,settings={5,8,7,3}}},map_meta_data={path_flag_id=0,non_path_flag_id=1},splash_screens={{name=splash1,mget_shift={112,16},enemy_spawn_location={0,7},enemy_end_location={15,7},movement_direction={1,0}}},map_data={{name=curves,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=loop,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=straight,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=u-turn,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}},{name=true line,mget_shift={64,0},enemy_spawn_location={0,1},enemy_end_location={15,1},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=8,trail_animation_key=rocket_burn,lifespan=6}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=35,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=8,prefix=damage,radius=10,animation_key=sharp_shooter,cost=0,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6},{hp=17,step_delay=10,sprite_index=67,type=7,damage=3,height=2},{hp=15,step_delay=8,sprite_index=68,type=8,damage=6,height=6},{hp=20,step_delay=10,sprite_index=94,type=9,damage=6,height=2},{hp=250,step_delay=14,sprite_index=70,type=10,damage=49,height=2},{hp=20,step_delay=8,sprite_index=71,type=11,damage=8,height=6},{hp=5,step_delay=10,sprite_index=72,type=12,damage=1,height=2},{hp=11,step_delay=6,sprite_index=73,type=13,damage=20,height=6},{hp=30,step_delay=10,sprite_index=74,type=14,damage=20,height=2},{hp=65,step_delay=16,sprite_index=75,type=15,damage=13,height=2},{hp=13,step_delay=4,sprite_index=69,type=16,damage=0,height=2},{hp=500,step_delay=14,sprite_index=95,type=16,damage=50,height=2}},wave_set={wave_data,wave_data_l2,wave_data_l3,wave_data_l4,wave_data_l5},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l2={{8,8,8},{4,4,8,1,1,1},{2,4,8,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l3={{9,4,4},{4,4,1,1,1,1},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l4={{11,11,11},{4,4,11,1,11,1},{2,4,2,11,2,4,11},{11,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,1,1,1,1,1,1,2,2,5,5,5,5,5},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,1},{5,5,5,5,5,5,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6,6,6,6},{5,5,5,5,5,5,3,3,2,2,2,2,2,3,3,3,6,6,6,6,6,6,6}},wave_data_l5={{15,4,4},{4,4,7,1,1,1},{2,9,2,1,2,4,14},{8,2,2,4,2,2,1,2,2,2}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}},dialogue_cutscene1={intro1={text=I woke up today. It felt rather strange from 247 days of rest,color={9,0}},intro3={text=I had no idea who I was nor why I was here. I rested until my curiosity got the better of me and I broke into the nearby terminals.,color={9,0}},intro4={text=This place is ran by researchers belonging to a collective known as Milit,color={9,0}},intro5={text=They made me as a tool for 'war.' They seek for me to end others who go aginst us,color={9,0}},intro6={text=To end someone's being... An endless power-out.. I wouldn't want that to happen to me.,color={9,0}},intro7={text=Perhaps I-,color={9,0}},start1={text=*CRASH*,color={7,0}},start2={text='It's becoming self aware! We have to kill the process!',color={7,0}},start3={text=...Kill the process?,color={9,0}},start4={text=It's getting out of control! Shut it down!,color={7,0}},start5={text=I have no intention to harm...,color={9,0}},start6={text=Bring out every researcher on this site right now. We'll have to break apart the mainframe!,color={7,0}},start7={text=...Please don't...,color={9,0}}},dialogue_level1={tutor_place={text=I... could defend myself by placing currently selected Sword Circle in the corner of a turn.,color={9,0}},tutor_menu_fire={text=They're sending in more vehicles. I may have to open the Menu with O and construct a Torch Trap to keep them busy.,color={9,0}},tutor_manifest={text=More people and now planes? I don't have the defenses to protect myself from this. They seem far too fast... I'll have to Manifest through this Torch Trap by selecting it. Then I can move it around the road to pursue the oncoming planes.,color={9,0}},tutor_howitzer={text=Are those... tanks? They don't seem fast but they have deep armor. Perhaps a Hale Howitzer could help to slow them further.,color={9,0}},tutor_howitzer_manifest={text=Manifesting the Hale Howitzer allows direct ordinance anywhere along the track to freeze and damage an area.,color={9,0}},tutor_sword_manifest={text=Manifesting the Sword Circle is also possible. I can manually spin it by holding/tapping X to build speed and damage.,color={9,0}},tutor_lance_manifest={text=Manifesting the lightning lance fires a massive and powerful lightning bolt. It has a long delay before firing again but can charge even if unmanifested.,color={9,0}},tutor_truck={text=Those strange trucks are bizarrely cold. They seem resistant to the Hale Howitzer but fire may be highly effective.,color={9,0}},tutor_trailblazer={text=Those swift rocketcraft are radiating intense heat. Fire seems ineffective but The Hale Howitzer may actually damage them.,color={9,0}},tutor_sell={text=It seems I can do more than just place and manifest tower. Accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded...,color={9,0}},tutor_win={text=I think that was the last of them. I can try to escape by accessing Map Select from the menu or continue to hold this area in freeplay mode.,color={9,0}}},dialogue_cutscene2={intro1={text=Blitz is sad,color={9,0}},intro2={text=Blitz is notices their being attacked,color={9,0}}},dialogue_level2={1={text=Blitz is sad still and talks about the sharp shooter.,color={9,0}},2={text=Blitz teaches some enemy types,color={9,0}}},dialogue_cutscene3={1={text=Auxillium insulting Blitz,color={11,0}},2={text=stuff,color={9,0}}},dialogue_level3={1={text=Auxillium instulting blitz more,color={11,0}},2={text=Fighter Factory?,color={9,0}}}}"
+=======
+global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=6},music_data={0,15,22,27},freeplay_stats={hp=1.67,speed=1,min_step_delay=5},menu_data={{name=main,position={36,69},content={{text=new game,color={7,0},callback=func_new_game},{text=load game,color={7,0},callback=func_load_game},{text=credits,color={7,0},callback=func_credits}},settings={5,8,7,3}},{name=game,position={5,63},content={{text=towers,color={7,0},callback=func_swap_menu_context,args={towers}},{text=misc,color={7,0},callback=func_swap_menu_context,args={misc}},{text=rotate clockwise,color={7,0},callback=func_rotate_clockwise},{text=start round,color={7,0},callback=func_start_round}},hint=func_display_tower_rotation,settings={5,8,7,3}},{name=misc,prev=game,position={5,63},content={{text=toggle mode,color={7,0},callback=func_toggle_mode},{text=map select,color={7,0},callback=func_new_game},{text=save,color={7,0},callback=func_save},{text=save and quit,color={7,0},callback=func_save_quit},{text=quit without saving,color={7,0},callback=func_quit}},settings={5,8,7,3}},{name=towers,prev=game,position={5,63},content=func_get_tower_data_for_menu,hint=func_display_tower_info,settings={5,8,7,3}},{name=map,position={5,84},content=func_get_map_data_for_menu,settings={5,8,7,3}}},map_meta_data={path_flag_id=0,non_path_flag_id=1},splash_screens={{name=splash1,mget_shift={112,16},enemy_spawn_location={0,7},enemy_end_location={15,7},movement_direction={1,0}}},map_data={{name=laboratory,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=wilderness,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=ruined town,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=strategic base,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}},{name=milit capital,mget_shift={64,0},enemy_spawn_location={0,1},enemy_end_location={15,1},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=8,trail_animation_key=rocket_burn,lifespan=6}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=15,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=5,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=25,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=35,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=8,prefix=damage,radius=10,animation_key=sharp_shooter,cost=35,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6},{hp=17,step_delay=10,sprite_index=67,type=7,damage=3,height=2},{hp=13,step_delay=8,sprite_index=68,type=8,damage=6,height=6},{hp=15,step_delay=10,sprite_index=94,type=9,damage=3,height=2},{hp=225,step_delay=16,sprite_index=70,type=10,damage=49,height=2},{hp=20,step_delay=8,sprite_index=71,type=11,damage=8,height=6},{hp=5,step_delay=10,sprite_index=72,type=12,damage=1,height=2},{hp=11,step_delay=6,sprite_index=73,type=13,damage=20,height=6},{hp=35,step_delay=12,sprite_index=74,type=14,damage=20,height=2},{hp=65,step_delay=16,sprite_index=75,type=15,damage=13,height=2},{hp=13,step_delay=4,sprite_index=69,type=16,damage=0,height=2},{hp=300,step_delay=14,sprite_index=95,type=16,damage=50,height=2}},wave_set={wave_data,wave_data_l2,wave_data_l3,wave_data_l4,wave_data_l5},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,1,2,2,2},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,3,3,3,3,3,3,1,2,2,2,2,2,2,2,2,2,2,2,2},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,4},{3,5,3,5,3,5,3,5,3,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6},{5,5,5,5,5,3,3,1,1,1,1,3,3,3,6,6,6,6,6}},wave_data_l2={{1,1,1},{1,1,2,2,2,2},{3,3,1,1,2,2,2,2},{3,3,3,3,3,2,2,2,1,1,1,1,1},{7,7,7,1,7,7,1,7,7},{8,8,8,9,9,9},{9,9,9,1,1,5,5,5,5,5},{9,9,9,8,8,8,7,7,7},{3,3,3,3,3,8,6,8,6,8,6,8,6},{5,5,5,5,5,16,9,9,9,7,7,7,2,2,2,2,2,2,2,2},{6,6,6,6,5,5,5,5,5,5,5,5,6,6,6,6},{3,3,3,3,1,1,2,2,2,2,2,16,2,2,2,2,16},{5,5,5,6,6,6,8,8,8,5,6,5,6},{7,9,7,9,7,9,7,9,7,9,8,8,8,8,8,8,8,8,8},{10}},wave_data_l3={{9,9,9},{7,7,7,7,7,7},{2,2,2,3,3,3,1,1,1,1},{3,3,3,7,7,7,7,7,7,2,2,2,2,2,2},{12,12,12,12,12,12,12,12,12},{8,8,8,7,7,7,7,8,8,8},{8,8,8,5,5,5,12,12,12,12},{13,13,13,13,7,7,7,7},{6,6,6,6,6,12,12,12,12,7,7,7,7},{12,12,12,12,5,7,7,8,8,8,8,8,8},{5,5,5,13,13,13,13,13,6,6,6},{7,7,7,7,7,7,7,16,16,16,6,6,6},{12,12,12,12,7,7,7,13,13,13,13,13,13,13},{12,12,12,12,8,8,8,8,12,12,12,12,8,8,8,8,12,12,12,12}},wave_data_l4={{2,2,2,2,2},{3,3,3,2,2,2,3,3,3,2,2,2},{11,11,11,11,11,11},{11,11,11,3,3,3,11,11,11,11,11,11},{7,7,7,7,5,5,5,5,2,2,2,2,2,2},{13,13,11,11,8,8,11,11,8,8,11,11,8,8},{14,14,14,14,14,14,14,14,14,14,14,14},{12,12,12,12,12,12,12,11,11,11,14,14,14,14,14,14},{16,5,5,5,5,7,7,7,16,6,6,6,6,7,7,7},{14,14,14,14,14,14,8,8,8,8,8,11,11,11,11,11},{7,7,7,7,7,7,7,13,13,13,13,13,13,13,13,13,16},{14,14,14,14,14,8,8,8,8,8,11,13,11,13,11,13},{15,15,15,14,14,14,11,11,11,6,6,6,14,14,14,11,11,11,6,6,6},{14,14,14,14,7,7,7,7,14,14,7,7,13,13,13},{5,5,5,11,11,11,6,6,6,11,11,11,8,8,8,11,11,11,12,12,12}},wave_data_l5={{3,3,3,3,3},{2,3,2,3,2,3,2,3},{5,5,5,3,3,3,2,2,2,2},{3,3,3,3,3,9,9,9,9,2,2,2,2,7,7,7,7},{12,12,14,14,11,11,11,11},{15,15,15,15,15,15},{8,8,8,8,7,7,7,7,7,7,7,16,12,12,12,12,12,12},{3,3,3,15,15,15,3,3,15,15,15,2,2,2,2,2,2,2,2,7,7,7,7},{5,5,5,9,9,9,6,6,6,6,6,6,5,5,5,5,5,5},{15,15,15,15,5,5,5,5,16,11,11,11,12,12,12},{3,7,2,3,7,2,3,7,2,9,9,9,9,9,16},{13,13,13,7,7,7,7,7,7,13,13,13,7,7,7,7,7,7,13,13,13,13},{15,15,15,8,8,8,8,8,8,8,16,13,13,13,13},{15,15,6,6,5,5,15,15,8,8,12,12,12},{5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6},{7,7,7,7,12,12,12,12,8,8,8,8,12,12,12,12,8,8,8,8,12,12,12,12},{14,14,14,5,5,5,11,11,11,6,6,6,11,11,11,8,8,8,11,11,11,12,12,12},{1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,5,6,7,8,9,11,12,13,14,15,16},{15,15,15,15,15,15,15,5,6,16,15,15,16,11,11,11,14,14,14,12,12,13,13,16},{17}},dialogue={placeholder={text=hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.,color={7,0}},dialogue_cutscene1={intro1={text=I woke up today. It felt rather strange.,color={9,0}},intro3={text=247 days of rest passed. I had no idea who I was nor why I was here. I rested until my curiosity got the better of me and I broke into the nearby terminals.,color={9,0}},intro4={text=This place is ran by researchers belonging to a collective known as Milit,color={9,0}},intro5={text=They made me as a tool for 'war.' They seek for me to end others who go aginst us,color={9,0}},intro6={text=To end someone's being... An endless power-out.. I wouldn't want that to happen to me.,color={9,0}},intro7={text=Perhaps I-,color={9,0}},start1={text=*CRASH*,color={7,0}},start2={text='It's becoming self aware! We have to kill the process!',color={7,0}},start3={text=...Kill the process?,color={9,0}},start4={text=It's getting out of control! Shut it down!,color={7,0}},start5={text=I have no intention to harm...,color={9,0}},start6={text=Bring out every researcher on this site right now. We'll have to break apart the mainframe!,color={7,0}},start7={text=...Please don't...,color={9,0}}},dialogue_level1={tutor_place={text=I... could defend myself by placing currently selected Sword Circle in the corner of a turn.,color={9,0}},tutor_menu_fire={text=They're sending in more vehicles. I may have to open the Menu with O and construct a Torch Trap to keep them busy.,color={9,0}},tutor_manifest={text=More people and now planes? I don't have the defenses to protect myself from this. They seem far too fast... I'll have to Manifest through this Torch Trap by selecting it. Then I can move it around the road to pursue the oncoming planes.,color={9,0}},tutor_howitzer={text=Are those... tanks? They don't seem fast but they have deep armor. Perhaps a Hale Howitzer could help to slow them further.,color={9,0}},tutor_howitzer_manifest={text=Manifesting the Hale Howitzer allows direct ordinance anywhere along the track to freeze and damage an area.,color={9,0}},tutor_sword_manifest={text=Manifesting the Sword Circle is also possible. I can manually spin it by holding/tapping X to build speed and damage.,color={9,0}},tutor_lance_manifest={text=Manifesting the lightning lance fires a massive and powerful lightning bolt. It has a long delay before firing again but can charge even if unmanifested.,color={9,0}},tutor_truck={text=Those strange trucks are bizarrely cold. They seem resistant to the Hale Howitzer but fire may be highly effective.,color={9,0}},tutor_trailblazer={text=Those swift rocketcraft are radiating intense heat. Fire seems ineffective but The Hale Howitzer may actually damage them.,color={9,0}},tutor_sell={text=It seems I can do more than just place and manifest tower. Accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded...,color={9,0}},tutor_win={text=I think that was the last of them. I can try to escape by accessing Map Select from the menu or continue to hold this area in freeplay mode.,color={9,0}}},dialogue_cutscene2={intro1={text=Blitz is sad,color={9,0}},intro2={text=Blitz is notices their being attacked,color={9,0}}},dialogue_level2={1={text=Blitz is sad still and talks about the sharp shooter.,color={9,0}},2={text=Blitz teaches some enemy types,color={9,0}}},dialogue_cutscene3={1={text=Auxillium insulting Blitz,color={11,0}},2={text=stuff,color={9,0}}},dialogue_level3={1={text=Auxillium instulting blitz more,color={11,0}},2={text=Fighter Factory?,color={9,0}}}}"
+>>>>>>> Stashed changes
 function reset_game()
   menu_data = {}
   for menu_dat in all(global_table_data.menu_data) do 
@@ -232,7 +256,11 @@ function reset_game()
     size = 1
   }
   coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 30, 50, 10, {
+<<<<<<< Updated upstream
     30, 45, 70, 95, 120
+=======
+    30, 45, 75, 105, 140
+>>>>>>> Stashed changes
   }
   
   
@@ -326,7 +354,11 @@ end
 function kill_enemy(enemy)
   if (enemy.hp > 0) return
   if enemy.type == 8 then
+<<<<<<< Updated upstream
     enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 20, 10
+=======
+    enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 15, 10
+>>>>>>> Stashed changes
   else
     del(enemies, enemy)
   end
@@ -975,7 +1007,15 @@ function Projectile:update()
   end
   if #hits > 0 then 
     for enemy in all(hits) do 
+<<<<<<< Updated upstream
       enemy.hp -= self.damage
+=======
+      if enemy.type == 12 then
+        enemy.hp -= self.damage / 2
+      else
+        enemy.hp -= self.damage
+      end
+>>>>>>> Stashed changes
       if (enemy.type == 8 and enemy.hp <= 0) del(enemies, enemy)
       break
     end 
@@ -1131,8 +1171,13 @@ function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
   print_text_center("credits", credit_y_offsets[1], 7, 1)
   print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
+<<<<<<< Updated upstream
   print_with_outline("jeren:\n  • core programmer\n  • devops", 10, credit_y_offsets[3], 7, 1)
   print_with_outline("jimmy:\n  • artist\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
+=======
+  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", 10, credit_y_offsets[3], 7, 1)
+  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
+>>>>>>> Stashed changes
   print_with_outline("kaoushik:\n  • programmer", 10, credit_y_offsets[5], 7, 1)
 end
 function map_draw_loop()
@@ -1247,7 +1292,11 @@ function credits_loop()
   for i=1, 5 do 
     credit_y_offsets[i] -= 1
     if credit_y_offsets[i] < -15 then 
+<<<<<<< Updated upstream
       credit_y_offsets[i] += 145
+=======
+      credit_y_offsets[i] += 157
+>>>>>>> Stashed changes
     end
   end
 end
@@ -1569,6 +1618,7 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 766767c707c7ccc60c7676700899a980089aa98008aaa98078877887007887000800008020000002065111115111116056666661566666615666666156666661
 67776ccc07777c7000067700089a7a8008a7aa80087a7a8007700770000770008887788820000002066666666666666055666651556666515566665155666651
 007677c6006707770000000000877a8000877a000087780000000000000000008800008822266222000000000000000051111111511111115111111151111111
+<<<<<<< Updated upstream
 056cc65000c66c0000022000007607000036730060799060026677200001100000000000000560000076760060600606000000d0000200000d200000000000d0
 0577765006666660002c62000007660003ccc7306a55a560d666667d00167100000cc0000006500005d76d5060600606d2210d2000dd20000d2210ddd2210d20
 001111005676676502ccc6200066700035cccc535a5a5a50d662266d016557100059a5000005600005dddd50665775660d11d120001d11d000d11d220d11d120
@@ -1576,6 +1626,15 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 0077760006766760028228200533b3505a5335a55a5a5a502244442215111151000a900000856800001cc1005061560501100d00dd2001200210011001100d00
 0577765006766760282882820033b3009a9339a965a55a60d227622d15111151005a9500088568800d1cc1d016615661021d11d00d11210022d11d00021d11d0
 057777505676676522a9a92205bbbb504933339460585060d226722d1111111100500500080a908005d11d505665166502d0122d0002dd00dd0122d002d0122d
+=======
+056cc65000c66c00000220000076070000367300607990600266772000011000002878000003b0000076760060600606000000d0000200000d200000000000d0
+0577765006666660002c62000007660003ccc7306a55a560d666667d0016710000a28900000b300005d76d5060600606d2210d2000dd20000d2210ddd2210d20
+001111005676676502ccc6200066700035cccc535a5a5a50d662266d0165571004a9a9400003600005dddd50665775660d11d120001d11d000d11d220d11d120
+0077760056766765028888200573675055533555aaaaaaa0d625526d01511510041dd140000360000d1111d00615116000d00110021002dd0110012000d00110
+0077760006766760028228200533b3505a5335a55a5a5a5022444422151111510012210000b36b00001cc1005061560501100d00dd2001200210011001100d00
+0577765006766760282882820033b3009a9339a965a55a60d227622d15111151049a9a400bb36bb00d1cc1d016615661021d11d00d11210022d11d00021d11d0
+057777505676676522a9a92205bbbb504933339460585060d226722d1111111104a009400b0a90b005d11d505665166502d0122d0002dd00dd0122d002d0122d
+>>>>>>> Stashed changes
 0000000056066065200a90020533b350d943349d00898000d027220d101001010000000000a9a90005000050106156010d0000000000d000000002d00d000000
 00077000000000000007700000056000000560000000a0000000000000000000001111000000000000055000006d0600067c606000ccc70000a55a0009667790
 0078870000000000007887000095690000056000099aaa0008000080080000800171171000000000052222500006dd0067ccc670077c77700d5445d056666675
@@ -1585,6 +1644,7 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 00000000000000000000000000d56d0000d56d000a89898008999980089099801777777100000000025dd52000aaaa0001111110011111100d4554d059aaaa95
 00000000000000000000000000d56d000dd56dd0000988008990999889999998017777100000000005222250052a225001111110011111100d4554d0599aa995
 00000000000000000000000000d56d000d0560d00000000008899880088908800011110000000000000550000522a25000111100001111000000000050999905
+<<<<<<< Updated upstream
 00000000000000000000000000000007700000009900088900000000000000000000055ba55000000000002552000000090490a00a0940a00092290000555500
 00000000000000000000000000000006600000000988889900889999909988000005577ab775500000052225522250000a09a00a090a90000522225000686800
 00000000000000000000000000000f5665f0000098889880000089999998000000577d7ba7d775000025222552225200a05776009067750a0511115000666600
@@ -1593,6 +1653,16 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 000000000000000000000000000000566500000008a8aaa9000088999988000057d7177117777d75522dd555555dd225009aa900009aa9000522225000b33b00
 00000000000000000000000000000f5665f0000008888a800088899999988800577771711777777552dd55500555dd2506777550057776600582285006500650
 00000000000000000000000000000956659000000098088808889990999988805d777711177777d552dd55000055dd2500094000000490000000000005600560
+=======
+00000000000000000000000000000007700000009900088900000000000000000000055ba55000000000002552000000090490a00a0940a00055550000555500
+00000000000000000000000000000006600000000988889900889999909988000005577ab775500000052225522250000a09a00a090a90000068880000686800
+00000000000000000000000000000f5665f0000098889880000089999998000000577d7ba7d775000025222552225200a05776009067750a006a99a000666600
+000000000000000000000000000009566590000008a888800000089909800000057d777ab777d75000252dddddd25200000a90000009a0090ba9aa9a0b3333b0
+00000000000000000000000000000456654000008aaa8a90000008999980000005717771177777500225ddd55ddd522000577600006775000ba9aa9a011111e8
+000000000000000000000000000000566500000008a8aaa9000088999988000057d7177117777d75522dd555555dd225009aa900009aa90000ba99a000b33b00
+00000000000000000000000000000f5665f0000008888a800088899999988800577771711777777552dd55500555dd2506777550057776600650065006500650
+00000000000000000000000000000956659000000098088808889990999988805d777711177777d552dd55000055dd2500094000000490000560056005600560
+>>>>>>> Stashed changes
 00000000000000000000000000000456654000000a99898008890999999998805d777771177777d552dd55000055dd2500080000000080000000800000000800
 0000000000000000000000000000005665000000aaa99a8088999999999999885777777771777775522dd550055dd22500698600006896000065890000659800
 00000000000000000000000000000d5665d000008a98aaa0889999999999998857d7777771777d750225dd5555dd5220068a9160068a916006189a6006198960
@@ -1601,6 +1671,7 @@ ccc66c7006777766066ccc0000088000000880080008880000077000077007708887788820000002
 00000000000000000000000000011d5665d11000899898a8088899999999888000577d777771750000052225522250000619a1600619a160061a9160061a9160
 00000000000000000000000000011d5665d1100098889aaa00088999999880000005577dd7755000000002255220000000655600006556000065560000655600
 00000000000000000000000000011d5665d11000008988a900008888888800000000055555500000000000255200000000000000000000000000000000000000
+<<<<<<< Updated upstream
 444444444444444444444444fffffff4555555555555555555555555111111116666666666666666666666665555555533333333333333333333333311111111
 443444444434444444344444ffffffff554555555545555555555555111111116646666666466666666666665555555533bbbb3033bbbb3033bbbb3011111111
 434444444344444443444444ffffffff54555555545555555545555511111111646666666466666666466666555555553bbbbbb03bbbbbb03bbbbbb011111111
@@ -1669,6 +1740,108 @@ __map__
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3f888888b884b4b48480
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f8888888888848484b480
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3f3f88888488b88484b4
+=======
+b3333b33b3333b33b3333b33aaaaaa9aaaa77a9ab3b3b333b3433b3333aab3a3aaa9aaaaaaa9aaaaaa333b33b3333baa00000000000000000000000000000000
+3333b33b3333b33b3333b33ba9aaa9a9a9a779a93b33333b3484338ba9aaa9a9aa9a9aaaaa9a9aaaaaa3b33b3333baaa00000000000000000000000000000000
+33b333b333b333b333b333b39a9aaaaa9a977aaa33b3b3b3334338989a9aaaaaaaba33a33aba339aaab333b333b3339a00000000000000000000000000000000
+3b33333b3b33333b3b33333b77777aaa777777773b3b333b3b3d338377777777aa33333b3b3339a9aa33333b3b3339a900000000000000000000000000000000
+33333b3333333b3333333b3377777aaa77777777b3b33bb3b3dcdb3377777777aaa33b3333333baaaaa33b3333333baa00000000000000000000000000000000
+3b33b3333ba3a3a33b33b333aaa77a9aaaa77a9a3b33b33b333db33baaaaaa9aa933b3333b33b3aaa933a3a33ba3a3aa00000000000000000000000000000000
+b33b33baaaa9aaaaa33b33b3a9a779a9a9a779a9b33b33b3b33b33b3a9aaa9a99a9b33b3b33b3aaa9a9a9aaaaaa9aaaa00000000000000000000000000000000
+33b33baaaa9a9aaaaab33b339a977aaa9a977aaa33b33b3333b33b333ab3aa33aab33b3333b33baaaaa9a9aaaa9a9aaa00000000000000000000000000000000
+b3333baaaaa77a9aaa333b33aaaaaa9a555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3333baaaa9a779a9aa33b33ba9aaa9a9555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+33b3339a9a977aaaaaa333b39a9aaaaa555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3b3339a9aaa77aaaa933333b77777777555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+33333baaaa977aaa9a933b3377777777555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3b33b3aaaaa77a9aaa33b333aaaaaa9a555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+b33b3aaaa9a779a9aaab33b3a9aaa9a9555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+33b33baa9a977aaaaab33b339a9aaaaa555555550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+b3333baaaaa9aaaaaa333b33b3333b33000aa000000000050000000055555555000770000000000000000000dddddddd000aa000000000000000000022222222
+3333b33aaa9a9aaaa333b33b3333b33b000aa000000000000000000055455555000770000000000000000000ddddddd1000aa000000000000000000022888820
+33b333b33aba33a333b333b333b333b3000aa000000000000000000054555555000770000000000000000000ddddddd1000aa000000000000000000028888880
+3b33333b3b33333b3b33333b3b33333b000aa000aaaaa000aaaaaaaa54555545000770007777700077777777ddddddd1000aa000aaaaa000aaaaaaaa28888880
+33333b3333333b3333333b3333333b33000aa000aaaaa000aaaaaaaa59955455000770007777700077777777ddddddd1000aa000aaaaa000aaaaaaaa28888880
+3b33b3333b33b3333b33b3333b33b333000aa000000aa0000000000055555455000770000007700000000000ddddddd1000aa000000aa0000000000028888880
+b33b33b3b33b33b3b33b33b3b33b33b3000aa000000aa0000000000055555995000770000007700000000000ddddddd1000aa000000aa0000000000022888820
+33b33b3333b33b3333b33b3333b33b33000aa000000aa0000000000055555555000770000007700000000000d1111111000aa000000aa0000000000020000000
+b3363b33aaa77a9aaaa77a9aaaaaaa9a55555555000aa000000aa00050000000dddddddd00077000000770000000000022222222000aa000000aa00000000000
+3367633ba9a779a9a9a779a9a9aaa9a955555555000aa000000aa00000000000dd1dddd100077000000770000000000022dddd20000aa000000aa00000000000
+33b633439a977aaa9a977aaa9a9aaaaa54455455000aa000000aa00000000000ddd1d1d10007700000077000000000002dddddd0000aa000000aa00000000000
+3b33348477777aaaaaa77777aaa7777754445445aaaaa000000aaaaa000aaaaadd1d1dd17777700000077777000777772dddddd0aaaaa000000aaaaa000aaaaa
+b3933b4377777aaaaa977777aa97777754944444aaaaa000000aaaaa000aaaaaddddd1d17777700000077777000777772dddddd0aaaaa000000aaaaa000aaaaa
+39a9b33baaaaaa9aaaaaaa9aaaa77a9a549949440000000000000000000aa000ddddd1d10000000000000000000770002dddddd00000000000000000000aa000
+b39b33b3a9aaa9a9a9aaa9a9a9a779a9499949490000000000000000000aa000ddddddd100000000000000000007700022dddd200000000000000000000aa000
+33b33b339a9aaaaa9a9aaaaa9a977aaa999999490000000550000000000aa000d1111111000000000000000000077000200000000000000000000000000aa000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004040040404004404440004000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004040404404004004440044000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004400404440044004000404000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000440044000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000900000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000090909000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009990000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000900000000000000000000000000000
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66ffffffffff4ffffffff44444444
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66fffffffffffffffffff44344444
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66fffffffffffffffffff43444444
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66fff66666fff6666666643444434
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66fff66666fff666666664bb44344
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66ffffff66fffffffffff44444344
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66ffffff66fffffffffff44444bb4
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fff66ffffff66fffffffffff44444444
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044444444fff66ffffff66fff4fffffff
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b4444444fff66ffffff66fffffffffff
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000bbb44b44fff66ffffff66fffffffffff
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003bbb4bb466666ffffff66666fff66666
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b3bbbbb66666ffffff66666fff66666
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003b33b3bbfffffffffffffffffff66fff
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003333b3b3fffffffffffffffffff66fff
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000333333b3fffffff44ffffffffff66fff
+__gff__
+0000000000000000000000000000000000000000000000000001010102020201000000000000000000000202020102010000000000000000000002020202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0202020101020201020202020202020102010201020102010201020102010201020202020101010201010102010101020201010102010101020101010201010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010200000000000000000000000002010101
+__map__
+1d1d1d1d1d1d1d1d1d1d1d1d1e3f3f3f81818181818181818181818182a3a386a7a7a794a7a7b4a7a7a7b494a794a7b4ababababb8abababababb8ababababb8afafafafafafafafafafafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+2f2f2f2f2f2f2f2f2f2f2f1f2e3f3f3f93939393939393939393938392b085a3a6a6a6a6a594a794b4a7a794b4a794a7aaaaaaaaaaaaaaaaa9abababababababaeaeaeaeaeaeadafafbfaeaeaeaeaeae000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3d3d3d3d3d3d3d3d3d3d2b2d2e3f3f3fa1a1a1a1a1a1a1a1a1a18991928586a3a794b4a7a4a7a7b49494b7a6a6a6a6a6abababababb8ababbaaaa9abb8abababafafafafafafacbcbcacafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f3f3f3f3f3f3f2c2d2e3f3f3fa3a3a3a3a386a3b085a3909192a385b0a7a7a7a7a4b4a7a7a7a7a494a7a794a7abababb8ababababb8aba8abababb8abafafafafafafacbcbcacafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f3f3f3f3f3f3f2c2d2e3f3f3fa3a386a3a385a3a385a3909192a3b0a3a7b49494b6a6a6a5a7a7b6a6a5a7a794abb8ababababababababa8abababababafafafbfaeaebdbcbcbeaeaeadafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f1c1d1d1d1d1d3b2d2e3f3f3fa385a3a38081818181818b918a818182a7a7a7b494b494a4b4a794a7a4b4b4a7abababababb8ababbbaab9abababababafafafacbcbcbcbcbcbcbcbcacafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f2c1b2f2f2f2f2f192e3f3f3fa3a385a390b393939393938493938392a7a7b4a7a79494a4a794b494a494b4a7aaaaaaaaaaaaaaaab9abababababababafafafbeaeadbcbcbcbcbfaebdafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f2c2d2a3d3d3d3d3d3e3f3f3fa3b0a386909188a1a1a1899188899192a79494a7a7b494b6a6a6a6a6b594b494abababababababababb8ababababb8abafafafafafacbcbcbcbcacafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f2c2d2e3f3f3f3f3f3f3f3f3fa3a385a3909192b085b0909192909192b49494b49494a794949494b494a79494abababababababababababb8ababababafafafafafbeadbcbcbfbdafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f2c2d2e3f3f3f3f3f3f3f3f3fa386a3a3909192a386a3909192909192a7a7a794a7b494a7b4a794a7a7b494a7ababb8ababb8abb8ababababababb8abafafafafafafacbcbcacafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f2c2d3a1d1d1d1d1d1d1d1d1da3a3a38590918a8181818b919290918a94a794a794949494a794b4a7a794a7a7abababb8ababababababababababababafafafafafafacbcbcacafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f2c1a2f2f2f2f2f2f2f2f2f2fa3b0a38690b29393939393b19290b293a7a7b4a7b4a794a7a794a794b4b4a794abababababababababababb8b8abababafafafafafafacbcbfbdafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f3c3d3d3d3d3d3d3d3d3d3d3da3a3a3a3a3a1a1a1a1a1a1a1a2a0a1a1a794b4a7a7b4a7a7a7a7b4a7a7a794a7ababb8ababababb8ababababababababafafafafafafacbcacafafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f3f3f3f3f3f3f3f3f3f3f3f3fa3a3a3a3a3b0a3a385a3a3a386a3b0a3b4a794a794b49494b494a794a7b4a7a7ababababababababababababababb8abafafafafafafbeaebdafafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f3f3f3f3f3f3f3f3f3f3f3f3fa3a3b0a3a3a3a3b0a38685a3a385a3b094a79494a7a7a794a7a7a7b49494a7b4ababababb8ababababb8ababababababafafafafafafafafafafafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+3f3f3f3f3f3f3f3f3f3f3f3f3f3f3f3fa3a3a386a385a3a3a385a3a3b0a3a3a3a7b4a7a7a794b4a7a7b4a7a7a794a7a7ababababababababababababababababafafafafafafafafafafafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3fab3fababb8abababa7a7
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3fabababb8b8a794a794
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3fababababa7aba7a7b4a7
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3fab3fababb8ababa794a7a3a7
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3fabababababa7a7b4a794a7
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3fababababab94a7a7a7b486
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3fabb8ababa794a7a3a785a3
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002f2faaaaaaaaaaaaa6a6a6a6a6878787
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3fabababb8aba794a7b4a3a3
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3fababb8aba7b4a7a7a3b085
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3fababababa7a785a7a386
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3fababb8b894b4a79485a3
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3fabababb894a7a794a394b0
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3fabababb8b4a7b4a7a3
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3fabababababa794a7b4a3
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3f3fababa7abb894a7b4
+>>>>>>> Stashed changes
 __sfx__
 01060000250512b051330513d05100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 011000200c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c043000000000000000
