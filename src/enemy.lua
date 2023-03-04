@@ -89,11 +89,7 @@ function kill_enemy(enemy)
   if (enemy.hp > 0) return
   -- To save tokens, the Carrier literally just morphs into a car.
   if enemy.type == 8 then
-<<<<<<< Updated upstream
-    enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 20, 10
-=======
     enemy.gfx, enemy.type, enemy.height, enemy.hp, enemy.step_delay = 94, 9, 2, 15, 10
->>>>>>> Stashed changes
   else
     del(enemies, enemy)
   end

@@ -14,13 +14,8 @@ function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
   print_text_center("credits", credit_y_offsets[1], 7, 1)
   print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
-<<<<<<< Updated upstream
-  print_with_outline("jeren:\n  • core programmer\n  • devops", 10, credit_y_offsets[3], 7, 1)
-  print_with_outline("jimmy:\n  • artist\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
-=======
   print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", 10, credit_y_offsets[3], 7, 1)
   print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
->>>>>>> Stashed changes
   print_with_outline("kaoushik:\n  • programmer", 10, credit_y_offsets[5], 7, 1)
 end
 
