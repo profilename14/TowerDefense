@@ -8,8 +8,8 @@
 ## Credits
 ### Project
 - Jasper [Game Director, Programmer]
-- Jeren [Core Programmer, Code Designer, Devops]
-- Jimmy [Art Designer, Artist, Sound Director, Sound Engineer]
+- Jeren [Core Programmer, Devops]
+- Jimmy [Artist, Sound Engineer]
 - Kaoushik [Programmer]
 ### External
 - [thisismypassport](https://github.com/thisismypassport) [Shrinko8 Developer]

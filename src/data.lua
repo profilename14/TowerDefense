@@ -20,7 +20,7 @@ function reset_game()
     size = 1
   }
   coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 30, 50, 10, {
-    30, 45, 75, 105, 140
+    30, 45, 70, 95, 120
   }
 
   -- -- temp 
