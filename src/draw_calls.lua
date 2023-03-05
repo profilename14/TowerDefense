@@ -34,7 +34,7 @@ function game_draw_loop()
   map(unpack(map_data.mget_shift))
   -- tower attack hint overlay
   if (manifested_tower_ref == nil and not sell_mode) draw_tower_attack_overlay(tower_details)
-  if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+  if manifested_tower_ref and (manifested_tower_ref.type == "sharp" or manifested_tower_ref.type == "clock") then 
     draw_line_overlay(manifested_tower_ref)
   end
   -- towers
