@@ -24,11 +24,7 @@ function reset_game()
   }
   text_flag = false
 
-  -- -- temp 
-  text_place_holder = global_table_data.dialogue.placeholder
-  text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
-    Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3
-  })
+  text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
   

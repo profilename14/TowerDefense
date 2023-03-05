@@ -154,14 +154,6 @@ function game_loop()
     sfx(global_table_data.sfx_data.round_complete)
     coins += 15
     
-    
-    text_scroller.enable = true
-    dialogue_level_to_read = global_table_data.level_dialogue_set[cur_level] or "dialogue_level4"
-
-    text_place_holder = global_table_data.dialogue[dialogue_level_to_read][wave_round] or ""
-    TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
-
-    if (text_place_holder.text == "") text_scroller.enable = false
-
+    load_wave_text()
   end
 end

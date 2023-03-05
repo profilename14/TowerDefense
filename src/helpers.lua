@@ -117,6 +117,14 @@ function check_tile_flag_at(position, flag)
   return fget(mget(Vec.unpack(position)), flag)
 end
 
+function load_wave_text()
+  local text_place_holder = global_table_data.dialogue[global_table_data.level_dialogue_set[cur_level] or "dialogue_level4"][wave_round]
+  if text_place_holder then 
+    text_scroller.enable = true
+    TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
+  end
+end
+
 -- https://www.lexaloffle.com/bbs/?tid=3142
 function acos(x)
   return atan2(x,-sqrt(1-x*x))

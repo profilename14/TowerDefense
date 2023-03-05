@@ -149,12 +149,12 @@ function new_game()
   swap_menu_context("map")
 end
 
-function load_map(map_id)
+function load_map(map_id, wave, freeplay)
   pal()
   auto_start_wave = false
   manifest_mode = true
-  wave_round = 0
-  freeplay_rounds = 0
+  wave_round = wave or 0
+  freeplay_rounds = freeplay or 0
   loaded_map = map_id
   cur_level = map_id
   pathing = parse_path()
@@ -170,10 +170,13 @@ function load_map(map_id)
   end
   music(global_table_data.music_data[cur_level] or 0)
 
-  text_scroller.enable = true
-  text_place_holder = global_table_data.dialogue.dialogue_intros[cur_level]
-
-  TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
+  if wave_round == 0 then 
+    text_scroller.enable = true
+    local text_place_holder = global_table_data.dialogue.dialogue_intros[cur_level]
+    TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
+  else
+    load_wave_text()
+  end
 end
 
 function save_game()
@@ -262,11 +265,9 @@ forward_declares = {
     reset_game()
     get_menu("main").enable = false
     local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
-    load_map(map_id)
+    load_map(map_id, wav, freeplay)
     player_health = hp 
     coins = scrap
-    wave_round = wav 
-    freeplay_rounds = freeplay
     -- TODO: calculate what the freeplay enemies will be
     for tower in all(tower_data) do 
       direction = Vec:new(global_table_data.direction_map[tower[2]])

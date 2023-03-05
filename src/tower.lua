@@ -300,5 +300,5 @@ function draw_line_overlay(tower)
       end
     end
   end
-  if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, color) 
+  if (ray ~= pos and manifested_tower_ref) line(pos.x, pos.y, ray.x, ray.y, color) 
 end
