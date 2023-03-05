@@ -238,7 +238,7 @@ function reset_game()
     size = 1
   }
   coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 500, 50, 10, {
-    30, 45, 75, 105, 140
+    30, 45, 70, 95, 120
   }
   text_flag = false
   text_place_holder = global_table_data.dialogue.placeholder
@@ -1169,8 +1169,8 @@ function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
   print_text_center("credits", credit_y_offsets[1], 7, 1)
   print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
-  print_with_outline("jeren:\n  • core programmer\n  • code designer\n  • devops", 10, credit_y_offsets[3], 7, 1)
-  print_with_outline("jimmy:\n  • art designer\n  • artist\n  • sound director\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
+  print_with_outline("jeren:\n  • core programmer\n  • devops", 10, credit_y_offsets[3], 7, 1)
+  print_with_outline("jimmy:\n  • artist\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
   print_with_outline("kaoushik:\n  • programmer", 10, credit_y_offsets[5], 7, 1)
 end
 function map_draw_loop()
@@ -1285,7 +1285,7 @@ function credits_loop()
   for i=1, 5 do 
     credit_y_offsets[i] -= 1
     if credit_y_offsets[i] < -15 then 
-      credit_y_offsets[i] += 157
+      credit_y_offsets[i] += 145
     end
   end
 end
