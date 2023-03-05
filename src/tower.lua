@@ -29,13 +29,9 @@ function Tower:attack()
     self.dmg = min(self.manifest_cooldown, 100) / 15
   end
 
-  self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
+  self.current_attack_ticks = (self.current_attack_ticks + 1) % (self.being_boosted and self.attack_delay \ 2 or self.attack_delay)
   if (self.current_attack_ticks > 0) return
-
-  if self.being_boosted then
-    self.being_boosted = false
-    self.attack_delay *= 2
-  end
+  self.being_boosted = false
 
   if self.type == "tack" then
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
@@ -99,9 +95,9 @@ end
 function Tower:draw()
   if (not self.enable) return
   local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator), (self.type == "sharp" or self.type == "clock") and self.rot or parse_direction(self.dir)
+  if (self.being_boosted) spr(global_table_data.boosted_decal, p.x, p.y)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
-  if (self.type == "clock") draw_line_overlay(self)
 end
 function Tower:cooldown()
   self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
@@ -193,10 +189,7 @@ end
 function manifest_tower_at(position)
   for tower in all(towers) do
     if tower.position == position then 
-      if tower.being_boosted then
-        tower.being_boosted = false
-        tower.attack_delay *= 2
-      end
+      if (tower.being_boosted) tower.being_boosted = false
       tower.being_manifested, manifested_tower_ref, manifest_selector.dir = true, tower, 1
       if tower.type == "tack" then
         lock_cursor, tower.attack_delay, tower.dmg = true, 10, 0
@@ -295,30 +288,19 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
 end
 
 function draw_line_overlay(tower)
-  color = 8
-  local pos = (tower.position + Vec:new(0.5, 0.5))*8
+  local color, pos = 8, (tower.position + Vec:new(0.5, 0.5))*8
   local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
 
   if (tower.type == "clock") then
     color = 11
     for i=1, 16 do 
-      local pos2 = Vec.floor(tower.position + (tower.dir / 8) * i)
       for othertower in all(towers) do
-        if othertower.position == pos2 and not othertower.being_manifested and othertower.type != "clock" then
-          if not othertower.being_boosted then
-            othertower.being_boosted = true
-            othertower.attack_delay \= 2
-            printh(othertower.type)
-          else
-            break
-          end
+        if othertower.position == Vec.floor(tower.position + tower.dir * i) and not othertower.being_manifested and othertower.type ~= "clock" and not othertower.being_boosted then
+          othertower.being_boosted = true
+          break
         end
       end
-
     end
   end
-
   if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, color) 
-  
-
 end
