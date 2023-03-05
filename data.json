@@ -2,6 +2,12 @@
   "cart_name": "jjjk_tower_defense_2",
   "tower_icon_background": 80,
   "boosted_decal": 223,
+  "direction_map": [
+    [0, -1],
+    [1, 0],
+    [0, 1],
+    [-1, 0]
+  ],
   "palettes": {
     "transparent_color_id": 0,
     "dark_mode": { "1": 0, "5": 1, "6": 5, "7": 6 },

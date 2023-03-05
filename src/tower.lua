@@ -162,10 +162,7 @@ function Tower:manifested_torch_trap()
     return
   end
 
-  self.position = sel_pos
-  grid[sel_pos.y][sel_pos.x] = "floor"
-  grid[prev.y][prev.x] = "path"
-  self.enable = true 
+  self.position, grid[sel_pos.y][sel_pos.x], grid[prev.y][prev.x], self.enable = sel_pos, "floor", "path", true
 end
 function Tower:manifested_sharp_rotation()
   self.dir = (selector.position / 8 - self.position)
@@ -216,18 +213,18 @@ function unmanifest_tower()
   manifested_tower_ref = nil
 end
 
-function place_tower(position)
-  -- check if there is a tower here
-  if (grid[position.y][position.x] == "tower") return false
-  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  -- check if player has the money
-  if (coins < tower_details.cost) return false
-  -- spawn the tower
-  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+function place_tower(position, override)
+  local tower_details = global_table_data.tower_templates[override or selected_menu_tower_id]
+  if not override then 
+    -- check if at max tower or 
+    -- check if there is a tower here or
+    -- check if player has the money or 
+    -- spawn the tower
+    if (#towers >= 64 or grid[position.y][position.x] == "tower" or coins < tower_details.cost or (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return
+    coins -= tower_details.cost
+  end
   add(towers, Tower:new(position, tower_details, direction))
-  coins -= tower_details.cost
   grid[position.y][position.x] = "tower"
-  return true
 end
 
 function refund_tower_at(position)

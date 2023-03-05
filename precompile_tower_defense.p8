@@ -11,11 +11,7 @@ function display_tower_info(tower_id, position, text_color)
     {text = tower_details.prefix..": "..tower_details.damage}
   }
   local longest_str_len = longest_menu_str(texts)*5+4
-  BorderRect.resize(
-    tower_stats_background_rect,
-    position_offset, 
-    Vec:new(longest_str_len + 20,27
-  ))
+  tower_stats_background_rect = BorderRect:new(position_offset, Vec:new(longest_str_len + 20,27), 8, 5, 2)
   BorderRect.draw(tower_stats_background_rect)
   print_with_outline(
     tower_details.name,
@@ -41,7 +37,7 @@ function display_tower_info(tower_id, position, text_color)
 end
 function display_tower_rotation(menu_pos, position)
   local tower_details, position_offset = global_table_data.tower_templates[selected_menu_tower_id], position + Vec:new(0, -28)
-  BorderRect.reposition(tower_rotation_background_rect, position_offset)
+  tower_rotation_background_rect = BorderRect:new(position_offset, Vec:new(24, 24), 8, 5, 2)
   BorderRect.draw(tower_rotation_background_rect)
   local sprite_position = position_offset + Vec:new(4, 4)
   if tower_details.disable_icon_rotation then 
@@ -158,11 +154,7 @@ end
 function save_game()
   local start_address = 0x5e00
   start_address = save_byte(start_address, player_health)
-  local tower_full_refund = 0
-  for tower in all(towers) do 
-    tower_full_refund += tower.cost
-  end
-  start_address = save_int(start_address, coins + tower_full_refund)
+  start_address = save_int(start_address, coins)
   start_address = save_byte(start_address, loaded_map)
   if wave_finish then
     wave_to_save = wave_round
@@ -174,7 +166,7 @@ function save_game()
 end
 function load_game()
   local start_address = 0x5e00
-  local hp, scrap, map_id, wav, freeplay
+  local tower_data, hp, scrap, map_id, wav, freeplay = {}
   hp = @start_address
   start_address += 1
   scrap = $start_address
@@ -184,18 +176,19 @@ function load_game()
   wav = @start_address
   start_address += 1
   freeplay = $start_address
-  return hp, scrap, map_id, wav, freeplay
-end
-function load_game_state()
-  reset_game()
-  get_menu("main").enable = false
-  local hp, scrap, map_id, wav, freeplay = load_game()
-  load_map(map_id)
-  player_health = hp 
-  coins = scrap
-  wave_round = wav 
-  freeplay_rounds = freeplay
-  game_state = "game"
+  start_address += 4
+  local tower_count = @start_address 
+  start_address += 1
+  for i=1, tower_count do 
+    local id, rot = decode(@start_address, 3, 0x7)
+    start_address += 1
+    local x, y = decode(@start_address, 4, 0xf)
+    start_address += 1
+    add(tower_data, {
+      id, rot + 1, Vec:new(x, y)
+    })
+  end
+  return hp, scrap, map_id, wav, freeplay, tower_data
 end
 forward_declares = {
   func_display_tower_info = display_tower_info,
@@ -216,7 +209,21 @@ forward_declares = {
     reset_game()
   end,
   func_quit = function() reset_game() end,
-  func_load_game = load_game_state,
+  func_load_game = function()
+    reset_game()
+    get_menu("main").enable = false
+    local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
+    load_map(map_id)
+    player_health = hp 
+    coins = scrap
+    wave_round = wav 
+    freeplay_rounds = freeplay
+    for tower in all(tower_data) do 
+      direction = Vec:new(global_table_data.direction_map[tower[2]])
+      place_tower(tower[3], tower[1])
+    end
+    game_state = "game"
+  end,
   func_toggle_mode = function()
     manifest_mode = not manifest_mode
     sell_mode = not sell_mode
@@ -256,8 +263,6 @@ function reset_game()
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
-  tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
-  tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   manifest_selector.dir = -1
@@ -572,10 +577,7 @@ function Tower:manifested_torch_trap()
     if (check_tile_flag_at(sel_pos+shift, 0) and prev ~= sel_pos) self.enable = false
     return
   end
-  self.position = sel_pos
-  grid[sel_pos.y][sel_pos.x] = "floor"
-  grid[prev.y][prev.x] = "path"
-  self.enable = true 
+  self.position, grid[sel_pos.y][sel_pos.x], grid[prev.y][prev.x], self.enable = sel_pos, "floor", "path", true
 end
 function Tower:manifested_sharp_rotation()
   self.dir = (selector.position / 8 - self.position)
@@ -625,15 +627,14 @@ function unmanifest_tower()
   manifested_tower_ref.enable = true
   manifested_tower_ref = nil
 end
-function place_tower(position)
-  if (grid[position.y][position.x] == "tower") return false
-  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  if (coins < tower_details.cost) return false
-  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+function place_tower(position, override)
+  local tower_details = global_table_data.tower_templates[override or selected_menu_tower_id]
+  if not override then 
+    if (#towers >= 64 or grid[position.y][position.x] == "tower" or coins < tower_details.cost or (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return
+    coins -= tower_details.cost
+  end
   add(towers, Tower:new(position, tower_details, direction))
-  coins -= tower_details.cost
   grid[position.y][position.x] = "tower"
-  return true
 end
 function refund_tower_at(position)
   for tower in all(towers) do
@@ -1163,9 +1164,6 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
   ?text,dx,dy+1
   ?text,dx,dy,text_color
 end
-function print_text_center(text, dy, text_color, outline_color)
-  print_with_outline(text, 64-(#text*5)\2, dy, text_color, outline_color)
-end
 function controls()
   if btnp(⬆️) then return 0, -1
   elseif btnp(⬇️) then return 0, 1
@@ -1204,9 +1202,7 @@ function add_enemy_at_to_table(pos, table, multitarget)
   end
 end
 function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
-  local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
-  local sine, cosine = sin(theta / 360), cos(theta / 360)
-  local shift = size\2 - 0.5
+  local sx, sy, shift, sine, cosine = (sprite_id % 16) * 8, (sprite_id \ 16) * 8, size\2 - 0.5, sin(theta / 360), cos(theta / 360)
   for mx=0, size-1 do 
     for my=0, size-1 do 
       local dx, dy = mx-shift, my-shift
@@ -1254,9 +1250,8 @@ function combine_and_unpack(data1, data2)
   return unpack(data)
 end
 function round_to(value, place)
-  local places = 10 * place
-  local val = flr(value * places)
-  return val / places
+  local mult = 10^(place or 0)
+  return flr(value * mult + 0.5) / mult
 end
 function check_tile_flag_at(position, flag)
   return fget(mget(Vec.unpack(position)), flag)
@@ -1271,6 +1266,12 @@ end
 function save_int(address, value)
   poke4(address, value)
   return address + 4
+end
+function encode(a, b, a_w)
+  return (a << a_w) | b
+end
+function decode(data, a_w, b_mask)
+  return flr(data >>> a_w), data & b_mask
 end
 function unpack_table(str)
   local table,start,stack,i={},1,0,1

@@ -7,10 +7,6 @@ function print_with_outline(text, dx, dy, text_color, outline_color)
   ?text,dx,dy,text_color
 end
 
-function print_text_center(text, dy, text_color, outline_color)
-  print_with_outline(text, 64-(#text*5)\2, dy, text_color, outline_color)
-end
-
 -- Utility
 function controls()
   if btnp(⬆️) then return 0, -1
@@ -58,9 +54,7 @@ end
 
 -- https://www.lexaloffle.com/bbs/?pid=52525 [modified for this game]
 function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
-  local sx, sy = (sprite_id % 16) * 8, (sprite_id \ 16) * 8 
-  local sine, cosine = sin(theta / 360), cos(theta / 360)
-  local shift = size\2 - 0.5
+  local sx, sy, shift, sine, cosine = (sprite_id % 16) * 8, (sprite_id \ 16) * 8, size\2 - 0.5, sin(theta / 360), cos(theta / 360)
   for mx=0, size-1 do 
     for my=0, size-1 do 
       local dx, dy = mx-shift, my-shift
@@ -115,9 +109,8 @@ function combine_and_unpack(data1, data2)
 end
 
 function round_to(value, place)
-  local places = 10 * place
-  local val = flr(value * places)
-  return val / places
+  local mult = 10^(place or 0)
+  return flr(value * mult + 0.5) / mult
 end
 
 function check_tile_flag_at(position, flag)
@@ -137,4 +130,12 @@ end
 function save_int(address, value)
   poke4(address, value)
   return address + 4
+end
+
+function encode(a, b, a_w)
+  return (a << a_w) | b
+end
+
+function decode(data, a_w, b_mask)
+  return flr(data >>> a_w), data & b_mask
 end

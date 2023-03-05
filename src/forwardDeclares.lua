@@ -10,11 +10,7 @@ function display_tower_info(tower_id, position, text_color)
     {text = tower_details.prefix..": "..tower_details.damage}
   }
   local longest_str_len = longest_menu_str(texts)*5+4
-  BorderRect.resize(
-    tower_stats_background_rect,
-    position_offset, 
-    Vec:new(longest_str_len + 20,27
-  ))
+  tower_stats_background_rect = BorderRect:new(position_offset, Vec:new(longest_str_len + 20,27), 8, 5, 2)
   BorderRect.draw(tower_stats_background_rect)
   print_with_outline(
     tower_details.name,
@@ -41,7 +37,7 @@ end
 
 function display_tower_rotation(menu_pos, position)
   local tower_details, position_offset = global_table_data.tower_templates[selected_menu_tower_id], position + Vec:new(0, -28)
-  BorderRect.reposition(tower_rotation_background_rect, position_offset)
+  tower_rotation_background_rect = BorderRect:new(position_offset, Vec:new(24, 24), 8, 5, 2)
   BorderRect.draw(tower_rotation_background_rect)
 
   local sprite_position = position_offset + Vec:new(4, 4)
@@ -185,22 +181,31 @@ function save_game()
   -- health
   start_address = save_byte(start_address, player_health)
   -- scrap
-  local tower_full_refund = 0
-  for tower in all(towers) do 
-    tower_full_refund += tower.cost
-  end
-  start_address = save_int(start_address, coins + tower_full_refund)
+  start_address = save_int(start_address, coins)
   -- map id
   start_address = save_byte(start_address, loaded_map)
   -- wave
   start_address = save_byte(start_address, wave_round)
   -- freeplay round
-  save_int(start_address, freeplay_rounds)
+  start_address = save_int(start_address, freeplay_rounds)
+  -- current tower count
+  start_address = save_byte(start_address, #towers)
+  -- save towers
+  for tower in all(towers) do 
+    local rot = round_to(tower.rot / 90) % 4
+    for i, t in pairs(global_table_data.tower_templates) do 
+      if t.type == tower.type then 
+        start_address = save_byte(start_address, encode(i, rot, 3))
+        start_address = save_byte(start_address, encode(tower.position.x, tower.position.y, 4))
+        break
+      end
+    end
+  end
 end
 
 function load_game()
   local start_address = 0x5e00
-  local hp, scrap, map_id, wav, freeplay
+  local tower_data, hp, scrap, map_id, wav, freeplay = {}
   -- health
   hp = @start_address
   start_address += 1
@@ -215,21 +220,21 @@ function load_game()
   start_address += 1
   -- freeplay round
   freeplay = $start_address
+  start_address += 4
+  -- towers
+  local tower_count = @start_address 
+  start_address += 1
+  for i=1, tower_count do 
+    local id, rot = decode(@start_address, 3, 0x7)
+    start_address += 1
+    local x, y = decode(@start_address, 4, 0xf)
+    start_address += 1
+    add(tower_data, {
+      id, rot + 1, Vec:new(x, y)
+    })
+  end
 
-  return hp, scrap, map_id, wav, freeplay
-end
-
-function load_game_state()
-  reset_game()
-  get_menu("main").enable = false
-  local hp, scrap, map_id, wav, freeplay = load_game()
-  load_map(map_id)
-  player_health = hp 
-  coins = scrap
-  wave_round = wav 
-  freeplay_rounds = freeplay
-  -- TODO: calculate what the freeplay enemies will be
-  game_state = "game"
+  return hp, scrap, map_id, wav, freeplay, tower_data
 end
 
 forward_declares = {
@@ -253,7 +258,22 @@ forward_declares = {
     reset_game()
   end,
   func_quit = function() reset_game() end,
-  func_load_game = load_game_state,
+  func_load_game = function()
+    reset_game()
+    get_menu("main").enable = false
+    local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
+    load_map(map_id)
+    player_health = hp 
+    coins = scrap
+    wave_round = wav 
+    freeplay_rounds = freeplay
+    -- TODO: calculate what the freeplay enemies will be
+    for tower in all(tower_data) do 
+      direction = Vec:new(global_table_data.direction_map[tower[2]])
+      place_tower(tower[3], tower[1])
+    end
+    game_state = "game"
+  end,
   func_toggle_mode = function()
     manifest_mode = not manifest_mode
     sell_mode = not sell_mode
