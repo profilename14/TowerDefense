@@ -251,6 +251,10 @@
       "data": [{ "sprite": 83 }],
       "ticks_per_frame": 5
     },
+    "clock_carbine": {
+      "data": [{ "sprite": 88 }],
+      "ticks_per_frame": 5
+    },
     "menu_selector": {
       "data": [
         { "sprite": 6, "offset": [0, 0] },
@@ -320,7 +324,7 @@
       "animation_key": "blade_circle",
       "cost": 25,
       "type": "tack",
-      "attack_delay": 15,
+      "attack_delay": 14,
       "icon_data": 16,
       "disable_icon_rotation": true,
       "cooldown": 0
@@ -328,13 +332,13 @@
     {
       "name": "lightning lance",
       "text_color": [10, 9],
-      "damage": 5,
+      "damage": 4,
       "prefix": "damage",
       "radius": 5,
       "animation_key": "lightning_lance",
       "cost": 45,
       "type": "rail",
-      "attack_delay": 25,
+      "attack_delay": 20,
       "icon_data": 18,
       "disable_icon_rotation": false,
       "cooldown": 200
@@ -348,7 +352,7 @@
       "animation_key": "hale_howitzer",
       "cost": 30,
       "type": "frontal",
-      "attack_delay": 35,
+      "attack_delay": 36,
       "icon_data": 20,
       "disable_icon_rotation": false,
       "cooldown": 25
@@ -362,7 +366,7 @@
       "animation_key": "fire_pit",
       "cost": 20,
       "type": "floor",
-      "attack_delay": 1,
+      "attack_delay": 10,
       "icon_data": 22,
       "disable_icon_rotation": true,
       "cooldown": 0
@@ -378,6 +382,20 @@
       "type": "sharp",
       "attack_delay": 30,
       "icon_data": 99,
+      "disable_icon_rotation": false,
+      "cooldown": 0
+    },
+    {
+      "name": "clock carbine",
+      "text_color": [1, 7],
+      "damage": 2,
+      "prefix": "multiplier",
+      "radius": 10,
+      "animation_key": "clock_carbine",
+      "cost": 40,
+      "type": "clock",
+      "attack_delay": 1,
+      "icon_data": 104,
       "disable_icon_rotation": false,
       "cooldown": 0
     }
@@ -630,7 +648,7 @@
     },
     "dialogue_intros": [
       {
-        "text": "i've just woken up - why is everyone trying to break apart my console!? i... could defend myself by placing my currently selected sword circle in the corner of a turn.    The doors can be opened from the menu with 'start wave.'",
+        "text": "i've just woken up - why is everyone trying to break apart my console!? i... could defend myself by placing my currently selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start wave.'",
         "color": [9, 0]
       },
       {
@@ -668,7 +686,7 @@
         "color": [9, 0]
       },
       {
-        "text": "manifesting the hale howitzer will allow direct ordinance anywhere along the track - freezing and damaging an area.",
+        "text": "manifesting the hale howitzer will allow direct targetting anywhere along the track - freezing and damaging",
         "color": [9, 0]
       },
       {
@@ -718,11 +736,11 @@
         "color": [1, 0]
       },
       {
-        "text": "I can see autonomous attack vehicles coming. They seem resistant to bladed strikes but they wouldn't be hard to short-circuit.",
+        "text": "i can see autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit.",
         "color": [9, 0]
       },
       {
-        "text": "Those helicopters ahead are carrying armored vehicles. They'll carry those through my defenses unless I used something capable of piercing both at once...",
+        "text": "those helicopters ahead are carrying armored vehicles. they'll carry those through my defenses unless I use something capable of piercing both at once...",
         "color": [9, 0]
       },
       {
@@ -738,7 +756,7 @@
         "color": [1, 0]
       },
       {
-        "text": "That vehicle isn't even aligned with Milit. That's a bandit! It'll loot from my supplies if it makes it past.",
+        "text": "that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past.",
         "color": [9, 0]
       },
       {

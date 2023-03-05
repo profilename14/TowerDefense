@@ -117,7 +117,8 @@ function game_loop()
     if manifested_tower_ref then 
       if manifested_tower_ref.type == "floor" then
         Tower.manifested_torch_trap(manifested_tower_ref)
-      elseif manifested_tower_ref.type == "sharp" then 
+      elseif manifested_tower_ref.type == "sharp" or manifested_tower_ref.type == "clock" then 
+        -- They literally use the exact same logic, so clock can just reuse this function.
         Tower.manifested_sharp_rotation(manifested_tower_ref)
       end
     end
@@ -161,6 +162,6 @@ function game_loop()
     TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
 
     if (text_place_holder.text == "") text_scroller.enable = false
-    
+
   end
 end
