@@ -98,6 +98,7 @@ function Tower:draw()
   if (self.being_boosted) spr(global_table_data.boosted_decal, p.x, p.y)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
+  if (self.type == "clock") draw_line_overlay(self)
 end
 function Tower:cooldown()
   self.manifest_cooldown = max(self.manifest_cooldown-1, 0)
@@ -192,7 +193,7 @@ function manifest_tower_at(position)
       if (tower.being_boosted) tower.being_boosted = false
       tower.being_manifested, manifested_tower_ref, manifest_selector.dir = true, tower, 1
       if tower.type == "tack" then
-        lock_cursor, tower.attack_delay, tower.dmg = true, 10, 0
+        lock_cursor, tower.attack_delay, tower.dmg = true, 12, 0
       elseif tower.type == "sharp" then
         tower.attack_delay /= 2
       end
