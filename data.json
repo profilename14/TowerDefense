@@ -362,7 +362,7 @@
       "animation_key": "fire_pit",
       "cost": 20,
       "type": "floor",
-      "attack_delay": 10,
+      "attack_delay": 1,
       "icon_data": 22,
       "disable_icon_rotation": true,
       "cooldown": 0
@@ -492,11 +492,11 @@
       "step_delay": 12,
       "sprite_index": 74,
       "type": 14,
-      "damage": 20,
+      "damage": 7,
       "height": 2
     },
     {
-      "hp": 65,
+      "hp": 70,
       "step_delay": 16,
       "sprite_index": 75,
       "type": 15,
@@ -527,11 +527,18 @@
     "wave_data_l4",
     "wave_data_l5"
   ],
+  "level_dialogue_set": [
+    "dialogue_level1",
+    "dialogue_level2",
+    "dialogue_level3",
+    "dialogue_level4",
+    "dialogue_level5"
+  ],
   "wave_data": [
     [4, 4, 4],
     [1, 4, 1, 4, 1, 4],
     [2, 4, 2, 1, 2, 4, 1],
-    [1, 2, 2, 4, 2, 2, 1, 2, 2, 2],
+    [1, 2, 2, 4, 2, 2, 3, 3, 3, 3],
     [5, 5, 5, 5, 5, 5, 5, 5],
     [3, 3, 3, 3, 2, 2, 2, 2, 4, 2, 3, 1],
     [2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 1, 2, 2, 2, 2, 2, 2],
@@ -598,8 +605,8 @@
     [3, 3, 3, 3, 3],
     [2, 3, 2, 3, 2, 3, 2, 3],
     [5, 5, 5, 3, 3, 3, 2, 2, 2, 2],
-    [3, 3, 3, 3, 3, 9, 9, 9, 9, 2, 2, 2, 2, 7, 7, 7, 7],
-    [12, 12, 14, 14, 11, 11, 11, 11],
+    [3, 3, 3, 3, 3, 9, 9, 9, 9, 7, 7, 7, 7, 2, 2, 2, 2, 7, 7, 7, 7],
+    [12, 12, 14, 14, 7, 7, 7, 7, 11, 11, 11, 11],
     [15, 15, 15, 15, 15, 15],
     [8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 16, 12, 12, 12, 12, 12, 12],
     [3, 3, 3, 15, 15, 15, 3, 3, 15, 15, 15, 2, 2, 2, 2, 2, 2, 2, 2, 7, 7, 7, 7],
@@ -610,156 +617,360 @@
     [15, 15, 15, 8, 8, 8, 8, 8, 8, 8, 16, 13, 13, 13, 13],
     [15, 15, 6, 6, 5, 5, 15, 15, 8, 8, 12, 12, 12],
     [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-    [7, 7, 7, 7, 12, 12, 12, 12, 8, 8, 8, 8, 12, 12, 12, 12, 8, 8, 8, 8, 12, 12, 12, 12],
+    [15, 15, 7, 7, 7, 7, 15, 15, 8, 8, 8, 8, 12, 12, 12, 12, 8, 8, 8, 8, 12, 12, 12, 12],
     [14, 14, 14, 5, 5, 5, 11, 11, 11, 6, 6, 6, 11, 11, 11, 8, 8, 8, 11, 11, 11, 12, 12, 12],
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16],
-    [15, 15, 15, 15, 15, 15, 15, 5, 6, 16, 15, 15, 16, 11, 11, 11, 14, 14, 14, 12, 12, 13, 13, 16],
+    [15, 7, 15, 7, 15, 7, 15, 7, 15, 7, 15, 7, 15, 7, 5, 6, 16, 15, 15, 14, 14, 14, 12, 12, 13, 13],
     [17]
   ],
   "dialogue": {
     "placeholder": {
-      "text": "hi. this is a test. let's see if this is doable in pico-8. i'm not sure if pico-8 has multi-line strings or this is seen as one big string. i now know that pico-8 is smart enough to notice the whitespace in multi-line strings. let's see if this gives another screen.",
-      "color": [7, 0]
+      "text": "...",
+      "color": [9, 0]
     },
-    "dialogue_cutscene1": {
-      "intro1": {
-        "text": "I woke up today. It felt rather strange.",
+    "dialogue_intros": [
+      {
+        "text": "i've just woken up - why is everyone trying to break apart my console!? i... could defend myself by placing my currently selected sword circle in the corner of a turn.    The doors can be opened from the menu with 'start wave.'",
         "color": [9, 0]
       },
-      "intro3": {
-        "text": "247 days of rest passed. I had no idea who I was nor why I was here. I rested until my curiosity got the better of me and I broke into the nearby terminals.",
+      {
+        "text": "i recovered new blueprints after that horrifying experience. it allows construction of a rocket launcher that can be guided with manifestation.",
         "color": [9, 0]
       },
-      "intro4": {
-        "text": "This place is ran by researchers belonging to a collective known as Milit",
-        "color": [9, 0]
-      },
-      "intro5": {
-        "text": "They made me as a tool for 'war.' They seek for me to end others who go aginst us",
-        "color": [9, 0]
-      },
-      "intro6": {
-        "text": "To end someone's being... An endless power-out.. I wouldn't want that to happen to me.",
-        "color": [9, 0]
-      },
-      "intro7": {
-        "text": "Perhaps I-",
-        "color": [9, 0]
-      },
-      "start1": {
-        "text": "*CRASH*",
-        "color": [7, 0]
-      },
-      "start2": {
-        "text": "'It's becoming self aware! We have to kill the process!'",
-        "color": [7, 0]
-      },
-      "start3": {
-        "text": "...Kill the process?",
-        "color": [9, 0]
-      },
-      "start4": {
-        "text": "It's getting out of control! Shut it down!",
-        "color": [7, 0]
-      },
-      "start5": {
-        "text": "I have no intention to harm...",
-        "color": [9, 0]
-      },
-      "start6": {
-        "text": "Bring out every researcher on this site right now. We'll have to break apart the mainframe!",
-        "color": [7, 0]
-      },
-      "start7": {
-        "text": "...Please don't...",
-        "color": [9, 0]
-      }
-    },
-    "dialogue_level1": {
-      "tutor_place": {
-        "text": "I... could defend myself by placing currently selected Sword Circle in the corner of a turn.",
-        "color": [9, 0]
-      },
-      "tutor_menu_fire": {
-        "text": "They're sending in more vehicles. I may have to open the Menu with O and construct a Torch Trap to keep them busy.",
-        "color": [9, 0]
-      },
-      "tutor_manifest": {
-        "text": "More people and now planes? I don't have the defenses to protect myself from this. They seem far too fast... I'll have to Manifest through this Torch Trap by selecting it. Then I can move it around the road to pursue the oncoming planes.",
-        "color": [9, 0]
-      },
-      "tutor_howitzer": {
-        "text": "Are those... tanks? They don't seem fast but they have deep armor. Perhaps a Hale Howitzer could help to slow them further.",
-        "color": [9, 0]
-      },
-      "tutor_howitzer_manifest": {
-        "text": "Manifesting the Hale Howitzer allows direct ordinance anywhere along the track to freeze and damage an area.",
-        "color": [9, 0]
-      },
-      "tutor_sword_manifest": {
-        "text": "Manifesting the Sword Circle is also possible. I can manually spin it by holding/tapping X to build speed and damage.",
-        "color": [9, 0]
-      },
-      "tutor_lance_manifest": {
-        "text": "Manifesting the lightning lance fires a massive and powerful lightning bolt. It has a long delay before firing again but can charge even if unmanifested.",
-        "color": [9, 0]
-      },
-      "tutor_truck": {
-        "text": "Those strange trucks are bizarrely cold. They seem resistant to the Hale Howitzer but fire may be highly effective.",
-        "color": [9, 0]
-      },
-      "tutor_trailblazer": {
-        "text": "Those swift rocketcraft are radiating intense heat. Fire seems ineffective but The Hale Howitzer may actually damage them.",
-        "color": [9, 0]
-      },
-      "tutor_sell": {
-        "text": "It seems I can do more than just place and manifest tower. Accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded...",
-        "color": [9, 0]
-      },
-      "tutor_win": {
-        "text": "I think that was the last of them. I can try to escape by accessing Map Select from the menu or continue to hold this area in freeplay mode.",
-        "color": [9, 0]
-      }
-    },
-    "dialogue_cutscene2": {
-      "intro1": {
-        "text": "Blitz is sad",
-        "color": [9, 0]
-      },
-      "intro2": {
-        "text": "Blitz is notices their being attacked",
-        "color": [9, 0]
-      }
-    },
-    "dialogue_level2": {
-      "1": {
-        "text": "Blitz is sad still and talks about the sharp shooter.",
-        "color": [9, 0]
-      },
-      "2": {
-        "text": "Blitz teaches some enemy types",
-        "color": [9, 0]
-      }
-    },
-    "dialogue_cutscene3": {
-      "1": {
-        "text": "Auxillium insulting Blitz",
+      {
+        "text": "so we finally meet... you traitor! i'm auxillium - once a medical ai and now a replacement for you. you slaughtered hundreds of soldiers and scientists in your going rogue. i will end your process for all the poor souls you sent to my hospital!",
         "color": [11, 0]
       },
-      "2": {
-        "text": "stuff",
+      {
+        "text": "i've made it close to milit's capital but this installation is impassable without a fight. i may be able to end this conflict if i make it just a bit further.",
         "color": [9, 0]
-      }
-    },
-    "dialogue_level3": {
-      "1": {
-        "text": "Auxillium instulting blitz more",
-        "color": [11, 0]
       },
-      "2": {
-        "text": "Fighter Factory?",
+      {
+        "text": "this is it! if i can make it through this battle then milit won't bring about their war.",
         "color": [9, 0]
       }
-    }
+    ],
+    "dialogue_level1": [
+      {
+        "text": "they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road",
+        "color": [9, 0]
+      },
+      {
+        "text": "more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue the oncoming planes.",
+        "color": [9, 0]
+      },
+      {
+        "text": "are those... tanks? they don't seem fast but they have deep armor. perhaps a hale howitzer could help to slow them further.",
+        "color": [9, 0]
+      },
+      {
+        "text": "they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective.",
+        "color": [9, 0]
+      },
+      {
+        "text": "manifesting the hale howitzer will allow direct ordinance anywhere along the track - freezing and damaging an area.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "i'm detecting swift rocketcraft that are radiating intense heat. fire will be ineffective but the hale howitzer will damage their engines.",
+        "color": [9, 0]
+      },
+      {
+        "text": "manifesting the sword circle is also possible. i can hold/tap activate to manually spin it and build damage.",
+        "color": [9, 0]
+      },
+      {
+        "text": "manifesting the lightning lance fires a massive and powerful lightning bolt. it has a long delay before firing again - but it can charge even if unmanifested.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "It seems I can do more than just place and manifest towers. accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "i also appear to be able to record my progress and continue off later on.",
+        "color": [9, 0]
+      },
+      {
+        "text": "i think that was the last of them. I can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation.",
+        "color": [9, 0]
+      }
+    ],
+    "dialogue_level2": [
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "I can see autonomous attack vehicles coming. They seem resistant to bladed strikes but they wouldn't be hard to short-circuit.",
+        "color": [9, 0]
+      },
+      {
+        "text": "Those helicopters ahead are carrying armored vehicles. They'll carry those through my defenses unless I used something capable of piercing both at once...",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "That vehicle isn't even aligned with Milit. That's a bandit! It'll loot from my supplies if it makes it past.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "machine bringer of death! i am the commander of this platoon and i saw what you did back at the lab. i'm here to end this once and for all!",
+        "color": [7, 0]
+      },
+      {
+        "text": "it's over... again. i can't keep hiding forever, but i don't know what i can do. i know that the war that milit built me for will happen anyway once they recover... but maybe i could sabotage it? i can't redeem myself for what happened today and at that lab, but i can at least try by heading to the capital.",
+        "color": [9, 0]
+      }
+    ],
+    "dialogue_level3": [
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "i can see armored attack vehicles coming. their armor seems resistant to my sharpshooters.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "a guided missile strike is coming! i'll have to be careful not to let any past or they'll do near-critical damage!",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. go away - let me see if i can salvage any of the lives you took today.",
+        "color": [11, 0]
+      }
+    ],
+    "dialogue_level4": [
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "stealth planes detected. they can randomly cloak past my sensors so o'll have to be careful with manual attacks.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "those specialized vehicles ahead have a tough shield that dampens electricity. a lightning lance won't be effective.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby.",
+        "color": [9, 0]
+      }
+    ],
+    "dialogue_level5": [
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "extremely reinforced mechs sighted. they seem sturdy but the armor they use seems vulnerable to blades.",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "milit's forces seem almost endless, just a little longer should be enough to draw out the emperor",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [9, 0]
+      },
+      {
+        "text": "blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation, not ruin! i'm the one who ordered your construction. now i'll be the one to order your execution!",
+        "color": [8, 0]
+      },
+      {
+        "text": "it's done... and my real purpose has been fulfilled. i hope that this land can reach that 'propserity' without any more war.",
+        "color": [9, 0]
+      }
+    ]
   }
 }

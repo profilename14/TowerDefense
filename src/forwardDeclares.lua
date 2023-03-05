@@ -77,6 +77,8 @@ function start_round()
   end
   if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds += 1
 
+
+
   enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end
 
@@ -171,6 +173,11 @@ function load_map(map_id)
     end
   end
   music(global_table_data.music_data[cur_level] or 0)
+
+  text_scroller.enable = true
+  text_place_holder = global_table_data.dialogue.dialogue_intros[cur_level]
+
+  TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
 end
 
 function save_game()

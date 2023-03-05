@@ -34,7 +34,7 @@ function _draw()
   elseif game_state == "game" then 
     game_draw_loop()
   end
-  -- TextScroller.draw(text_scroller)
+  TextScroller.draw(text_scroller)
 end
 
 function _update()
@@ -49,18 +49,13 @@ function _update()
     if shop_enable then shop_loop() else game_loop() end
   end
   -- TEMP
-  -- TextScroller.update(text_scroller)
+  TextScroller.update(text_scroller)
 
-  -- if btnp(❎) then 
-  --   if TextScroller.next(text_scroller) then 
-  --     if flag then 
-  --       text_scroller.enable = false
-  --     else
-  --       TextScroller.load(text_scroller, "chicken butt", {8, 1})
-  --       flag = true
-  --     end
-  --   end
-  -- end
+  if btnp(🅾️) then 
+    if TextScroller.next(text_scroller) then 
+      text_scroller.enable = false
+    end
+  end
 end
 
 -- Draw Calls
