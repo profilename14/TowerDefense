@@ -22,12 +22,14 @@ function reset_game()
   coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 30, 50, 10, {
     30, 45, 75, 105, 140
   }
+  text_flag = false
 
   -- -- temp 
-  -- text_place_holder = global_table_data.dialogue.placeholder
-  -- text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
-  --   Vec:new(3, 3), Vec:new(100, 50), 8, 6, 3
-  -- })
+  text_place_holder = global_table_data.dialogue.placeholder
+  text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
+    Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3
+  })
+  text_scroller.enable = false
   
   
   -- Internal Data -- Don't modify

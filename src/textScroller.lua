@@ -10,7 +10,7 @@ function TextScroller:new(char_delay, text_data, color_palette, rect_data)
     internal_tick = 0,
     is_done = false,
     width = flr(brect.size.x/5),
-    max_lines = flr(brect.size.y/16)-1,
+    max_lines = flr(brect.size.y/16)-5,
     enable = true
   }
   setmetatable(obj, self)
@@ -26,7 +26,7 @@ function TextScroller:draw()
   local text = before..generate_garbage(end_text, self.rect.size.x, #lines[#lines], self.max_lines, #lines\2)
   print_with_outline(text, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
   if self.is_done then 
-    local output = self.text_pos >= #self.data and "❎ to close" or "❎ to continue"
+    local output = self.text_pos >= #self.data and "🅾️ to close" or "🅾️ to continue"
     print_with_outline(output, self.rect.position.x + 4, self.rect.size.y - 7, unpack(self.color))
   end
 end
