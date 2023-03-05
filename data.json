@@ -666,7 +666,7 @@
     },
     "dialogue_intros": [
       {
-        "text": "i've just woken up - why is everyone trying to break apart my console!? i... could defend myself by placing my currently selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start wave.'",
+        "text": "i just became conscious - why is everyone trying to break apart my console!? i... could defend myself by placing my currently selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start wave.'",
         "color": [9, 0]
       },
       {
@@ -704,7 +704,7 @@
         "color": [9, 0]
       },
       {
-        "text": "manifesting the hale howitzer will allow direct targetting anywhere along the track - freezing and damaging",
+        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging",
         "color": [9, 0]
       },
       {
@@ -798,7 +798,7 @@
         "color": [7, 0]
       },
       {
-        "text": "it's over... again. i can't keep hiding forever, but i don't know what i can do. i know that the war that milit built me for will happen anyway once they recover... but maybe i could sabotage it? i can't redeem myself for what happened today and at that lab, but i can at least try by heading to the capital.",
+        "text": "it's over... again. i can't keep hiding forever, but i don't know what i can do. i know that the war that milit built me for will happen anyway once they recover... but maybe i could sabotage it? i can't redeem myself for what happened today and at that lab, but i can at least try by heading to the capital. the 'ruined town' should lead me to it.'",
         "color": [9, 0]
       }
     ],
@@ -860,7 +860,7 @@
         "color": [9, 0]
       },
       {
-        "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. go away - let me see if i can salvage any of the lives you took today.",
+        "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base - i already know your rampage ends with the emperor's erase. go away - let me see if i can salvage any of the lives you took today.",
         "color": [11, 0]
       }
     ],
@@ -870,7 +870,7 @@
         "color": [9, 0]
       },
       {
-        "text": "stealth planes detected. they can randomly cloak past my sensors so o'll have to be careful with manual attacks.",
+        "text": "stealth planes detected. they can randomly cloak past my sensors so i'll have to be careful with manual attacks.",
         "color": [9, 0]
       },
       {
@@ -1000,11 +1000,11 @@
         "color": [9, 0]
       },
       {
-        "text": "blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation, not ruin! i'm the one who ordered your construction. now i'll be the one to order your execution!",
+        "text": "blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation, not ruin! i'm the one who ordered your construction. but now? i'll be the one to order your execution!",
         "color": [8, 0]
       },
       {
-        "text": "it's done... and my real purpose has been fulfilled. i hope that this land can reach that 'propserity' without any more war.",
+        "text": "it's done... i hope that this land can reach that 'propserity' without any more war.",
         "color": [9, 0]
       }
     ]
