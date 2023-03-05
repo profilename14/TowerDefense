@@ -164,12 +164,7 @@ function save_game()
   end
   start_address = save_int(start_address, coins + tower_full_refund)
   start_address = save_byte(start_address, loaded_map)
-  if wave_finish then
-    wave_to_save = wave_round
-  else
-    wave_to_save = wave_round - 1
-  end
-  start_address = save_byte(start_address, wave_to_Save)
+  start_address = save_byte(start_address, wave_round)
   save_int(start_address, freeplay_rounds)
 end
 function load_game()
@@ -207,11 +202,13 @@ forward_declares = {
   func_get_map_data_for_menu = get_map_data_for_menu,
   func_new_game = new_game,
   func_save=function()
+    if (enemies_active) return
     save_game()
     get_active_menu().enable = false
     shop_enable = false
   end,
   func_save_quit=function()
+    if (enemies_active) return
     save_game()
     reset_game()
   end,
