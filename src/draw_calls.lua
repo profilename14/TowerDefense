@@ -1,6 +1,6 @@
 function main_menu_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
-  print_text_center("untitled tower defense", 1, 7, 1)
+  spr(0, 0, 0)
 
   if menu_enemy then 
     Enemy.draw(menu_enemy, true)
@@ -12,7 +12,7 @@ end
 
 function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
-  print_text_center("credits", credit_y_offsets[1], 7, 1)
+  print_with_outline("credits", 47, credit_y_offsets[1], 7, 1)
   print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
   print_with_outline("jeren:\n  • core programmer\n  • devops", 10, credit_y_offsets[3], 7, 1)
   print_with_outline("jimmy:\n  • artist\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
@@ -25,7 +25,7 @@ function map_draw_loop()
   map(unpack(global_table_data.map_data[map_menu.pos].mget_shift))
   pal()
   Menu.draw(map_menu)
-  print_text_center("map select", 5, 7, 1)
+  print_with_outline("map select", 39, 5, 7, 1)
 end
 
 function game_draw_loop()
@@ -63,7 +63,7 @@ end
 function ui_draw_loop(tower_details)
   -- static/always present
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
-  print_with_outline("towers: "..tower_count.."/64", 0, 8, 7, 0)
+  print_with_outline("towers: "..#towers.."/64", 0, 8, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
   print_with_outline("mode: "..(manifest_mode and "manifest" or "sell"), 1, 108, 7, 0)
 

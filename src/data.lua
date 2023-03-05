@@ -34,12 +34,10 @@ function reset_game()
   
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0
-  direction, game_state, selected_menu_tower_id, tower_count = Vec:new(0, -1), "menu", 1, 0
+  direction, game_state, selected_menu_tower_id = Vec:new(0, -1), "menu", 1
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
-  tower_stats_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(20, 38), 8, 5, 2)
-  tower_rotation_background_rect = BorderRect:new(Vec:new(0, 0), Vec:new(24, 24), 8, 5, 2)
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
   manifest_selector.dir = -1
