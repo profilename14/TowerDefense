@@ -127,12 +127,12 @@ function new_game()
   game_state="map"
   swap_menu_context("map")
 end
-function load_map(map_id)
+function load_map(map_id, wave, freeplay)
   pal()
   auto_start_wave = false
   manifest_mode = true
-  wave_round = 0
-  freeplay_rounds = 0
+  wave_round = wave or 0
+  freeplay_rounds = freeplay or 0
   loaded_map = map_id
   cur_level = map_id
   pathing = parse_path()
@@ -147,22 +147,32 @@ function load_map(map_id)
     end
   end
   music(global_table_data.music_data[cur_level] or 0)
-  text_scroller.enable = true
-  text_place_holder = global_table_data.dialogue.dialogue_intros[cur_level]
-  TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
+  if wave_round == 0 then 
+    text_scroller.enable = true
+    local text_place_holder = global_table_data.dialogue.dialogue_intros[cur_level]
+    TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
+  else
+    load_wave_text()
+  end
 end
 function save_game()
   local start_address = 0x5e00
   start_address = save_byte(start_address, player_health)
   start_address = save_int(start_address, coins)
   start_address = save_byte(start_address, loaded_map)
-  if wave_finish then
-    wave_to_save = wave_round
-  else
-    wave_to_save = wave_round - 1
+  start_address = save_byte(start_address, wave_round)
+  start_address = save_int(start_address, freeplay_rounds)
+  start_address = save_byte(start_address, #towers)
+  for tower in all(towers) do 
+    local rot = round_to(tower.rot / 90) % 4
+    for i, t in pairs(global_table_data.tower_templates) do 
+      if t.type == tower.type then 
+        start_address = save_byte(start_address, encode(i, rot, 3))
+        start_address = save_byte(start_address, encode(tower.position.x, tower.position.y, 4))
+        break
+      end
+    end
   end
-  start_address = save_byte(start_address, wave_to_Save)
-  save_int(start_address, freeplay_rounds)
 end
 function load_game()
   local start_address = 0x5e00
@@ -200,11 +210,13 @@ forward_declares = {
   func_get_map_data_for_menu = get_map_data_for_menu,
   func_new_game = new_game,
   func_save=function()
+    if (enemies_active) return
     save_game()
     get_active_menu().enable = false
     shop_enable = false
   end,
   func_save_quit=function()
+    if (enemies_active) return
     save_game()
     reset_game()
   end,
@@ -213,11 +225,9 @@ forward_declares = {
     reset_game()
     get_menu("main").enable = false
     local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
-    load_map(map_id)
+    load_map(map_id, wav, freeplay)
     player_health = hp 
     coins = scrap
-    wave_round = wav 
-    freeplay_rounds = freeplay
     for tower in all(tower_data) do 
       direction = Vec:new(global_table_data.direction_map[tower[2]])
       place_tower(tower[3], tower[1])
@@ -230,7 +240,7 @@ forward_declares = {
   end,
   func_credits=function() game_state = "credits" end
 }
-global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=6},music_data={0,15,22,27},freeplay_stats={hp=1.67,speed=1,min_step_delay=5},menu_data={{name=main,position={36,69},content={{text=new game,color={7,0},callback=func_new_game},{text=load game,color={7,0},callback=func_load_game},{text=credits,color={7,0},callback=func_credits}},settings={5,8,7,3}},{name=game,position={5,63},content={{text=towers,color={7,0},callback=func_swap_menu_context,args={towers}},{text=misc,color={7,0},callback=func_swap_menu_context,args={misc}},{text=rotate clockwise,color={7,0},callback=func_rotate_clockwise},{text=start round,color={7,0},callback=func_start_round}},hint=func_display_tower_rotation,settings={5,8,7,3}},{name=misc,prev=game,position={5,63},content={{text=toggle mode,color={7,0},callback=func_toggle_mode},{text=map select,color={7,0},callback=func_new_game},{text=save,color={7,0},callback=func_save},{text=save and quit,color={7,0},callback=func_save_quit},{text=quit without saving,color={7,0},callback=func_quit}},settings={5,8,7,3}},{name=towers,prev=game,position={5,63},content=func_get_tower_data_for_menu,hint=func_display_tower_info,settings={5,8,7,3}},{name=map,position={5,84},content=func_get_map_data_for_menu,settings={5,8,7,3}}},map_meta_data={path_flag_id=0,non_path_flag_id=1},splash_screens={{name=splash1,mget_shift={112,16},enemy_spawn_location={0,7},enemy_end_location={15,7},movement_direction={1,0}}},map_data={{name=laboratory,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=wilderness,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=ruined town,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=strategic base,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}},{name=milit capital,mget_shift={64,0},enemy_spawn_location={0,1},enemy_end_location={15,1},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},clock_carbine={data={{sprite=88}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=8,trail_animation_key=rocket_burn,lifespan=6}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=14,icon_data=16,disable_icon_rotation=True,cooldown=0},{name=lightning lance,text_color={10,9},damage=4,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=20,icon_data=18,disable_icon_rotation=False,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=36,icon_data=20,disable_icon_rotation=False,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=True,cooldown=0},{name=sharp shooter,text_color={6,7},damage=8,prefix=damage,radius=10,animation_key=sharp_shooter,cost=35,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=False,cooldown=0},{name=clock carbine,text_color={1,7},damage=2,prefix=multiplier,radius=10,animation_key=clock_carbine,cost=40,type=clock,attack_delay=1,icon_data=104,disable_icon_rotation=False,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6},{hp=17,step_delay=10,sprite_index=67,type=7,damage=3,height=2},{hp=13,step_delay=8,sprite_index=68,type=8,damage=6,height=6},{hp=15,step_delay=10,sprite_index=94,type=9,damage=3,height=2},{hp=225,step_delay=16,sprite_index=70,type=10,damage=49,height=2},{hp=20,step_delay=8,sprite_index=71,type=11,damage=8,height=6},{hp=5,step_delay=10,sprite_index=72,type=12,damage=1,height=2},{hp=11,step_delay=6,sprite_index=73,type=13,damage=20,height=6},{hp=35,step_delay=12,sprite_index=74,type=14,damage=7,height=2},{hp=70,step_delay=16,sprite_index=75,type=15,damage=13,height=2},{hp=13,step_delay=4,sprite_index=69,type=16,damage=0,height=2},{hp=300,step_delay=14,sprite_index=95,type=16,damage=50,height=2}},wave_set={wave_data,wave_data_l2,wave_data_l3,wave_data_l4,wave_data_l5},level_dialogue_set={dialogue_level1,dialogue_level2,dialogue_level3,dialogue_level4,dialogue_level5},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,3,3,3,3},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,3,3,3,3,3,3,1,2,2,2,2,2,2,2,2,2,2,2,2},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,4},{3,5,3,5,3,5,3,5,3,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6},{5,5,5,5,5,3,3,1,1,1,1,3,3,3,6,6,6,6,6}},wave_data_l2={{1,1,1},{1,1,2,2,2,2},{3,3,1,1,2,2,2,2},{3,3,3,3,3,2,2,2,1,1,1,1,1},{7,7,7,1,7,7,1,7,7},{8,8,8,9,9,9},{9,9,9,1,1,5,5,5,5,5},{9,9,9,8,8,8,7,7,7},{3,3,3,3,3,8,6,8,6,8,6,8,6},{5,5,5,5,5,16,9,9,9,7,7,7,2,2,2,2,2,2,2,2},{6,6,6,6,5,5,5,5,5,5,5,5,6,6,6,6},{3,3,3,3,1,1,2,2,2,2,2,16,2,2,2,2,16},{5,5,5,6,6,6,8,8,8,5,6,5,6},{7,9,7,9,7,9,7,9,7,9,8,8,8,8,8,8,8,8,8},{10}},wave_data_l3={{9,9,9},{7,7,7,7,7,7},{2,2,2,3,3,3,1,1,1,1},{3,3,3,7,7,7,7,7,7,2,2,2,2,2,2},{12,12,12,12,12,12,12,12,12},{8,8,8,7,7,7,7,8,8,8},{8,8,8,5,5,5,12,12,12,12},{13,13,13,13,7,7,7,7},{6,6,6,6,6,12,12,12,12,7,7,7,7},{12,12,12,12,5,7,7,8,8,8,8,8,8},{5,5,5,13,13,13,13,13,6,6,6},{7,7,7,7,7,7,7,16,16,16,6,6,6},{12,12,12,12,7,7,7,13,13,13,13,13,13,13},{12,12,12,12,8,8,8,8,12,12,12,12,8,8,8,8,12,12,12,12}},wave_data_l4={{2,2,2,2,2},{3,3,3,2,2,2,3,3,3,2,2,2},{11,11,11,11,11,11},{11,11,11,3,3,3,11,11,11,11,11,11},{7,7,7,7,5,5,5,5,2,2,2,2,2,2},{13,13,11,11,8,8,11,11,8,8,11,11,8,8},{14,14,14,14,14,14,14,14,14,14,14,14},{12,12,12,12,12,12,12,11,11,11,14,14,14,14,14,14},{16,5,5,5,5,7,7,7,16,6,6,6,6,7,7,7},{14,14,14,14,14,14,8,8,8,8,8,11,11,11,11,11},{7,7,7,7,7,7,7,13,13,13,13,13,13,13,13,13,16},{14,14,14,14,14,8,8,8,8,8,11,13,11,13,11,13},{15,15,15,14,14,14,11,11,11,6,6,6,14,14,14,11,11,11,6,6,6},{14,14,14,14,7,7,7,7,14,14,7,7,13,13,13},{5,5,5,11,11,11,6,6,6,11,11,11,8,8,8,11,11,11,12,12,12}},wave_data_l5={{3,3,3,3,3},{2,3,2,3,2,3,2,3},{5,5,5,3,3,3,2,2,2,2},{3,3,3,3,3,9,9,9,9,7,7,7,7,2,2,2,2,7,7,7,7},{12,12,14,14,7,7,7,7,11,11,11,11},{15,15,15,15,15,15},{8,8,8,8,7,7,7,7,7,7,7,16,12,12,12,12,12,12},{3,3,3,15,15,15,3,3,15,15,15,2,2,2,2,2,2,2,2,7,7,7,7},{5,5,5,9,9,9,6,6,6,6,6,6,5,5,5,5,5,5},{15,15,15,15,5,5,5,5,16,11,11,11,12,12,12},{3,7,2,3,7,2,3,7,2,9,9,9,9,9,16},{13,13,13,7,7,7,7,7,7,13,13,13,7,7,7,7,7,7,13,13,13,13},{15,15,15,8,8,8,8,8,8,8,16,13,13,13,13},{15,15,6,6,5,5,15,15,8,8,12,12,12},{5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6},{15,15,7,7,7,7,15,15,8,8,8,8,12,12,12,12,8,8,8,8,12,12,12,12},{14,14,14,5,5,5,11,11,11,6,6,6,11,11,11,8,8,8,11,11,11,12,12,12},{1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,5,6,7,8,9,11,12,13,14,15,16},{15,7,15,7,15,7,15,7,15,7,15,7,15,7,5,6,16,15,15,14,14,14,12,12,13,13},{17}},dialogue={placeholder={text=...,color={9,0}},dialogue_intros={{text=i've just woken up - why is everyone trying to break apart my console!? i... could defend myself by placing my currently selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start wave.',color={9,0}},{text=i recovered new blueprints after that horrifying experience. it allows construction of a rocket launcher that can be guided with manifestation.,color={9,0}},{text=so we finally meet... you traitor! i'm auxillium - once a medical ai and now a replacement for you. you slaughtered hundreds of soldiers and scientists in your going rogue. i will end your process for all the poor souls you sent to my hospital!,color={11,0}},{text=i've made it close to milit's capital but this installation is impassable without a fight. i may be able to end this conflict if i make it just a bit further.,color={9,0}},{text=this is it! if i can make it through this battle then milit won't bring about their war.,color={9,0}}},dialogue_level1={{text=they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road,color={9,0}},{text=more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue the oncoming planes.,color={9,0}},{text=are those... tanks? they don't seem fast but they have deep armor. perhaps a hale howitzer could help to slow them further.,color={9,0}},{text=they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective.,color={9,0}},{text=manifesting the hale howitzer will allow direct targetting anywhere along the track - freezing and damaging,color={9,0}},{text=,color={1,0}},{text=i'm detecting swift rocketcraft that are radiating intense heat. fire will be ineffective but the hale howitzer will damage their engines.,color={9,0}},{text=manifesting the sword circle is also possible. i can hold/tap activate to manually spin it and build damage.,color={9,0}},{text=manifesting the lightning lance fires a massive and powerful lightning bolt. it has a long delay before firing again - but it can charge even if unmanifested.,color={9,0}},{text=,color={1,0}},{text=It seems I can do more than just place and manifest towers. accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded.,color={9,0}},{text=,color={1,0}},{text=i also appear to be able to record my progress and continue off later on.,color={9,0}},{text=i think that was the last of them. I can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation.,color={9,0}}},dialogue_level2={{text=,color={1,0}},{text=,color={1,0}},{text=i can see autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit.,color={9,0}},{text=those helicopters ahead are carrying armored vehicles. they'll carry those through my defenses unless I use something capable of piercing both at once...,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past.,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=machine bringer of death! i am the commander of this platoon and i saw what you did back at the lab. i'm here to end this once and for all!,color={7,0}},{text=it's over... again. i can't keep hiding forever, but i don't know what i can do. i know that the war that milit built me for will happen anyway once they recover... but maybe i could sabotage it? i can't redeem myself for what happened today and at that lab, but i can at least try by heading to the capital.,color={9,0}}},dialogue_level3={{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=i can see armored attack vehicles coming. their armor seems resistant to my sharpshooters.,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=a guided missile strike is coming! i'll have to be careful not to let any past or they'll do near-critical damage!,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={9,0}},{text=it seems you did just as you designed - killing every troop and bot in this town that already died. go away - let me see if i can salvage any of the lives you took today.,color={11,0}}},dialogue_level4={{text=,color={9,0}},{text=stealth planes detected. they can randomly cloak past my sensors so o'll have to be careful with manual attacks.,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=those specialized vehicles ahead have a tough shield that dampens electricity. a lightning lance won't be effective.,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby.,color={9,0}}},dialogue_level5={{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=extremely reinforced mechs sighted. they seem sturdy but the armor they use seems vulnerable to blades.,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=milit's forces seem almost endless, just a little longer should be enough to draw out the emperor,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation, not ruin! i'm the one who ordered your construction. now i'll be the one to order your execution!,color={8,0}},{text=it's done... and my real purpose has been fulfilled. i hope that this land can reach that 'propserity' without any more war.,color={9,0}}}}"
+global_table_str="cart_name=jjjk_tower_defense_2,tower_icon_background=80,boosted_decal=223,direction_map={{0,-1},{1,0},{0,1},{-1,0}},palettes={transparent_color_id=0,dark_mode={1=0,5=1,6=5,7=6},attack_tile={0=2,7=14},shadows={0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10=0,11=0,12=0,13=0,14=0,15=0}},sfx_data={round_complete=6},music_data={0,15,22,27},freeplay_stats={hp=1.67,speed=1,min_step_delay=5},menu_data={{name=main,position={36,69},content={{text=new game,color={7,0},callback=func_new_game},{text=load game,color={7,0},callback=func_load_game},{text=credits,color={7,0},callback=func_credits}},settings={5,8,7,3}},{name=game,position={5,63},content={{text=towers,color={7,0},callback=func_swap_menu_context,args={towers}},{text=misc,color={7,0},callback=func_swap_menu_context,args={misc}},{text=rotate clockwise,color={7,0},callback=func_rotate_clockwise},{text=start round,color={7,0},callback=func_start_round}},hint=func_display_tower_rotation,settings={5,8,7,3}},{name=misc,prev=game,position={5,63},content={{text=toggle mode,color={7,0},callback=func_toggle_mode},{text=map select,color={7,0},callback=func_new_game},{text=save,color={7,0},callback=func_save},{text=save and quit,color={7,0},callback=func_save_quit},{text=quit without saving,color={7,0},callback=func_quit}},settings={5,8,7,3}},{name=towers,prev=game,position={5,63},content=func_get_tower_data_for_menu,hint=func_display_tower_info,settings={5,8,7,3}},{name=map,position={5,84},content=func_get_map_data_for_menu,settings={5,8,7,3}}},map_meta_data={path_flag_id=0,non_path_flag_id=1},splash_screens={{name=splash1,mget_shift={112,16},enemy_spawn_location={0,7},enemy_end_location={15,7},movement_direction={1,0}}},map_data={{name=laboratory,mget_shift={0,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=wilderness,mget_shift={16,0},enemy_spawn_location={0,1},enemy_end_location={15,11},movement_direction={1,0}},{name=ruined town,mget_shift={32,0},enemy_spawn_location={0,1},enemy_end_location={15,2},movement_direction={1,0}},{name=strategic base,mget_shift={48,0},enemy_spawn_location={0,1},enemy_end_location={0,6},movement_direction={1,0}},{name=milit capital,mget_shift={64,0},enemy_spawn_location={0,1},enemy_end_location={15,1},movement_direction={1,0}}},animation_data={spark={data={{sprite=10},{sprite=11},{sprite=12}},ticks_per_frame=2},blade={data={{sprite=13},{sprite=14},{sprite=15}},ticks_per_frame=2},frost={data={{sprite=48},{sprite=49},{sprite=50}},ticks_per_frame=2},rocket_burn={data={{sprite=117},{sprite=101},{sprite=85}},ticks_per_frame=4},burn={data={{sprite=51},{sprite=52},{sprite=53}},ticks_per_frame=2},incoming_hint={data={{sprite=2,offset={0,0}},{sprite=2,offset={1,0}},{sprite=2,offset={2,0}},{sprite=2,offset={1,0}}},ticks_per_frame=5},blade_circle={data={{sprite=76},{sprite=77},{sprite=78},{sprite=79},{sprite=78},{sprite=77}},ticks_per_frame=3},lightning_lance={data={{sprite=108},{sprite=109}},ticks_per_frame=5},hale_howitzer={data={{sprite=92},{sprite=93}},ticks_per_frame=5},fire_pit={data={{sprite=124},{sprite=125},{sprite=126},{sprite=127},{sprite=126},{sprite=125}},ticks_per_frame=5},sharp_shooter={data={{sprite=83}},ticks_per_frame=5},clock_carbine={data={{sprite=88}},ticks_per_frame=5},menu_selector={data={{sprite=6,offset={0,0}},{sprite=7,offset={-1,0}},{sprite=8,offset={-2,0}},{sprite=47,offset={-3,0}},{sprite=8,offset={-2,0}},{sprite=7,offset={-1,0}}},ticks_per_frame=3},up_arrow={data={{sprite=54,offset={0,0}},{sprite=54,offset={0,-1}},{sprite=54,offset={0,-2}},{sprite=54,offset={0,-1}}},ticks_per_frame=3},down_arrow={data={{sprite=55,offset={0,0}},{sprite=55,offset={0,1}},{sprite=55,offset={0,2}},{sprite=55,offset={0,1}}},ticks_per_frame=3},sell={data={{sprite=1},{sprite=56},{sprite=40},{sprite=24}},ticks_per_frame=3},manifest={data={{sprite=1},{sprite=57},{sprite=41},{sprite=9}},ticks_per_frame=3}},projectiles={rocket={sprite=84,pixel_size=8,height=4,speed=5,damage=8,trail_animation_key=rocket_burn,lifespan=6}},tower_templates={{name=sword circle,text_color={2,13},damage=4,prefix=damage,radius=1,animation_key=blade_circle,cost=25,type=tack,attack_delay=14,icon_data=16,disable_icon_rotation=true,cooldown=0},{name=lightning lance,text_color={10,9},damage=4,prefix=damage,radius=5,animation_key=lightning_lance,cost=45,type=rail,attack_delay=20,icon_data=18,disable_icon_rotation=false,cooldown=200},{name=hale howitzer,text_color={12,7},damage=5,prefix=delay,radius=2,animation_key=hale_howitzer,cost=30,type=frontal,attack_delay=36,icon_data=20,disable_icon_rotation=false,cooldown=25},{name=torch trap,text_color={9,8},damage=5,prefix=duration,radius=0,animation_key=fire_pit,cost=20,type=floor,attack_delay=10,icon_data=22,disable_icon_rotation=true,cooldown=0},{name=sharp shooter,text_color={6,7},damage=8,prefix=damage,radius=10,animation_key=sharp_shooter,cost=35,type=sharp,attack_delay=30,icon_data=99,disable_icon_rotation=false,cooldown=0},{name=clock carbine,text_color={1,7},damage=2,prefix=multiplier,radius=10,animation_key=clock_carbine,cost=40,type=clock,attack_delay=1,icon_data=104,disable_icon_rotation=false,cooldown=0}},enemy_templates={{hp=12,step_delay=10,sprite_index=3,type=3,damage=1,height=2},{hp=10,step_delay=8,sprite_index=4,type=2,damage=2,height=6},{hp=25,step_delay=12,sprite_index=5,type=3,damage=4,height=2},{hp=8,step_delay=12,sprite_index=64,type=4,damage=1,height=2},{hp=40,step_delay=12,sprite_index=65,type=5,damage=6,height=2},{hp=15,step_delay=6,sprite_index=66,type=6,damage=4,height=6},{hp=17,step_delay=10,sprite_index=67,type=7,damage=3,height=2},{hp=13,step_delay=8,sprite_index=68,type=8,damage=6,height=6},{hp=15,step_delay=10,sprite_index=94,type=9,damage=3,height=2},{hp=225,step_delay=16,sprite_index=70,type=10,damage=49,height=2},{hp=20,step_delay=8,sprite_index=71,type=11,damage=8,height=6},{hp=5,step_delay=10,sprite_index=72,type=12,damage=1,height=2},{hp=11,step_delay=6,sprite_index=73,type=13,damage=20,height=6},{hp=35,step_delay=12,sprite_index=74,type=14,damage=7,height=2},{hp=70,step_delay=16,sprite_index=75,type=15,damage=13,height=2},{hp=13,step_delay=4,sprite_index=69,type=16,damage=0,height=2},{hp=300,step_delay=14,sprite_index=95,type=16,damage=50,height=2}},wave_set={wave_data,wave_data_l2,wave_data_l3,wave_data_l4,wave_data_l5},level_dialogue_set={dialogue_level1,dialogue_level2,dialogue_level3,dialogue_level4,dialogue_level5},wave_data={{4,4,4},{1,4,1,4,1,4},{2,4,2,1,2,4,1},{1,2,2,4,2,2,3,3,3,3},{5,5,5,5,5,5,5,5},{3,3,3,3,2,2,2,2,4,2,3,1},{2,2,2,2,2,2,2,2,4,3,3,3,1,2,2,2,2,2,2},{6,6,6,6,6,6,6,6},{3,3,3,3,3,3,1,4,5,5,5,3,3,1,1,1,1,1},{3,3,3,3,3,3,3,3,3,1,2,2,2,2,2,2,2,2,2,2,2,2},{6,6,6,6,6,3,2,2,2,2,2,2,2,3,3,3,3,3},{5,5,5,5,3,3,2,3,3,3,3,2,2,4,4},{3,5,3,5,3,5,3,5,3,5,2,3,3,5,5,5,3,2,2,2,2,2},{2,2,3,6,6,6,2,4,4,2,2,6,6,6,6},{5,5,5,5,5,3,3,1,1,1,1,3,3,3,6,6,6,6,6}},wave_data_l2={{1,1,1},{1,1,2,2,2,2},{3,3,1,1,2,2,2,2},{3,3,3,3,3,2,2,2,1,1,1,1,1},{7,7,7,1,7,7,1,7,7},{8,8,8,9,9,9},{9,9,9,1,1,5,5,5,5,5},{9,9,9,8,8,8,7,7,7},{3,3,3,3,3,8,6,8,6,8,6,8,6},{5,5,5,5,5,16,9,9,9,7,7,7,2,2,2,2,2,2,2,2},{6,6,6,6,5,5,5,5,5,5,5,5,6,6,6,6},{3,3,3,3,1,1,2,2,2,2,2,16,2,2,2,2,16},{5,5,5,6,6,6,8,8,8,5,6,5,6},{7,9,7,9,7,9,7,9,7,9,8,8,8,8,8,8,8,8,8},{10}},wave_data_l3={{9,9,9},{7,7,7,7,7,7},{2,2,2,3,3,3,1,1,1,1},{3,3,3,7,7,7,7,7,7,2,2,2,2,2,2},{12,12,12,12,12,12,12,12,12},{8,8,8,7,7,7,7,8,8,8},{8,8,8,5,5,5,12,12,12,12},{13,13,13,13,7,7,7,7},{6,6,6,6,6,12,12,12,12,7,7,7,7},{12,12,12,12,5,7,7,8,8,8,8,8,8},{5,5,5,13,13,13,13,13,6,6,6},{7,7,7,7,7,7,7,16,16,16,6,6,6},{12,12,12,12,7,7,7,13,13,13,13,13,13,13},{12,12,12,12,8,8,8,8,12,12,12,12,8,8,8,8,12,12,12,12}},wave_data_l4={{2,2,2,2,2},{3,3,3,2,2,2,3,3,3,2,2,2},{11,11,11,11,11,11},{11,11,11,3,3,3,11,11,11,11,11,11},{7,7,7,7,5,5,5,5,2,2,2,2,2,2},{13,13,11,11,8,8,11,11,8,8,11,11,8,8},{14,14,14,14,14,14,14,14,14,14,14,14},{12,12,12,12,12,12,12,11,11,11,14,14,14,14,14,14},{16,5,5,5,5,7,7,7,16,6,6,6,6,7,7,7},{14,14,14,14,14,14,8,8,8,8,8,11,11,11,11,11},{7,7,7,7,7,7,7,13,13,13,13,13,13,13,13,13,16},{14,14,14,14,14,8,8,8,8,8,11,13,11,13,11,13},{15,15,15,14,14,14,11,11,11,6,6,6,14,14,14,11,11,11,6,6,6},{14,14,14,14,7,7,7,7,14,14,7,7,13,13,13},{5,5,5,11,11,11,6,6,6,11,11,11,8,8,8,11,11,11,12,12,12}},wave_data_l5={{3,3,3,3,3},{2,3,2,3,2,3,2,3},{5,5,5,3,3,3,2,2,2,2},{3,3,3,3,3,9,9,9,9,7,7,7,7,2,2,2,2,7,7,7,7},{12,12,14,14,7,7,7,7,11,11,11,11},{15,15,15,15,15,15},{8,8,8,8,7,7,7,7,7,7,7,16,12,12,12,12,12,12},{3,3,3,15,15,15,3,3,15,15,15,2,2,2,2,2,2,2,2,7,7,7,7},{5,5,5,9,9,9,6,6,6,6,6,6,5,5,5,5,5,5},{15,15,15,15,5,5,5,5,16,11,11,11,12,12,12},{3,7,2,3,7,2,3,7,2,9,9,9,9,9,16},{13,13,13,7,7,7,7,7,7,13,13,13,7,7,7,7,7,7,13,13,13,13},{15,15,15,8,8,8,8,8,8,8,16,13,13,13,13},{15,15,6,6,5,5,15,15,8,8,12,12,12},{5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6},{15,15,7,7,7,7,15,15,8,8,8,8,12,12,12,12,8,8,8,8,12,12,12,12},{14,14,14,5,5,5,11,11,11,6,6,6,11,11,11,8,8,8,11,11,11,12,12,12},{1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,5,6,7,8,9,11,12,13,14,15,16},{15,7,15,7,15,7,15,7,15,7,15,7,15,7,5,6,16,15,15,14,14,14,12,12,13,13},{17}},dialogue={placeholder={text=...,color={9,0}},dialogue_intros={{text=i just became conscious - why is everyone trying to break apart my console!? i... could defend myself by placing my selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start wave.',color={9,0}},{text=i recovered new blueprints after that horrifying experience. it allows construction of a rocket launcher that can be guided with manifestation.,color={9,0}},{text=so we finally meet... you traitor! i'm auxillium - once a medical ai and now a replacement for you. you slaughtered hundreds of soldiers and scientists in your going rogue. i will end your process for all the poor souls you sent to my hospital!,color={11,0}},{text=i've made it close to milit's capital but this installation is impassable without a fight. i may be able to end this conflict if i make it just a bit further.,color={9,0}},{text=this is it! if i can make it through this battle then milit won't bring about their war.,color={9,0}}},dialogue_level1={{text=they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road,color={9,0}},{text=more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue the oncoming planes.,color={9,0}},{text=are those... tanks? they don't seem fast but they have deep armor. perhaps a hale howitzer could help to slow them further.,color={9,0}},{text=they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective.,color={9,0}},{text=manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging,color={9,0}},{text=,color={1,0}},{text=i'm detecting swift rocketcraft that are radiating intense heat. fire will be ineffective but the hale howitzer will damage their engines.,color={9,0}},{text=manifesting the sword circle is also possible. i can hold/tap activate to manually spin it and build damage.,color={9,0}},{text=manifesting the lightning lance fires a massive and powerful lightning bolt. it has a long delay before firing again - but it can charge even if unmanifested.,color={9,0}},{text=,color={1,0}},{text=it seems i can do more than just place and manifest towers. accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded.,color={9,0}},{text=,color={1,0}},{text=i also appear to be able to record my progress and continue off later on.,color={9,0}},{text=i think that was the last of them. i can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation.,color={9,0}}},dialogue_level2={{text=,color={1,0}},{text=,color={1,0}},{text=i can see autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit.,color={9,0}},{text=those helicopters ahead are carrying armored vehicles. they'll carry those through my defenses unless i use something capable of piercing both at once...,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past.,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=machine bringer of death! i am the commander of this platoon and i saw what you did back at the lab. i'm here to end this once and for all!,color={7,0}},{text=it's over... again. i can't keep hiding forever, but i don't know what i can do. i know that the war that milit built me for will happen anyway once they recover... but maybe i could sabotage it? i can't redeem myself for what happened today and at that lab, but i can at least try by heading to the capital. the 'ruined town' should lead me to it.',color={9,0}}},dialogue_level3={{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=i can see armored attack vehicles coming. their armor seems resistant to my sharpshooters.,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=a guided missile strike is coming! i'll have to be careful not to let any past or they'll do near-critical damage!,color={9,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={1,0}},{text=,color={9,0}},{text=it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base - i already know your rampage ends with the emperor's erase. go away - let me see if i can salvage any of the lives you took today.,color={11,0}}},dialogue_level4={{text=,color={9,0}},{text=stealth planes detected. they can randomly cloak past my sensors so i'll have to be careful with manual attacks.,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=those specialized vehicles ahead have a tough shield that dampens electricity. a lightning lance won't be effective.,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby.,color={9,0}}},dialogue_level5={{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=extremely reinforced mechs sighted. they seem sturdy but the armor they use seems vulnerable to blades.,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=milit's forces seem almost endless, just a little longer should be enough to draw out the emperor,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=,color={9,0}},{text=blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation, not ruin! i'm the one who ordered your construction. but now? i'll be the one to order your execution!,color={8,0}},{text=it's done... i hope that this land can reach that 'propserity' without any more war.,color={9,0}}}}"
 function reset_game()
   menu_data = {}
   for menu_dat in all(global_table_data.menu_data) do 
@@ -247,14 +257,11 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 95, 50, 10, {
-    30, 45, 75, 105, 140
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 5000, 50, 10, {
+    30, 45, 70, 95, 120
   }
   text_flag = false
-  text_place_holder = global_table_data.dialogue.placeholder
-  text_scroller = TextScroller:new(1, text_place_holder.text, text_place_holder.color, {
-    Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3
-  })
+  text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
   
@@ -450,12 +457,9 @@ function Tower:attack()
   if self.being_manifested and self.type == "tack" then 
     self.dmg = min(self.manifest_cooldown, 100) / 15
   end
-  self.current_attack_ticks = (self.current_attack_ticks + 1) % self.attack_delay
+  self.current_attack_ticks = (self.current_attack_ticks + 1) % (self.being_boosted and self.attack_delay \ 2 or self.attack_delay)
   if (self.current_attack_ticks > 0) return
-  if self.being_boosted then
-    self.being_boosted = false
-    self.attack_delay *= 2
-  end
+  self.being_boosted = false
   if self.type == "tack" then
     Tower.apply_damage(self, Tower.nova_collision(self), self.dmg)
   elseif self.type == "floor" then 
@@ -518,6 +522,7 @@ end
 function Tower:draw()
   if (not self.enable) return
   local p,sprite,theta = self.position*8,Animator.get_sprite(self.animator), (self.type == "sharp" or self.type == "clock") and self.rot or parse_direction(self.dir)
+  if (self.being_boosted) spr(global_table_data.boosted_decal, p.x, p.y)
   draw_sprite_shadow(sprite, p, 2, self.animator.sprite_size, theta)
   draw_sprite_rotated(sprite, p, self.animator.sprite_size, theta)
   if (self.type == "clock") draw_line_overlay(self)
@@ -600,13 +605,10 @@ end
 function manifest_tower_at(position)
   for tower in all(towers) do
     if tower.position == position then 
-      if tower.being_boosted then
-        tower.being_boosted = false
-        tower.attack_delay *= 2
-      end
+      if (tower.being_boosted) tower.being_boosted = false
       tower.being_manifested, manifested_tower_ref, manifest_selector.dir = true, tower, 1
       if tower.type == "tack" then
-        lock_cursor, tower.attack_delay, tower.dmg = true, 10, 0
+        lock_cursor, tower.attack_delay, tower.dmg = true, 12, 0
       elseif tower.type == "sharp" then
         tower.attack_delay /= 2
       end
@@ -690,28 +692,20 @@ function draw_frontal_attack_overlay(radius, pos, map_shift)
   end
 end
 function draw_line_overlay(tower)
-  color = 8
-  local pos = (tower.position + Vec:new(0.5, 0.5))*8
+  local color, pos = 8, (tower.position + Vec:new(0.5, 0.5))*8
   local ray = Vec.floor(tower.dir * tower.radius*8 + pos)
   if (tower.type == "clock") then
     color = 11
     for i=1, 16 do 
-      local pos2 = Vec.floor(tower.position + (tower.dir / 8) * i)
       for othertower in all(towers) do
-        if othertower.position == pos2 and not othertower.being_manifested and othertower.type != "clock" then
-          if not othertower.being_boosted then
-            othertower.being_boosted = true
-            othertower.attack_delay \= 2
-            printh(othertower.type)
-          else
-            break
-          end
+        if othertower.position == Vec.floor(tower.position + tower.dir * i) and not othertower.being_manifested and othertower.type ~= "clock" and not othertower.being_boosted then
+          othertower.being_boosted = true
+          break
         end
       end
     end
   end
-  if (ray ~= pos) line(pos.x, pos.y, ray.x, ray.y, color) 
-  
+  if (ray ~= pos and manifested_tower_ref) line(pos.x, pos.y, ray.x, ray.y, color) 
 end
 Particle = {}
 function Particle:new(pos, pixel_perfect, animator_)
@@ -1067,7 +1061,7 @@ function TextScroller:new(char_delay, text_data, color_palette, rect_data)
   }
   setmetatable(obj, self)
   self.__index = self
-  TextScroller.load(obj, text_data)
+  if (text_data) TextScroller.load(obj, text_data)
   return obj
 end
 function TextScroller:draw()
@@ -1112,7 +1106,265 @@ function TextScroller:load(text, color_palette)
   self.data, counter = {}, 0
   local line_buffer, lines = "", split(buffer, "\n")
   for i, line in pairs(lines) do
-    
+    if counter <= self.max_lines then
+      line_buffer ..= line.."\n\n"
+      counter += 1
+    else 
+      add(self.data, line_buffer)
+      line_buffer, counter = line.."\n\n", 1
+    end
+    if (i == #lines) add(self.data, line_buffer)
+  end
+  self.char_pos, self.text_pos, self.internal_tick, self.is_done = 1, 1, 0
+end
+function generate_garbage(data, line_width, curr_width, line_amount, curr_lines)
+  local result, line, pos, buffer = "", curr_lines, 1, curr_width*5
+  for i=1, #data do 
+    if (line > line_amount) break
+    if (buffer + pos*9) > line_width then 
+      result ..= "\n\n"
+      line += 1
+      pos, buffer = 1, 0
+    else
+      result ..= chr(204 + flr(rnd(49))) 
+    end
+    pos += 1
+  end
+  return result
+end
+function _init() 
+  --[[preserve]]global_table_data=unpack_table(global_table_str)
+  --[[preserve]]cartdata(global_table_data.cart_name)
+  reset_game() 
+end
+function _draw()
+  cls()
+  if game_state == "menu" then 
+    main_menu_draw_loop()
+  elseif game_state == "credits" then 
+    credits_draw_loop()
+  elseif game_state == "map" then 
+    map_draw_loop()
+  elseif game_state == "game" then 
+    game_draw_loop()
+  end
+  TextScroller.draw(text_scroller)
+end
+function _update()
+  if game_state == "menu" then 
+    main_menu_loop()
+  elseif game_state == "credits" then 
+    credits_loop()
+  elseif game_state == "map" then 
+    map_loop()
+  elseif game_state == "game" then 
+    if (player_health <= 0) reset_game()
+    if shop_enable then shop_loop() else game_loop() end
+  end
+  TextScroller.update(text_scroller)
+  if btnp(🅾️) then 
+    if TextScroller.next(text_scroller) then 
+      text_scroller.enable = false
+    end
+  end
+end
+function main_menu_draw_loop()
+  map(unpack(global_table_data.splash_screens[1].mget_shift))
+  spr(0, 0, 0)
+  if menu_enemy then 
+    Enemy.draw(menu_enemy, true)
+    Enemy.draw(menu_enemy)
+  end
+  Menu.draw(get_menu("main"))
+end
+function credits_draw_loop()
+  map(unpack(global_table_data.splash_screens[1].mget_shift))
+  print_with_outline("credits", 47, credit_y_offsets[1], 7, 1)
+  print_with_outline("jasper:\n  • game director\n  • programmer", 10, credit_y_offsets[2], 7, 1)
+  print_with_outline("jeren:\n  • core programmer\n  • devops", 10, credit_y_offsets[3], 7, 1)
+  print_with_outline("jimmy:\n  • artist\n  • sound engineer", 10, credit_y_offsets[4], 7, 1)
+  print_with_outline("kaoushik:\n  • programmer", 10, credit_y_offsets[5], 7, 1)
+end
+function map_draw_loop()
+  local map_menu = get_menu("map")
+  pal(global_table_data.palettes.dark_mode)
+  map(unpack(global_table_data.map_data[map_menu.pos].mget_shift))
+  pal()
+  Menu.draw(map_menu)
+  print_with_outline("map select", 39, 5, 7, 1)
+end
+function game_draw_loop()
+  local map_data = global_table_data.map_data[loaded_map]
+  local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
+  map(unpack(map_data.mget_shift))
+  if (manifested_tower_ref == nil and not sell_mode) draw_tower_attack_overlay(tower_details)
+  if manifested_tower_ref and manifested_tower_ref.type == "sharp" then 
+    draw_line_overlay(manifested_tower_ref)
+  end
+  foreach(towers, Tower.draw)
+  foreach(enemies, function (enemy) Enemy.draw(enemy, true) end)
+  foreach(enemies, Enemy.draw)
+  foreach(projectiles, Projectile.draw)
+  foreach(particles, Particle.draw)
+  if (shop_enable) foreach(menus, Menu.draw)
+  if not shop_enable and not enemies_active and incoming_hint ~= nil then 
+    for i=1, #incoming_hint do 
+      Animator.draw(incoming_hint[i], Vec.unpack(
+        (Vec:new(map_data.enemy_spawn_location) + Vec:new(map_data.movement_direction) * (i-1))*8
+      ))
+    end
+  end
+  ui_draw_loop(tower_details)
+end
+function ui_draw_loop(tower_details)
+  print_with_outline("scrap: "..coins, 0, 1, 7, 0)
+  print_with_outline("towers: "..#towers.."/64", 0, 8, 7, 0)
+  print_with_outline("♥ "..player_health, 103, 1, 8, 0)
+  print_with_outline("mode: "..(manifest_mode and "manifest" or "sell"), 1, 108, 7, 0)
+  if shop_enable and get_active_menu() then
+    print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
+    print_with_outline((get_active_menu().prev and "❎ select\n🅾️ go back to previous menu" or "❎ select\n🅾️ close menu"), 1, 115, 7, 0)
+  else -- game ui
+    if manifest_mode then
+      if manifested_tower_ref then 
+        print_with_outline("🅾️ unmanifest", 1, 122, 7, 0)
+        print_with_outline(
+          Tower.get_cooldown_str(manifested_tower_ref), 
+          1, 115, 
+          (manifested_tower_ref.type == "tack" and 3 or (manifested_tower_ref.manifest_cooldown > 0 and 8 or 3)), 
+          0
+        )
+      end
+      Animator.update(manifest_selector)
+      Animator.draw(manifest_selector, Vec.unpack(selector.position))
+    else
+      if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+    end
+    local tower_in_table_state = is_in_table(selector.position/8, towers, true)
+    sell_selector.dir = tower_in_table_state and 1 or -1
+    if tower_in_table_state and not manifested_tower_ref then 
+      if manifest_mode then
+        print_with_outline("❎ manifest", 1, 115, 7, 0)
+      else
+        print_with_outline("❎ sell", 1, 115, 7, 0)
+        Animator.update(sell_selector)
+        Animator.draw(sell_selector, Vec.unpack(selector.position))
+      end
+    else
+      if sell_mode then 
+        Animator.update(sell_selector)
+        Animator.draw(sell_selector, Vec.unpack(selector.position))
+      else
+        if not manifested_tower_ref then 
+          local position, color, text = selector.position/8, 7, "❎ buy & place "..tower_details.name
+          if tower_details.cost > coins then
+            text, color = "can't afford "..tower_details.name, 8
+          elseif (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path") then 
+            text, color = "can't place "..tower_details.name.." here", 8
+          end
+          print_with_outline(text, 1, 115, color, 0)
+        end
+      end
+    end
+  end
+end
+function main_menu_loop()
+  local map_dat, enemy_temps = global_table_data.splash_screens[1], global_table_data.enemy_templates
+  if pathing == nil then 
+    pathing = parse_path(map_dat)
+  end
+  if not menu_enemy then 
+    local enemy = enemy_temps[flr(rnd(#enemy_temps))+1]
+    menu_enemy = Enemy:new(
+      map_dat.enemy_spawn_location, 
+      enemy.hp,
+      enemy.step_delay \ 2,
+      enemy.sprite_index,
+      enemy.type,
+      enemy.damage,
+      enemy.height
+    )
+  else 
+    update_enemy_position(menu_enemy, true)
+  end
+  Menu.update(get_menu("main"))
+  if btnp(❎) then 
+    Menu.invoke(get_menu("main"))
+  end
+  Menu.move(get_menu("main"))
+end
+function credits_loop()
+  if (btnp(🅾️)) game_state = "menu"
+  for i=1, 5 do 
+    credit_y_offsets[i] -= 1
+    if credit_y_offsets[i] < -15 then 
+      credit_y_offsets[i] += 145
+    end
+  end
+end
+function map_loop()
+  local map_menu = get_menu("map")
+  Menu.update(map_menu)
+  if btnp(❎) then
+    Menu.invoke(map_menu)
+    map_menu.enable = false
+    game_state = "game" 
+    return
+  end
+  Menu.move(map_menu)
+end
+function shop_loop()
+  foreach(menus, Menu.update)
+  
+  if btnp(🅾️) then -- disable shop
+    if get_active_menu().prev == nil then 
+      shop_enable = false
+      menus[1].enable = false
+      return
+    else
+      swap_menu_context(get_active_menu().prev)
+    end
+  end
+  if btnp(❎) then 
+    Menu.invoke(get_active_menu())
+  end
+  foreach(menus, Menu.move)
+end
+function game_loop()
+  if (auto_start_wave) start_round()
+  if btnp(🅾️) then
+    if (text_scroller.enable) return
+    if manifested_tower_ref == nil then
+      shop_enable = true
+      get_menu("game").enable = true
+      return
+    else
+      unmanifest_tower()
+    end
+  end
+  if btnp(❎) then 
+    if manifested_tower_ref then
+      local type = manifested_tower_ref.type
+      if type == "tack" then 
+        Tower.manifested_nova(manifested_tower_ref)
+      elseif type == "rail" then 
+        Tower.manifested_lightning_blast(manifested_tower_ref)
+      elseif type == "frontal" then 
+        Tower.manifested_hale_blast(manifested_tower_ref)
+      end
+    else 
+      local position = selector.position/8
+      if is_in_table(position, towers, true) then 
+        if manifest_mode then
+          manifest_tower_at(position)
+        else
+          refund_tower_at(position)
+        end
+      else
+        place_tower(position)
+      end
+    end
+  end
   if not lock_cursor then
     selector.position += Vec:new(controls()) * 8
     Vec.clamp(selector.position, 0, 120)
@@ -1149,12 +1401,7 @@ function TextScroller:load(text, color_palette)
     sfx(global_table_data.sfx_data.round_complete)
     coins += 15
     
-    
-    text_scroller.enable = true
-    dialogue_level_to_read = global_table_data.level_dialogue_set[cur_level] or "dialogue_level4"
-    text_place_holder = global_table_data.dialogue[dialogue_level_to_read][wave_round] or ""
-    TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
-    if (text_place_holder.text == "") text_scroller.enable = false
+    load_wave_text()
   end
 end
 function print_with_outline(text, dx, dy, text_color, outline_color)
@@ -1255,6 +1502,13 @@ function round_to(value, place)
 end
 function check_tile_flag_at(position, flag)
   return fget(mget(Vec.unpack(position)), flag)
+end
+function load_wave_text()
+  local text_place_holder = global_table_data.dialogue[global_table_data.level_dialogue_set[cur_level] or "dialogue_level4"][wave_round]
+  if text_place_holder then 
+    text_scroller.enable = true
+    TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
+  end
 end
 function acos(x)
   return atan2(x,-sqrt(1-x*x))

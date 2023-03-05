@@ -15,7 +15,7 @@ function TextScroller:new(char_delay, text_data, color_palette, rect_data)
   }
   setmetatable(obj, self)
   self.__index = self
-  TextScroller.load(obj, text_data)
+  if (text_data) TextScroller.load(obj, text_data)
   return obj
 end
 function TextScroller:draw()
