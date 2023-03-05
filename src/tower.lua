@@ -216,17 +216,19 @@ function unmanifest_tower()
 end
 
 function place_tower(position)
+  -- check if at max tower
+  if (tower_count >= 64) return
   -- check if there is a tower here
-  if (grid[position.y][position.x] == "tower") return false
+  if (grid[position.y][position.x] == "tower") return
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
   -- check if player has the money
-  if (coins < tower_details.cost) return false
+  if (coins < tower_details.cost) return
   -- spawn the tower
-  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return 
   add(towers, Tower:new(position, tower_details, direction))
   coins -= tower_details.cost
   grid[position.y][position.x] = "tower"
-  return true
+  tower_count += 1
 end
 
 function refund_tower_at(position)
@@ -237,6 +239,7 @@ function refund_tower_at(position)
       coins += tower.cost \ 1.25
       del(animators, tower.animator) 
       del(towers, tower)
+      tower_count -= 1
      end
   end
 end

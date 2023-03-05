@@ -19,7 +19,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 500, 50, 10, {
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 5000, 50, 10, {
     30, 45, 70, 95, 120
   }
   text_flag = false
@@ -34,7 +34,7 @@ function reset_game()
   
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0
-  direction, game_state, selected_menu_tower_id = Vec:new(0, -1), "menu", 1
+  direction, game_state, selected_menu_tower_id, tower_count = Vec:new(0, -1), "menu", 1, 0
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end

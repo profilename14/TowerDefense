@@ -237,7 +237,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 500, 50, 10, {
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 5000, 50, 10, {
     30, 45, 70, 95, 120
   }
   text_flag = false
@@ -249,7 +249,7 @@ function reset_game()
   
   
   enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0
-  direction, game_state, selected_menu_tower_id = Vec:new(0, -1), "menu", 1
+  direction, game_state, selected_menu_tower_id, tower_count = Vec:new(0, -1), "menu", 1, 0
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(-1)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
@@ -617,14 +617,15 @@ function unmanifest_tower()
   manifested_tower_ref = nil
 end
 function place_tower(position)
-  if (grid[position.y][position.x] == "tower") return false
+  if (tower_count >= 64) return
+  if (grid[position.y][position.x] == "tower") return
   local tower_details = global_table_data.tower_templates[selected_menu_tower_id]
-  if (coins < tower_details.cost) return false
-  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return false 
+  if (coins < tower_details.cost) return
+  if ((tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return 
   add(towers, Tower:new(position, tower_details, direction))
   coins -= tower_details.cost
   grid[position.y][position.x] = "tower"
-  return true
+  tower_count += 1
 end
 function refund_tower_at(position)
   for tower in all(towers) do
@@ -634,6 +635,7 @@ function refund_tower_at(position)
       coins += tower.cost \ 1.25
       del(animators, tower.animator) 
       del(towers, tower)
+      tower_count -= 1
      end
   end
 end
@@ -1206,6 +1208,7 @@ function game_draw_loop()
 end
 function ui_draw_loop(tower_details)
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
+  print_with_outline("towers: "..tower_count.."/64", 0, 8, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
   print_with_outline("mode: "..(manifest_mode and "manifest" or "sell"), 1, 108, 7, 0)
   if shop_enable and get_active_menu() then

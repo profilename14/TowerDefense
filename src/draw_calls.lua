@@ -63,6 +63,7 @@ end
 function ui_draw_loop(tower_details)
   -- static/always present
   print_with_outline("scrap: "..coins, 0, 1, 7, 0)
+  print_with_outline("towers: "..tower_count.."/64", 0, 8, 7, 0)
   print_with_outline("♥ "..player_health, 103, 1, 8, 0)
   print_with_outline("mode: "..(manifest_mode and "manifest" or "sell"), 1, 108, 7, 0)
 
