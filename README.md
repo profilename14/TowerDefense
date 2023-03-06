@@ -13,3 +13,5 @@
 - Kaoushik [Programmer]
 ### External
 - [thisismypassport](https://github.com/thisismypassport) [Shrinko8 Developer]
+- [jihem](https://www.lexaloffle.com/bbs/?uid=11167) [Created The Rotation Sprite Draw Function]
+- [RGB](https://www.lexaloffle.com/bbs/?uid=11963) [Created The ACos Function]

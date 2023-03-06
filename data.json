@@ -2,7 +2,7 @@
   "cart_name": "jjjk_tower_defense_2",
   "tower_icon_background": 80,
   "boosted_decal": 223,
-  "credit_offsets": [30, 45, 70, 95, 120],
+  "credit_offsets": [30, 45, 70, 95, 120, 145, 170, 195, 220, 245],
   "direction_map": [
     [0, -1],
     [1, 0],

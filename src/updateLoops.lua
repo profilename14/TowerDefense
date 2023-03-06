@@ -39,10 +39,10 @@ end
 function credits_loop()
   if (btnp(🅾️)) game_state = "menu"
 
-  for i=1, 5 do 
+  for i=1, #credit_y_offsets do 
     credit_y_offsets[i] -= 1
     if credit_y_offsets[i] < -15 then 
-      credit_y_offsets[i] += 145
+      credit_y_offsets[i] += 270
     end
   end
 end
