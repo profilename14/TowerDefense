@@ -178,8 +178,8 @@ if(e.x>0)return 90
 if(e.x<0)return 270
 if(e.y>0)return 180
 if(e.y<0)return 0
-end function parse_frontal_bounds(e,a)local t,n,o,i,r,l=-1,1,1,e,1,1if a.x>0then t,n,o,i=1,-1,e,1elseif a.x<0then t,n,o,i,r=-1,-1,-e,1,-1elseif a.y<0then t,n,o,i,l=-1,-1,1,-e,-1end return t,n,o,i,r,l end function frontal_apply(e,n)local o,t,i,a,r,l=parse_frontal_bounds(unpack(e))for e=t,a,l do for t=o,i,r do
-if(t~=0or e~=0)n(Vec:new(t,e))
+end function frontal_apply(t,d)local e,a=unpack(t)local t,n,o,i,r,l=-1,1,1,e,1,1if a.x>0then t,n,o,i=1,-1,e,1elseif a.x<0then t,n,o,i,r=-1,-1,-e,1,-1elseif a.y<0then t,n,o,i,l=-1,-1,1,-e,-1end for e=n,i,l do for n=t,o,r do
+if(n~=0or e~=0)d(Vec:new(n,e))
 end end end function nova_apply(e,o)for t=-e,e do for n=-e,e do
 if(n~=0or t~=0)o(Vec:new(n,t))
 end end end function combine_and_unpack(t,n)local e={}for n in all(t)do add(e,n)end for t in all(n)do add(e,t)end return unpack(e)end function round_to(t,n)local e=10^(n or 0)return flr(t*e+.5)/e end function check_tile_flag_at(e,t)return fget(mget(Vec.unpack(e)),t)end function load_wave_text()local e=global_table_data.dialogue[global_table_data.level_dialogue_set[cur_level]or"dialogue_level4"][wave_round]if e then text_scroller.enable=true TextScroller.load(text_scroller,e.text,e.color)end end function acos(e)return atan2(e,-sqrt(1-e*e))end function save_byte(e,t)poke(e,t)return e+1end function save_int(e,t)poke4(e,t)return e+4end function encode(e,t,n)return e<<n|t end function decode(e,t,n)return flr(e>>>t),e&n end function unpack_table(t)local o,n,i,e={},1,0,1while e<=#t do if t[e]=="{"then i+=1elseif t[e]=="}"then i-=1
