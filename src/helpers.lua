@@ -106,6 +106,14 @@ function frontal_apply(vector_data, func)
   end
 end
 
+function nova_apply(radius, func)
+  for y=-radius, radius do
+    for x=-radius, radius do
+      if (x ~=0 or y ~= 0) func(Vec:new(x, y))
+    end
+  end
+end
+
 function combine_and_unpack(data1, data2)
   local data = {}
   for dat in all(data1) do

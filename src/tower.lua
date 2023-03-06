@@ -50,13 +50,19 @@ function Tower:attack()
   end
 end
 function Tower:nova_collision()
-  local hits, rad = {}, self.radius
-  for y=-rad, rad do
-    for x=-rad, rad do
-      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
+  local hits = {} 
+  nova_apply(self.radius,
+    function(fpos)
+      add_enemy_at_to_table(self.position + fpos, hits)
     end
+  )
+  if #hits > 0 then 
+    nova_apply(self.radius,
+      function(fpos)
+        add(particles, Particle:new(self.position + fpos, false, Animator:new(global_table_data.animation_data.blade, false)))
+      end
+    )
   end
-  if (#hits > 0) nova_spawn(self.position, rad, global_table_data.animation_data.blade)
   return hits
 end
 function Tower:frontal_collision()
@@ -251,26 +257,25 @@ function draw_tower_attack_overlay(tower_details)
   local is_empty = grid[pos.y][pos.x] == "empty"
   local map_shift = Vec:new(global_table_data.map_data[loaded_map].mget_shift)
   if tower_details.type == "tack" and is_empty then 
-    draw_nova_attack_overlay(tower_details.radius, pos, map_shift)
+    nova_apply(tower_details.radius,
+      function(fpos)
+        local tile_position = pos+fpos
+        spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
+      end
+    )
   elseif tower_details.type == "rail" and is_empty then 
     draw_ray_attack_overlay(tower_details.radius, pos, map_shift)
   elseif tower_details.type == "frontal" and is_empty then 
-    draw_frontal_attack_overlay(tower_details.radius, pos, map_shift)
+    frontal_apply({tower_details.radius, direction}, 
+      function(fpos)
+        local tile_position = pos + fpos
+        spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
+      end
+    )
   elseif tower_details.type == "floor" and grid[pos.y][pos.x] == "path" then 
     spr(mget(Vec.unpack(pos+map_shift)), Vec.unpack(pos*8))
   end
   pal()
-end
-
-function draw_nova_attack_overlay(radius, pos, map_shift)
-  for y=-radius, radius do
-    for x=-radius, radius do
-      if x ~=0 or y ~= 0 then 
-        local tile_position = pos+Vec:new(x, y)
-        spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
-      end
-    end
-  end
 end
 
 function draw_ray_attack_overlay(radius, pos, map_shift)
@@ -278,15 +283,6 @@ function draw_ray_attack_overlay(radius, pos, map_shift)
     local tile_position = pos+direction*i
     spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
   end
-end
-
-function draw_frontal_attack_overlay(radius, pos, map_shift)
-  frontal_apply({radius, direction}, 
-    function(fpos)
-      local tile_position = pos + fpos
-      spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
-    end
-  )
 end
 
 function draw_line_overlay(tower)
