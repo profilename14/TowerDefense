@@ -78,15 +78,20 @@
           "args": ["towers"]
         },
         {
-          "text": "misc",
+          "text": "save options",
           "color": [7, 0],
           "callback": "func_swap_menu_context",
-          "args": ["misc"]
+          "args": ["save options"]
         },
         {
           "text": "rotate clockwise",
           "color": [7, 0],
           "callback": "func_rotate_clockwise"
+        },
+        {
+          "text": "toggle mode",
+          "color": [7, 0],
+          "callback": "func_toggle_mode"
         },
         {
           "text": "start round",
@@ -98,20 +103,10 @@
       "settings": [5, 8, 7, 3]
     },
     {
-      "name": "misc",
+      "name": "save options",
       "prev": "game",
       "position": [5, 63],
       "content": [
-        {
-          "text": "toggle mode",
-          "color": [7, 0],
-          "callback": "func_toggle_mode"
-        },
-        {
-          "text": "map select",
-          "color": [7, 0],
-          "callback": "func_new_game"
-        },
         {
           "text": "save",
           "color": [7, 0],

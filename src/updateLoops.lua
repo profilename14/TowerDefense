@@ -57,6 +57,10 @@ function map_loop()
     game_state = "game" 
     return
   end
+  if btnp(🅾️) then
+    map_menu.enable = false 
+    reset_game()
+  end
 
   Menu.move(map_menu)
 end
