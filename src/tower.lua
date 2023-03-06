@@ -60,14 +60,19 @@ function Tower:nova_collision()
   return hits
 end
 function Tower:frontal_collision()
-  local hits = {}
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(self.radius, self.dir)
-  for y=fy, fly, iy do
-    for x=fx, flx, ix do
-      if (x ~= 0 or y ~= 0) add_enemy_at_to_table(self.position + Vec:new(x, y), hits)
+  local hits, data = {}, {self.radius, self.dir}
+  frontal_apply(data,
+    function(fpos)
+      add_enemy_at_to_table(self.position + fpos, hits)
     end
+  )
+  if #hits > 0 then 
+    frontal_apply(data, 
+      function(fpos)
+        add(particles, Particle:new(self.position + fpos, false, Animator:new(global_table_data.animation_data.frost, false)))
+      end
+    )
   end
-  if (#hits > 0) frontal_spawn(self.position, self.radius, self.dir, global_table_data.animation_data.frost)
   return hits
 end
 function Tower:apply_damage(targets, damage)
@@ -276,13 +281,12 @@ function draw_ray_attack_overlay(radius, pos, map_shift)
 end
 
 function draw_frontal_attack_overlay(radius, pos, map_shift)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, direction)
-  for y=fy, fly, iy do
-    for x=fx, flx, ix do
-      local tile_position = pos + Vec:new(x, y)
+  frontal_apply({radius, direction}, 
+    function(fpos)
+      local tile_position = pos + fpos
       spr(mget(Vec.unpack(tile_position+map_shift)), Vec.unpack(tile_position*8))
     end
-  end
+  )
 end
 
 function draw_line_overlay(tower)

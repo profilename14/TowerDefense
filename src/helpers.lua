@@ -97,6 +97,15 @@ function parse_frontal_bounds(radius, position)
   return fx, fy, flx, fly, ix, iy
 end
 
+function frontal_apply(vector_data, func)
+  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(unpack(vector_data))
+  for y=fy, fly, iy do
+    for x=fx, flx, ix do
+      if (x ~= 0 or y ~= 0) func(Vec:new(x, y))
+    end
+  end
+end
+
 function combine_and_unpack(data1, data2)
   local data = {}
   for dat in all(data1) do

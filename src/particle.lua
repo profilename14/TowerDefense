@@ -38,12 +38,3 @@ function nova_spawn(position, radius, data)
     end
   end
 end
-
-function frontal_spawn(position, radius, dir, data)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, dir)
-  for y=fy, fly, iy do
-    for x=fx, flx, ix do
-      if (x ~= 0 or y ~= 0) add(particles, Particle:new(position + Vec:new(x, y), false, Animator:new(data, false)))
-    end
-  end
-end
