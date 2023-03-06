@@ -4,7 +4,7 @@ function main_menu_draw_loop()
   local j, k, l = 1, 0, 0
   for i, letter in pairs(global_table_data.letters) do 
     if (j == 8) j, k, l = 1, 18, 16
-    local pos, rot = Vec:new(j*16-8+l, letters[i]+k), i == 5 and letter_rot or 0
+    local pos, rot = Vec:new(j*16-8+l-((i == 5 or i == 9) and 2 or 0), letters[i]+k), i == 5 and letter_rot or 0
     draw_sprite_shadow(letter, pos, 4, 16, rot)
     draw_sprite_rotated(letter,pos, 16, rot)
     j+=1
