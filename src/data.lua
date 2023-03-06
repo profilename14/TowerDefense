@@ -10,7 +10,7 @@ function reset_game()
       menu_dat.name, menu_dat.prev, 
       menu_dat.position[1], menu_dat.position[2],
       parse_menu_content(menu_dat.content),
-      forward_declares[menu_dat.hint],
+      _ENV[menu_dat.hint],
       unpack(menu_dat.settings)
     })
   end

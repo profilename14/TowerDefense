@@ -120,14 +120,23 @@ function parse_menu_content(content)
       add(cons, {
         text = con.text,
         color = con.color,
-        callback = forward_declares[con.callback],
+        callback = _ENV[con.callback],
         args = con.args
       }) 
     end
     return cons
   else
-    return forward_declares[content]()
+    return _ENV[content]()
   end
+end
+
+function toggle_mode()
+  manifest_mode = not manifest_mode
+  sell_mode = not sell_mode
+end
+
+function swap_to_credits()
+  game_state = "credits" 
 end
 
 -- Game State Related
@@ -139,12 +148,10 @@ end
 
 function load_map(map_id, wave, freeplay)
   pal()
-  auto_start_wave = false
-  manifest_mode = true
+  manifest_mode, auto_start_wave = true
   wave_round = wave or 0
   freeplay_rounds = freeplay or 0
-  loaded_map = map_id
-  cur_level = map_id
+  loaded_map, cur_level = map_id, map_id
   pathing = parse_path()
   for i=1, 3 do
     add(incoming_hint, Animator:new(global_table_data.animation_data.incoming_hint, true))
@@ -194,6 +201,23 @@ function save_game()
   end
 end
 
+function save_state()
+  if (enemies_active) return
+  save_game()
+  get_active_menu().enable = false
+  shop_enable = false
+end
+
+function save_and_quit()
+  if (enemies_active) return
+  save_game()
+  reset_game()
+end
+
+function quit()
+  reset_game() 
+end
+
 function load_game()
   local start_address = 0x5e00
   local tower_data, hp, scrap, map_id, wav, freeplay = {}
@@ -228,44 +252,17 @@ function load_game()
   return hp, scrap, map_id, wav, freeplay, tower_data
 end
 
-forward_declares = {
-  func_display_tower_info = display_tower_info,
-  func_display_tower_rotation = display_tower_rotation,
-  func_rotate_clockwise = rotate_clockwise,
-  func_start_round = start_round,
-  func_swap_menu_context = swap_menu_context,
-  func_get_tower_data_for_menu = get_tower_data_for_menu,
-  func_get_map_data_for_menu = get_map_data_for_menu,
-  func_new_game = new_game,
-  func_save=function()
-    if (enemies_active) return
-    save_game()
-    get_active_menu().enable = false
-    shop_enable = false
-  end,
-  func_save_quit=function()
-    if (enemies_active) return
-    save_game()
-    reset_game()
-  end,
-  func_quit = function() reset_game() end,
-  func_load_game = function()
-    reset_game()
-    get_menu("main").enable = false
-    local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
-    load_map(map_id, wav, freeplay)
-    player_health = hp 
-    coins = scrap
-    -- TODO: calculate what the freeplay enemies will be
-    for tower in all(tower_data) do 
-      direction = Vec:new(global_table_data.direction_map[tower[2]])
-      place_tower(tower[3], tower[1])
-    end
-    game_state = "game"
-  end,
-  func_toggle_mode = function()
-    manifest_mode = not manifest_mode
-    sell_mode = not sell_mode
-  end,
-  func_credits=function() game_state = "credits" end
-}
+function load_game_state()
+  reset_game()
+  get_menu("main").enable = false
+  local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
+  load_map(map_id, wav, freeplay)
+  player_health = hp 
+  coins = scrap
+  -- TODO: calculate what the freeplay enemies will be
+  for tower in all(tower_data) do 
+    direction = Vec:new(global_table_data.direction_map[tower[2]])
+    place_tower(tower[3], tower[1])
+  end
+  game_state = "game"
+end
