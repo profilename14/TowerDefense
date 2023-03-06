@@ -1,6 +1,13 @@
 function main_menu_loop()
   local map_dat, enemy_temps = global_table_data.splash_screens[1], global_table_data.enemy_templates
 
+  for i=1, #letters do 
+    if letters[i] < 15 then 
+      letters[i] += 1
+    end
+  end
+  letter_rot = (letter_rot + 15) % 360
+
   if pathing == nil then 
     pathing = parse_path(map_dat)
   end

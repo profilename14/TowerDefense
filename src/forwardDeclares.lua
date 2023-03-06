@@ -41,7 +41,6 @@ function display_tower_rotation(menu_pos, position)
   BorderRect.draw(tower_rotation_background_rect)
 
   local sprite_position = position_offset + Vec:new(4, 4)
-
   if tower_details.disable_icon_rotation then 
     spr(tower_details.icon_data, combine_and_unpack({Vec.unpack(sprite_position)},{2, 2}))
   else

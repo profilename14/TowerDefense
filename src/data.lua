@@ -14,19 +14,24 @@ function reset_game()
       unpack(menu_dat.settings)
     })
   end
+  letters, j = {}, 1
+  for i=1, #global_table_data.letters do 
+    if (j == 8) j = 1
+    add(letters, (j-1)*4-#global_table_data.letters*4)
+    j+=1
+  end
+  letter_rot = 0
+
   selector = {
     position = Vec:new(64, 64),
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 5000, 50, 10, {
-    30, 45, 70, 95, 120
-  }
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 5000, 50, 10, global_table_data.credit_offsets
   text_flag = false
 
   text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
-  
   
   -- Internal Data -- Don't modify
   enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0

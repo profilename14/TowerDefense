@@ -30,20 +30,3 @@ function spawn_particles_at(locations, animation_data)
     add(particles, Particle:new(location, false, Animator:new(animation_data, false)))
   end
 end
-
-function nova_spawn(position, radius, data)
-  for y=-radius, radius do
-    for x=-radius, radius do
-      if (x ~= 0 or y ~= 0) add(particles, Particle:new(position + Vec:new(x, y), false, Animator:new(data, false)))
-    end
-  end
-end
-
-function frontal_spawn(position, radius, dir, data)
-  local fx, fy, flx, fly, ix, iy = parse_frontal_bounds(radius, dir)
-  for y=fy, fly, iy do
-    for x=fx, flx, ix do
-      if (x ~= 0 or y ~= 0) add(particles, Particle:new(position + Vec:new(x, y), false, Animator:new(data, false)))
-    end
-  end
-end

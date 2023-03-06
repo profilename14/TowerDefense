@@ -83,18 +83,32 @@ function parse_direction(dir)
   if (dir.y < 0) return 0
 end
 
-function parse_frontal_bounds(radius, position)
+function frontal_apply(vector_data, func)
+  local radius, dir = unpack(vector_data)
   -- Default South
   local fx, fy, flx, fly, ix, iy = -1, 1, 1, radius, 1, 1
 
-  if position.x > 0 then -- east
+  if dir.x > 0 then -- east
     fx, fy, flx, fly = 1, -1, radius, 1
-  elseif position.x < 0 then -- west
+  elseif dir.x < 0 then -- west
     fx, fy, flx, fly, ix = -1, -1, -radius, 1, -1
-  elseif position.y < 0 then -- north
+  elseif dir.y < 0 then -- north
     fx, fy, flx, fly, iy = -1, -1, 1, -radius, -1
   end
-  return fx, fy, flx, fly, ix, iy
+
+  for y=fy, fly, iy do
+    for x=fx, flx, ix do
+      if (x ~= 0 or y ~= 0) func(Vec:new(x, y))
+    end
+  end
+end
+
+function nova_apply(radius, func)
+  for y=-radius, radius do
+    for x=-radius, radius do
+      if (x ~=0 or y ~= 0) func(Vec:new(x, y))
+    end
+  end
 end
 
 function combine_and_unpack(data1, data2)
