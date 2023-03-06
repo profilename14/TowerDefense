@@ -14,6 +14,14 @@ function reset_game()
       unpack(menu_dat.settings)
     })
   end
+  letters, j = {}, 1
+  for i=1, #global_table_data.letters do 
+    if (j == 8) j = 1
+    add(letters, (j-1)*4-#global_table_data.letters*4)
+    j+=1
+  end
+  letter_rot = 0
+
   selector = {
     position = Vec:new(64, 64),
     sprite_index = 1,

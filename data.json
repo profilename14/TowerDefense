@@ -158,6 +158,7 @@
       "movement_direction": [1, 0]
     }
   ],
+  "letters": [192, 228, 194, 194, 16, 196, 198, 192, 230, 200, 224, 226],
   "map_data": [
     {
       "name": "laboratory",
