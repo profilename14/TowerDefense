@@ -1169,7 +1169,7 @@ function map_draw_loop()
   map(unpack(global_table_data.map_data[map_menu.pos].mget_shift))
   pal()
   Menu.draw(map_menu)
-  print_with_outline("map select", 39, 5, 7, 1)
+  print_with_outline("map select", 45, 1, 7, 1)
 end
 function game_draw_loop()
   local map_data = global_table_data.map_data[loaded_map]
