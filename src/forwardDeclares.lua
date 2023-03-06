@@ -6,27 +6,16 @@ end
 function display_tower_info(tower_id, position, text_color)
   local position_offset, tower_details = position + Vec:new(-1, -31), global_table_data.tower_templates[tower_id]
   local texts = {
-    {text = tower_details.name}, 
-    {text = tower_details.prefix..": "..tower_details.damage}
+    {text = tower_details.name, color = text_color}, 
+    {text = tower_details.prefix..": "..tower_details.damage, color = {7, 0}},
+    {text = "cost: "..tower_details.cost, color = {(coins >= tower_details.cost) and 3 or 8, 0}}
   }
   local longest_str_len = longest_menu_str(texts)*5+4
   tower_stats_background_rect = BorderRect:new(position_offset, Vec:new(longest_str_len + 20,27), 8, 5, 2)
   BorderRect.draw(tower_stats_background_rect)
-  print_with_outline(
-    tower_details.name,
-    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 2))},
-    text_color
-  ))
-  print_with_outline(
-    texts[2].text,
-    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 14))},
-    {7, 0}
-  ))
-  print_with_outline(
-    "cost: "..tower_details.cost, 
-    combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, 21))},
-    {(coins >= tower_details.cost) and 3 or 8, 0}
-  ))
+  for i, data in pairs(texts) do 
+    print_with_outline(data.text, combine_and_unpack({Vec.unpack(position_offset + Vec:new(4, i == 1 and 2 or 7*i))}, data.color))
+  end
   spr(
     tower_details.icon_data, 
     combine_and_unpack(
