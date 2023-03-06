@@ -247,14 +247,12 @@ function reset_game()
     add(letters, (j-1)*4-#global_table_data.letters*4)
     j+=1
   end
-  letter_rot = 0
   selector = {
     position = Vec:new(64, 64),
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, lock_cursor = 5000, 50, 10, global_table_data.credit_offsets
-  text_flag = false
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 5000, 50, 10, global_table_data.credit_offsets, 0
   text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
@@ -327,11 +325,9 @@ end
 function Enemy:draw(is_shadows)
   if (self.hp <= 0) return
   if self.type == 11 then
-    local go_invisible = flr(rnd(7))
-    if (go_invisible == 0) self.type = 0
+    if (flr(rnd(7)) == 0) self.type = 0 -- go invis
   elseif self.type == 0 then
-    local go_visible = flr(rnd(12))
-    if (go_visible == 0) self.type = 11
+    if (flr(rnd(12)) == 0) self.type = 11 -- go vis
     return
   end
   local p, n = Enemy.get_pixel_location(self)
@@ -754,7 +750,6 @@ function Animator:update()
     return true
   end
   self.animation_frame += self.dir
-  return
 end
 function Animator:finished()
   if (self.dir == 1) return self.animation_frame >= #self.data
@@ -788,16 +783,6 @@ function BorderRect:draw()
     self.border
   )
   rectfill(self.position.x, self.position.y, self.size.x, self.size.y, self.base)
-end
-function BorderRect:resize(position_, size_)
-  if (self.position ~= position_) self.position = position_
-  if (self.size ~= size_ + position_) self.size = size_ + position_ 
-end
-function BorderRect:reposition(position_)
-  if (self.position == position_) return
-  local size = self.size - self.position
-  self.position = position_
-  self.size = self.position + size
 end
 Menu = {}
 function Menu:new(

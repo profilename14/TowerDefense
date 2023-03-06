@@ -21,7 +21,6 @@ function Animator:update()
     return true
   end
   self.animation_frame += self.dir
-  return
 end
 function Animator:finished()
   if (self.dir == 1) return self.animation_frame >= #self.data

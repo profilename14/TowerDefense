@@ -29,7 +29,6 @@ function Enemy:step()
 
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
-    -- Since the reward system was retired, I'm just recycling it into an ID system.
     if self.type == 6 then
       self.hp -= 0.5
     elseif self.type == 5 then
@@ -68,11 +67,9 @@ function Enemy:draw(is_shadows)
   -- Spyplanes will spawn visible, and every tick they have a chance to go invisible (then a lower chance to reappear)
   -- While RNG based, it works pretty well in gameplay for making them threatening (but never unfair, especially as unmanifested towers see them).
   if self.type == 11 then
-    local go_invisible = flr(rnd(7))
-    if (go_invisible == 0) self.type = 0
+    if (flr(rnd(7)) == 0) self.type = 0 -- go invis
   elseif self.type == 0 then
-    local go_visible = flr(rnd(12))
-    if (go_visible == 0) self.type = 11
+    if (flr(rnd(12)) == 0) self.type = 11 -- go vis
     return
   end
   local p, n = Enemy.get_pixel_location(self)
