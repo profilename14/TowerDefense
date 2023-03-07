@@ -293,7 +293,7 @@ function draw_line_overlay(tower)
     color = 11
     for i=1, 16 do 
       for othertower in all(towers) do
-        if othertower.position == Vec.floor(tower.position + tower.dir * i) and not othertower.being_manifested and othertower.type ~= "clock" and not othertower.being_boosted then
+        if othertower.position == Vec.floor(tower.position + tower.dir * i) and not othertower.being_manifested and othertower.type ~= "clock" then
           othertower.being_boosted = true
           break
         end
