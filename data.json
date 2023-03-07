@@ -743,6 +743,10 @@
         "color": [9, 0]
       },
       {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
         "text": "i think that was the last of them. I can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation.",
         "color": [9, 0]
       }
@@ -779,6 +783,10 @@
       {
         "text": "that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past.",
         "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
       },
       {
         "text": "",
@@ -863,6 +871,10 @@
         "color": [9, 0]
       },
       {
+        "text": "",
+        "color": [1, 0]
+      },
+      {
         "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base - i already know your rampage ends with the emperor's erase. go away - let me see if i can salvage any of the lives you took today.",
         "color": [11, 0]
       }
@@ -923,6 +935,10 @@
       {
         "text": "",
         "color": [9, 0]
+      },
+      {
+        "text": "",
+        "color": [1, 0]
       },
       {
         "text": "all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby.",
