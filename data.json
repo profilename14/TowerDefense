@@ -695,114 +695,85 @@
         "color": [9, 0]
       },
       {
-        "text": "more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue the oncoming planes.",
-        "color": [9, 0]
+        "text": "more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue the oncoming planes."
       },
       {
-        "text": "are those... tanks? they don't seem fast but they have deep armor. perhaps a hale howitzer could help to slow them further.",
-        "color": [9, 0]
+        "text": "are those... tanks? they don't seem fast but they have deep armor. perhaps a hale howitzer could help to slow them further."
       },
       {
-        "text": "they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective.",
-        "color": [9, 0]
+        "text": "they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective."
       },
       {
-        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging",
-        "color": [9, 0]
+        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging"
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "i'm detecting swift rocketcraft that are radiating intense heat. fire will be ineffective but the hale howitzer will damage their engines.",
-        "color": [9, 0]
+        "text": "i'm detecting swift rocketcraft that are radiating intense heat. fire will be ineffective but the hale howitzer will damage their engines."
       },
       {
-        "text": "manifesting the sword circle is also possible. i can hold/tap activate to manually spin it and build damage.",
-        "color": [9, 0]
+        "text": "manifesting the sword circle is also possible. i can hold/tap activate to manually spin it and build damage."
       },
       {
-        "text": "manifesting the lightning lance fires a massive and powerful lightning bolt. it has a long delay before firing again - but it can charge even if unmanifested.",
-        "color": [9, 0]
+        "text": "manifesting the lightning lance fires a massive and powerful lightning bolt. it has a long delay before firing again - but it can charge even if unmanifested."
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "It seems I can do more than just place and manifest towers. accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded.",
-        "color": [9, 0]
+        "text": "It seems I can do more than just place and manifest towers. accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded."
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "i also appear to be able to record my progress and continue off later on.",
-        "color": [9, 0]
+        "text": "i also appear to be able to record my progress and continue off later on."
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "i think that was the last of them. I can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation.",
-        "color": [9, 0]
+        "text": "i think that was the last of them. I can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation."
       }
     ],
     "dialogue_level2": [
       {
         "text": "",
-        "color": [1, 0]
-      },
-      {
-        "text": "",
-        "color": [1, 0]
-      },
-      {
-        "text": "i can see autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit.",
         "color": [9, 0]
       },
       {
-        "text": "those helicopters ahead are carrying armored vehicles. they'll carry those through my defenses unless I use something capable of piercing both at once...",
-        "color": [9, 0]
+        "text": "i can see autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit"
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": "those helicopters ahead are carrying armored vehicles. they'll carry those through my defenses unless I use something capable of piercing both at once..."
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past.",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": "that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past."
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
+      },
+      {
+        "text": ""
       },
       {
         "text": "machine bringer of death! i am the commander of this platoon and i saw what you did back at the lab. i'm here to end this once and for all!",
@@ -816,63 +787,49 @@
     "dialogue_level3": [
       {
         "text": "",
-        "color": [1, 0]
-      },
-      {
-        "text": "",
-        "color": [1, 0]
-      },
-      {
-        "text": "",
-        "color": [1, 0]
-      },
-      {
-        "text": "i can see armored attack vehicles coming. their armor seems resistant to my sharpshooters.",
         "color": [9, 0]
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "a guided missile strike is coming! i'll have to be careful not to let any past or they'll do near-critical damage!",
-        "color": [9, 0]
+        "text": "i can see armored attack vehicles coming. their armor seems resistant to my sharpshooters."
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": "a guided missile strike is coming! i'll have to be careful not to let any past or they'll do near-critical damage!"
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
       },
       {
         "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base - i already know your rampage ends with the emperor's erase. go away - let me see if i can salvage any of the lives you took today.",
@@ -885,64 +842,49 @@
         "color": [9, 0]
       },
       {
-        "text": "stealth planes detected. they can randomly cloak past my sensors so i'll have to be careful with manual attacks.",
-        "color": [9, 0]
+        "text": "stealth planes detected. they can randomly cloak past my sensors so i'll have to be careful with manual attacks."
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "those specialized vehicles ahead have a tough shield that dampens electricity. a lightning lance won't be effective.",
-        "color": [9, 0]
+        "text": "those specialized vehicles ahead have a tough shield that dampens electricity. a lightning lance won't be effective."
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [1, 0]
+        "text": ""
       },
       {
-        "text": "all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby.",
-        "color": [9, 0]
+        "text": "all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby."
       }
     ],
     "dialogue_level5": [
@@ -951,72 +893,55 @@
         "color": [9, 0]
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "extremely reinforced mechs sighted. they seem sturdy but the armor they use seems vulnerable to blades.",
-        "color": [9, 0]
+        "text": "extremely reinforced mechs sighted. they seem sturdy but the armor they use seems vulnerable to blades."
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "milit's forces seem almost endless, just a little longer should be enough to draw out the emperor",
-        "color": [9, 0]
+        "text": "milit's forces seem almost endless, just a little longer should be enough to draw out the emperor"
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
-        "text": "",
-        "color": [9, 0]
+        "text": ""
       },
       {
         "text": "blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation, not ruin! i'm the one who ordered your construction. but now? i'll be the one to order your execution!",
