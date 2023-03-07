@@ -129,7 +129,7 @@ function parse_menu_content(content)
 end
 
 function toggle_mode()
-  manifest_mode = not manifest_mode
+  manifest_mode, sell = not manifest_mode
   sell_mode = not sell_mode
 end
 
@@ -256,8 +256,7 @@ function load_game_state()
   get_menu("main").enable = false
   local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
   load_map(map_id, wav, freeplay)
-  player_health = hp 
-  coins = scrap
+  player_health, coins = hp, scrap 
   -- TODO: calculate what the freeplay enemies will be
   for tower in all(tower_data) do 
     direction = Vec:new(global_table_data.direction_map[tower[2]])

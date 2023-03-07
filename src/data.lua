@@ -35,10 +35,9 @@ function reset_game()
   enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0
   direction, game_state, selected_menu_tower_id = Vec:new(0, -1), "menu", 1
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
-  music(global_table_data.music_data[rnd(#global_table_data.music_data)])
+  music(15)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
   sell_selector = Animator:new(global_table_data.animation_data.sell)
   manifest_selector = Animator:new(global_table_data.animation_data.manifest)
-  manifest_selector.dir = -1
-  get_menu("main").enable = true
+  manifest_selector.dir, get_menu("main").enable = -1, true
 end
