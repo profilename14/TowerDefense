@@ -209,6 +209,7 @@ function load_game()
   return hp, scrap, map_id, wav, freeplay, tower_data
 end
 function load_game_state()
+  if (@0x5e00 <=0) return
   reset_game()
   get_menu("main").enable = false
   local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
