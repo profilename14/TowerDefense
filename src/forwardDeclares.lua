@@ -163,7 +163,7 @@ function load_map(map_id, wave, freeplay)
   end
   music(global_table_data.music_data[cur_level] or 0)
 
-  if wave_round == 0 and freeplay == 0 then 
+  if wave_round == 0 and freeplay_rounds == 0 then 
     text_scroller.enable = true
     local text_place_holder = global_table_data.dialogue.dialogue_intros[cur_level]
     TextScroller.load(text_scroller, text_place_holder.text, text_place_holder.color)
