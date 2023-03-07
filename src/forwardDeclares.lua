@@ -59,9 +59,7 @@ function start_round()
     wave_round = max_waves
     wave_round -= flr(rnd(3))
   end
-  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds += 1
-
-
+  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds = wave_round
 
   enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end
@@ -183,7 +181,7 @@ function save_game()
   -- map id
   start_address = save_byte(start_address, loaded_map)
   -- wave
-  start_address = save_byte(start_address, wave_round)
+  start_address = save_byte(start_address, freeplay_rounds == 0 and wave_round or #global_table_data[global_table_data.wave_set[cur_level] or "wave_data"])
   -- freeplay round
   start_address = save_int(start_address, freeplay_rounds)
   -- current tower count

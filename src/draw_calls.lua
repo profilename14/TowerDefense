@@ -82,7 +82,7 @@ function ui_draw_loop(tower_details)
 
   -- shop ui
   if shop_enable and get_active_menu() then
-    print_with_outline("game paused [ wave "..(wave_round+freeplay_rounds).." ]", 18, 16, 7, 0)
+    print_with_outline("game paused [ wave "..(freeplay_rounds > 0 and freeplay_rounds or wave_round).." ]", 18, 16, 7, 0)
     print_with_outline((get_active_menu().prev and "❎ select\n🅾️ go back to previous menu" or "❎ select\n🅾️ close menu"), 1, 115, 7, 0)
   else -- game ui
     if manifest_mode then
