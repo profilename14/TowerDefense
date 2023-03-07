@@ -43,6 +43,10 @@ function TextScroller:next()
   self.char_pos, self.is_done = 1
 end
 function TextScroller:load(text, color_palette)
+  if text == "" then
+    self.is_done, self.enable = true
+    return
+  end
   if (color_palette) self.color = color_palette
   local counter, buffer = self.width, ""
   for _, word in pairs(split(text, " ")) do
