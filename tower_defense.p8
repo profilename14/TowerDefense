@@ -11,7 +11,7 @@ end end function get_menu(t)for e in all(menus)do
 if(e.name==t)return e
 end end function swap_menu_context(e)get_active_menu().enable,get_menu(e).enable=false,true end function longest_menu_str(t)local e=0for n in all(t)do e=max(e,#n.text)end return e end function get_tower_data_for_menu()local e={}for n,t in pairs(global_table_data.tower_templates)do add(e,{text=t.name,color=t.text_color,callback=choose_tower,args={n}})end return e end function get_map_data_for_menu()local e={}for t,n in pairs(global_table_data.map_data)do add(e,{text=n.name,color={7,0},callback=load_map,args={t}})end return e end function parse_menu_content(t)if type(t)=="table"then local n={}for e in all(t)do add(n,{text=e.text,color=e.color,callback=_ENV[e.callback],args=e.args})end return n else return _ENV[t]()end end function toggle_mode()manifest_mode=not manifest_mode sell_mode=not sell_mode end function swap_to_credits()game_state="credits"end function new_game()reset_game()game_state="map"swap_menu_context"map"end function load_map(e,t,n)pal()manifest_mode,auto_start_wave=true wave_round=t or 0freeplay_rounds=n or 0loaded_map,cur_level=e,e pathing=parse_path()for e=1,3do add(incoming_hint,Animator:new(global_table_data.animation_data.incoming_hint,true))end for e=0,15do grid[e]={}for t=0,15do grid[e][t]="empty"
 if(not check_tile_flag_at(Vec:new(t,e)+Vec:new(global_table_data.map_data[loaded_map].mget_shift),global_table_data.map_meta_data.non_path_flag_id))grid[e][t]="path"
-end end music(global_table_data.music_data[cur_level]or 0)if wave_round==0then text_scroller.enable=true local e=global_table_data.dialogue.dialogue_intros[cur_level]TextScroller.load(text_scroller,e.text,e.color)else load_wave_text()end end function save_game()local e=24064e=save_byte(e,player_health)e=save_int(e,coins)e=save_byte(e,loaded_map)e=save_byte(e,freeplay_rounds==0and wave_round or#global_table_data[global_table_data.wave_set[cur_level]or"wave_data"])e=save_int(e,freeplay_rounds)e=save_byte(e,#towers)for t in all(towers)do local n=round_to(t.rot/90)%4for o,i in pairs(global_table_data.tower_templates)do if i.type==t.type then e=save_byte(e,encode(o,n,3))e=save_byte(e,encode(t.position.x,t.position.y,4))break end end end end function save_state()
+end end music(global_table_data.music_data[cur_level]or 0)if wave_round==0and freeplay_rounds==0then text_scroller.enable=true local e=global_table_data.dialogue.dialogue_intros[cur_level]TextScroller.load(text_scroller,e.text,e.color)else load_wave_text()end end function save_game()local e=24064e=save_byte(e,player_health)e=save_int(e,coins)e=save_byte(e,loaded_map)e=save_byte(e,freeplay_rounds==0and wave_round or#global_table_data[global_table_data.wave_set[cur_level]or"wave_data"])e=save_int(e,freeplay_rounds)e=save_byte(e,#towers)for t in all(towers)do local n=round_to(t.rot/90)%4for o,i in pairs(global_table_data.tower_templates)do if i.type==t.type then e=save_byte(e,encode(o,n,3))e=save_byte(e,encode(t.position.x,t.position.y,4))break end end end end function save_state()
 if(enemies_active)return
 save_game()get_active_menu().enable=false shop_enable=false end function save_and_quit()
 if(enemies_active)return
@@ -324,9 +324,6 @@ b39b33b3a9aaa9a9a9aaa9a9a9a779a9499949490000000000000000000aa000ddddddd100000000
 8888200000888820000008888200000077178888888200000000aa7990000000000000000000000000000000a04040453b33b3bbfffffffffffffffffff66fff
 888820000088882000000888820000007177888888820000000aa79900000000000000000000000000000000aa4444453333b3b3fffffffffffffffffff66fff
 88882000008888200000088882000000877888888882000000aa79900000000000000000000000000000000000000000333333b3fffffff44ffffffffff66fff
-__gff__
-0000000000000000000000000000000000000000000000000001010102020201000000000000000000000202020102010000000000000000000002020202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0202020101020201020202020202020202010201020202020202000202020202020202020101010201010102010101020201010102010101020101010201010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010200000000000000000000000002010101
 __map__
 1d1d1d1d1d1d1d1d1d1d1d1d1e3f3f3f81818181818181818181818182a3a386a7a7a794a7a7b4a7a7a7b499a794a7b4ababababb8abababababb8ababababb8afafafafafafafafafafafafafafafaf000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 2f2f2f2f2f2f2f2f2f2f2f1f2e3f3f3f93939393939393939393938392b09ea3a6a6a6a6a594a79a94a7a794b4a794a7aaaaaaaaaaaaaaaaa9abababababababaeaeaeaeaeaeadafafbfaeaeaeaeaeae000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -360,6 +357,9 @@ __map__
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3fabababb8b4a7b4a7a3
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3fabababababa794a7b4a3
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003f3f3f3f3f3f3f3fababa7abb894a7b4
+__gff__
+0000000000000000000000000000000000000000000000000001010102020201000000000000000000000202020102010000000000000000000002020202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0202020101020201020202020202020202010201020202020202000202020202020202020101010201010102010101020201010102010101020101010201010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010200000000000000000000000002010101
 __sfx__
 01060000250512b051330513d05100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 011000200c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c0430000000000000000c043000000000000000
@@ -442,4 +442,3 @@ __music__
 00 24254344
 00 26274344
 02 28294344
-
