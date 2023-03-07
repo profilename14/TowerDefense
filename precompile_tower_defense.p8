@@ -507,8 +507,7 @@ end
 function Tower:freeze_enemies(targets)
   for enemy in all(targets) do
     if not enemy.is_frozen then 
-      enemy.is_frozen = true
-      enemy.frozen_tick = self.dmg
+      enemy.is_frozen, enemy.frozen_tick = true, self.dmg
     end 
   end
 end
