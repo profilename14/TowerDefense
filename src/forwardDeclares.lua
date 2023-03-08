@@ -52,14 +52,15 @@ function start_round()
   local wave_set_for_num = global_table_data.wave_set[cur_level] or "wave_data"
   max_waves = #global_table_data[wave_set_for_num]
 
-  wave_round = min(wave_round + 1, max_waves)
+  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds = wave_round
   if freeplay_rounds > 0 then
     -- During freeplay, one of the last 3 waves are played randomly. Don't make a level with only 2 waves.
     freeplay_rounds += 1
     wave_round = max_waves
     wave_round -= flr(rnd(3))
+  else
+    wave_round = wave_round + 1
   end
-  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds = wave_round
 
   enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end

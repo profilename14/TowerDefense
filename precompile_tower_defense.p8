@@ -46,13 +46,14 @@ function start_round()
   start_next_wave,enemies_active = true,true
   local wave_set_for_num = global_table_data.wave_set[cur_level] or "wave_data"
   max_waves = #global_table_data[wave_set_for_num]
-  wave_round = min(wave_round + 1, max_waves)
+  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds = wave_round
   if freeplay_rounds > 0 then
     freeplay_rounds += 1
     wave_round = max_waves
     wave_round -= flr(rnd(3))
+  else
+    wave_round = wave_round + 1
   end
-  if (wave_round == max_waves and freeplay_rounds == 0) freeplay_rounds = wave_round
   enemies_remaining, get_active_menu().enable, shop_enable = #global_table_data[wave_set_for_num][wave_round]
 end
 function get_active_menu()
@@ -244,7 +245,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 5000, 50, 10, global_table_data.credit_offsets, 0
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 30, 50, 10, global_table_data.credit_offsets, 0
   text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
@@ -1403,10 +1404,11 @@ function controls()
 end
 function increase_enemy_health(enemy_data)
   local stats = global_table_data.freeplay_stats
+  freeplay_mod = max(0, freeplay_round - max_waves)
   return 
     {
-      enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
-      max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
+      enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_mod)/15) ),
+      max(enemy_data.step_delay-stats.speed*freeplay_mod,stats.min_step_delay),
       enemy_data.sprite_index,
       enemy_data.type,
       enemy_data.damage,
