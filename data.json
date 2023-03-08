@@ -478,7 +478,7 @@
       "height": 2
     },
     {
-      "hp": 175,
+      "hp": 160,
       "step_delay": 16,
       "sprite_index": 70,
       "type": 10,
@@ -534,7 +534,7 @@
       "height": 2
     },
     {
-      "hp": 250,
+      "hp": 220,
       "step_delay": 14,
       "sprite_index": 95,
       "type": 16,
@@ -673,7 +673,7 @@
         "color": [9, 0]
       },
       {
-        "text": "no - it can't be - they've found me again! i recovered new blueprints after that horrifying experience. they allow construction of a rocket launcher that can be guided with manifestation. another blueprint set allows construction of a temporal laser - capable of speeding up any unmanifested tower in its range to double speed.",
+        "text": "no - it can't be - they've found me again! i recovered new blueprints from that horrifying experience. they allow construction of a rocket launcher that can be guided with manifestation. another blueprint set allows construction of a temporal laser - capable of speeding up any unmanifested tower in its range to double speed.",
         "color": [9, 0]
       },
       {
@@ -722,19 +722,19 @@
         "text": ""
       },
       {
-        "text": "It seems I can do more than just place and manifest towers. accessing the menu also seems to let me enter a 'scrapping mode' for anything unneeded."
+        "text": "accessing the menu seems to let me swap a 'scrapping mode' for anything unneeded."
       },
       {
         "text": ""
       },
       {
-        "text": "i also appear to be able to record my progress and continue off later on."
+        "text": "i also appear to be able to save or quit through the save menu. useful to keep checkpoints in difficult situations."
       },
       {
         "text": ""
       },
       {
-        "text": "i think that was the last of them. I can make my escape from this horrific lab through the 'map select' to the wilderness. i may also continue with this area in a 'freeplay mode' simulation."
+        "text": "i think that was the last of them. I can make my escape from this horrific lab by quitting and travelling to the wilderness. i may also continue with this area in a 'freeplay mode' simulation."
       }
     ],
     "dialogue_level2": [
@@ -764,7 +764,7 @@
         "text": ""
       },
       {
-        "text": "that vehicle isn't even aligned with milit. that's a bandit! it'll loot from my supplies if it makes it past."
+        "text": "that vehicle isn't even aligned with milit - that's a bandit! it'll loot from my supplies if it makes it past."
       },
       {
         "text": ""
@@ -798,7 +798,7 @@
         "text": ""
       },
       {
-        "text": "i can see armored attack vehicles coming. their armor seems resistant to my sharpshooters.",
+        "text": "i can see armored attack vehicles coming. their protection seems resistant to my sharpshooters.",
         "color": [9, 0]
       },
       {
