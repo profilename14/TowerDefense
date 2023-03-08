@@ -22,10 +22,11 @@ end
 -- the +1 and -1 are to ensure health scales from the default HP to the multiplied hp linearly.
 function increase_enemy_health(enemy_data)
   local stats = global_table_data.freeplay_stats
+  freeplay_mod = max(0, freeplay_rounds - max_waves)
   return 
     {
-      enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_rounds)/15) ),
-      max(enemy_data.step_delay-stats.speed*freeplay_rounds,stats.min_step_delay),
+      enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_mod)/15) ),
+      max(enemy_data.step_delay-stats.speed*freeplay_mod,stats.min_step_delay),
       enemy_data.sprite_index,
       enemy_data.type,
       enemy_data.damage,

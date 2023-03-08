@@ -3,9 +3,9 @@ version 39
 __lua__
 function choose_tower(e)selected_menu_tower_id,get_active_menu().enable,shop_enable=e end function display_tower_info(n,i,o)local t,e=i+Vec:new(-1,-31),global_table_data.tower_templates[n]local n={{text=e.name,color=o},{text=e.prefix..": "..e.damage,color={7,0}},{text="cost: "..e.cost,color={coins>=e.cost and 3or 8,0}}}local i=longest_menu_str(n)*5+4tower_stats_background_rect=BorderRect:new(t,Vec:new(i+20,27),8,5,2)BorderRect.draw(tower_stats_background_rect)for e,i in pairs(n)do print_with_outline(i.text,combine_and_unpack({Vec.unpack(t+Vec:new(4,e==1and 2or 7*e))},i.color))end spr(e.icon_data,combine_and_unpack({Vec.unpack(tower_stats_background_rect.position+Vec:new(i,6))},{2,2}))end function display_tower_rotation(e,n)local e,t=global_table_data.tower_templates[selected_menu_tower_id],n+Vec:new(0,-28)tower_rotation_background_rect=BorderRect:new(t,Vec:new(24,24),8,5,2)BorderRect.draw(tower_rotation_background_rect)local n=t+Vec:new(4,4)if e.disable_icon_rotation then spr(e.icon_data,combine_and_unpack({Vec.unpack(n)},{2,2}))else draw_sprite_rotated(global_table_data.tower_icon_background,t,24,parse_direction(direction))draw_sprite_rotated(e.icon_data,n,16,parse_direction(direction))end end function rotate_clockwise()direction=Vec:new(-direction.y,direction.x)end function start_round()
 if(start_next_wave or#enemies~=0)return
-start_next_wave,enemies_active=true,true local e=global_table_data.wave_set[cur_level]or"wave_data"max_waves=#global_table_data[e]wave_round=min(wave_round+1,max_waves)if freeplay_rounds>0then freeplay_rounds+=1wave_round=max_waves wave_round-=flr(rnd(3))end
+start_next_wave,enemies_active=true,true local e=global_table_data.wave_set[cur_level]or"wave_data"max_waves=#global_table_data[e]
 if(wave_round==max_waves and freeplay_rounds==0)freeplay_rounds=wave_round
-enemies_remaining,get_active_menu().enable,shop_enable=#global_table_data[e][wave_round]end function get_active_menu()for e in all(menus)do
+if freeplay_rounds>0then freeplay_rounds+=1wave_round=max_waves wave_round-=flr(rnd(3))else wave_round=wave_round+1end enemies_remaining,get_active_menu().enable,shop_enable=#global_table_data[e][wave_round]end function get_active_menu()for e in all(menus)do
 if(e.enable)return e
 end end function get_menu(t)for e in all(menus)do
 if(e.name==t)return e
@@ -168,7 +168,7 @@ foreach(enemies,kill_enemy)foreach(particles,destroy_particle)if enemies_active 
 ?e,t,n-1
 ?e,t,n+1
 ?e,t,n,i
-end function controls()if btnp(⬆️)then return 0,-1elseif btnp(⬇️)then return 0,1elseif btnp(⬅️)then return-1,0elseif btnp(➡️)then return 1,0end return 0,0end function increase_enemy_health(e)local t=global_table_data.freeplay_stats return{e.hp*(1+(t.hp-1)*((wave_round+freeplay_rounds)/15)),max(e.step_delay-t.speed*freeplay_rounds,t.min_step_delay),e.sprite_index,e.type,e.damage,e.height}end function is_in_table(e,i,o)for t,n in pairs(i)do if o then
+end function controls()if btnp(⬆️)then return 0,-1elseif btnp(⬇️)then return 0,1elseif btnp(⬅️)then return-1,0elseif btnp(➡️)then return 1,0end return 0,0end function increase_enemy_health(e)local t=global_table_data.freeplay_stats freeplay_mod=max(0,freeplay_rounds-max_waves)return{e.hp*(1+(t.hp-1)*((wave_round+freeplay_mod)/15)),max(e.step_delay-t.speed*freeplay_mod,t.min_step_delay),e.sprite_index,e.type,e.damage,e.height}end function is_in_table(e,i,o)for t,n in pairs(i)do if o then
 if(e==n.position)return true,t
 else
 if(e==n)return true,t
