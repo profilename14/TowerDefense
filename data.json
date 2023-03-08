@@ -691,7 +691,7 @@
     ],
     "dialogue_level1": [
       {
-        "text": "they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road",
+        "text": "they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road.",
         "color": [9, 0]
       },
       {
@@ -704,7 +704,7 @@
         "text": "they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective."
       },
       {
-        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging"
+        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging."
       },
       {
         "text": ""
@@ -748,7 +748,7 @@
         "text": ""
       },
       {
-        "text": "i detect autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit",
+        "text": "i detect autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit.",
         "color": [9, 0]
       },
       {
@@ -929,7 +929,7 @@
         "text": ""
       },
       {
-        "text": "milit's forces seem almost endless - just a little longer should be enough to draw out the emperor"
+        "text": "milit's forces seem almost endless - just a little longer should be enough to draw out the emperor."
       },
       {
         "text": ""
