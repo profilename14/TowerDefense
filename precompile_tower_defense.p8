@@ -245,7 +245,7 @@ function reset_game()
     sprite_index = 1,
     size = 1
   }
-  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 30, 50, 10, global_table_data.credit_offsets, 0
+  coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 5000, 50, 10, global_table_data.credit_offsets, 0
   text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
@@ -1404,7 +1404,7 @@ function controls()
 end
 function increase_enemy_health(enemy_data)
   local stats = global_table_data.freeplay_stats
-  freeplay_mod = max(0, freeplay_round - max_waves)
+  freeplay_mod = max(0, freeplay_rounds - max_waves)
   return 
     {
       enemy_data.hp * ( 1 + (stats.hp - 1) * ((wave_round+freeplay_mod)/15) ),
