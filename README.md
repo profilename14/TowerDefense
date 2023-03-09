@@ -3,6 +3,7 @@
 # Game Links
 - [Itch.io](https://jeraquel.itch.io/ferrous-fight)
 - [BBS](https://www.lexaloffle.com/bbs/?tid=51931)
+- On splore as "ferrous_fight"
 
 ## Important Links
 - [Design Document](https://docs.google.com/document/d/1cdd3pdNITeIYohnU7j1p6ek8NbD_pG9kevsfCBfXnQQ/edit)
