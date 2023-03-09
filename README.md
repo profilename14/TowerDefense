@@ -1,4 +1,4 @@
-# Tower Defense game.
+# Ferrous Fight
 
 # Game Links
 - [Itch.io](https://jeraquel.itch.io/ferrous-fight)
