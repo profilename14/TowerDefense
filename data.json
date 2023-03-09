@@ -156,35 +156,35 @@
   "letters": [192, 228, 194, 194, 16, 196, 198, 192, 230, 200, 224, 226],
   "map_data": [
     {
-      "name": "laboratory",
+      "name": "(lv1) laboratory",
       "mget_shift": [0, 0],
       "enemy_spawn_location": [0, 1],
       "enemy_end_location": [15, 11],
       "movement_direction": [1, 0]
     },
     {
-      "name": "wilderness",
+      "name": "(lv2) wilderness",
       "mget_shift": [16, 0],
       "enemy_spawn_location": [0, 1],
       "enemy_end_location": [15, 11],
       "movement_direction": [1, 0]
     },
     {
-      "name": "ruined town",
+      "name": "(lv3) ruined town",
       "mget_shift": [32, 0],
       "enemy_spawn_location": [0, 1],
       "enemy_end_location": [15, 2],
       "movement_direction": [1, 0]
     },
     {
-      "name": "strategic base",
+      "name": "(lv4) strategic base",
       "mget_shift": [48, 0],
       "enemy_spawn_location": [0, 1],
       "enemy_end_location": [0, 6],
       "movement_direction": [1, 0]
     },
     {
-      "name": "milit capital",
+      "name": "(lv5) milit capital",
       "mget_shift": [64, 0],
       "enemy_spawn_location": [0, 1],
       "enemy_end_location": [15, 1],

@@ -85,10 +85,10 @@ function shop_loop()
 end
 
 function game_loop()
+  if (text_scroller.enable) return
   if (auto_start_wave) start_round()
 
   if btnp(🅾️) then
-    if (text_scroller.enable) return
     if manifested_tower_ref == nil then
       shop_enable = true
       get_menu("game").enable = true
