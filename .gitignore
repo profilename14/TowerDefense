@@ -1,10 +1,19 @@
+# vscode
 /.vscode
-*.png
+
+# builds
+*.zip
+
+# pico8
+./*.png
 *.txt
+
+# custom stitcher
 /pico8_compiler/src/__pycache__
 /pico8_compiler/test
 # shrinko8
 /pico8_compiler/shrinko8-main/__pycache__
+/pico8_compiler/shrinko8-main/*.png
 /pico8_compiler/shrinko8-main/tmp
 /pico8_compiler/shrinko8-main/test_output
 /pico8_compiler/shrinko8-main/test_temp
