@@ -53,17 +53,14 @@
       "content": [
         {
           "text": "new game",
-          "color": [7, 0],
           "callback": "new_game"
         },
         {
           "text": "load game",
-          "color": [7, 0],
           "callback": "load_game_state"
         },
         {
           "text": "credits",
-          "color": [7, 0],
           "callback": "swap_to_credits"
         }
       ]
@@ -74,29 +71,24 @@
       "content": [
         {
           "text": "towers",
-          "color": [7, 0],
           "callback": "swap_menu_context",
           "args": ["towers"]
         },
         {
           "text": "save options",
-          "color": [7, 0],
           "callback": "swap_menu_context",
           "args": ["save options"]
         },
         {
           "text": "rotate clockwise",
-          "color": [7, 0],
           "callback": "rotate_clockwise"
         },
         {
           "text": "toggle mode",
-          "color": [7, 0],
           "callback": "toggle_mode"
         },
         {
           "text": "start round",
-          "color": [7, 0],
           "callback": "start_round"
         }
       ],
@@ -109,17 +101,14 @@
       "content": [
         {
           "text": "save",
-          "color": [7, 0],
           "callback": "func_save"
         },
         {
           "text": "save and quit",
-          "color": [7, 0],
           "callback": "save_and_quit"
         },
         {
           "text": "quit without saving",
-          "color": [7, 0],
           "callback": "quit"
         }
       ]

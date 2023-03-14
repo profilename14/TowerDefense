@@ -118,15 +118,14 @@ function parse_menu_content(content)
     for con in all(content) do
       add(cons, {
         text = con.text,
-        color = con.color,
+        color = con.color or {7, 0},
         callback = _ENV[con.callback],
         args = con.args
       }) 
     end
     return cons
-  else
-    return _ENV[content]()
   end
+  return _ENV[content]()
 end
 
 function toggle_mode()
