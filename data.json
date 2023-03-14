@@ -45,6 +45,7 @@
     "speed": 1,
     "min_step_delay": 5
   },
+  "menu_settings": [5, 8, 7, 3],
   "menu_data": [
     {
       "name": "main",
@@ -65,8 +66,7 @@
           "color": [7, 0],
           "callback": "swap_to_credits"
         }
-      ],
-      "settings": [5, 8, 7, 3]
+      ]
     },
     {
       "name": "game",
@@ -100,8 +100,7 @@
           "callback": "start_round"
         }
       ],
-      "hint": "display_tower_rotation",
-      "settings": [5, 8, 7, 3]
+      "hint": "display_tower_rotation"
     },
     {
       "name": "save options",
@@ -123,22 +122,19 @@
           "color": [7, 0],
           "callback": "quit"
         }
-      ],
-      "settings": [5, 8, 7, 3]
+      ]
     },
     {
       "name": "towers",
       "prev": "game",
       "position": [5, 63],
       "content": "get_tower_data_for_menu",
-      "hint": "display_tower_info",
-      "settings": [5, 8, 7, 3]
+      "hint": "display_tower_info"
     },
     {
       "name": "map",
       "position": [5, 84],
-      "content": "get_map_data_for_menu",
-      "settings": [5, 8, 7, 3]
+      "content": "get_map_data_for_menu"
     }
   ],
   "map_meta_data": {

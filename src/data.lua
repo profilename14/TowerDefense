@@ -11,7 +11,7 @@ function reset_game()
       menu_dat.position[1], menu_dat.position[2],
       parse_menu_content(menu_dat.content),
       _ENV[menu_dat.hint],
-      unpack(menu_dat.settings)
+      unpack(global_table_data.menu_settings)
     })
   end
   letters, j = {}, 1
