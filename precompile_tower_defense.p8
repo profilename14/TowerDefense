@@ -1029,8 +1029,7 @@ function TextScroller:draw()
   end
   print_with_outline(result, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
   if self.is_done then 
-    local output = self.text_pos >= #self.data and "🅾️ to close" or "🅾️ to continue"
-    print_with_outline(output, self.rect.position.x + 4, self.rect.size.y - 7, unpack(self.color))
+    print_with_outline("🅾️ to close", self.rect.position.x + 4, self.rect.size.y - 7, unpack(self.color))
   end
 end
 function TextScroller:update()
@@ -1038,17 +1037,17 @@ function TextScroller:update()
   self.internal_tick = (self.internal_tick + 1) % self.speed
   if (self.internal_tick == 0) self.char_pos += 1
   self.is_done = self.char_pos > #self.data[self.text_pos]
+  if (self.is_done) TextScroller.next(self)
 end
 function TextScroller:next()
   if (not self.enable or not self.is_done) return 
   if(self.text_pos >= #self.data) return true
-  text_scroller.skip(self)
-end
-function TextScroller:skip()
-  self.char_pos = #self.data[self.text_pos]
-  if (self.text_pos >= #self.data) return
   self.text_pos += 1
   self.char_pos, self.is_done = 1
+end
+function TextScroller:skip()
+  if (not self.enable) return 
+  self.char_pos = #self.data[self.text_pos]
 end
 function TextScroller:load(text, color_palette)
   if text == "" then
@@ -1114,7 +1113,7 @@ function _update()
   end
   TextScroller.update(text_scroller)
   if btnp(🅾️) then 
-    if TextScroller.next(text_scroller) then 
+    if text_scroller.is_done then 
       text_scroller.enable = false
     else
       TextScroller.skip(text_scroller)
@@ -1431,7 +1430,7 @@ function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
       local dx, dy = mx-shift, my-shift
       local xx = flr(dx*cosine-dy*sine+shift)
       local yy = flr(dx*sine+dy*cosine+shift)
-      if xx >= 0 and xx < size and yy >= 0 and yy <= size then
+      if xx >= 0 and xx < size and yy >= 0 and yy < size then
         local id = sget(sx+xx, sy+yy)
         if id ~= global_table_data.palettes.transparent_color_id or is_opaque then 
           pset(position.x+mx, position.y+my, id)

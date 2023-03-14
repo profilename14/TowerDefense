@@ -39,8 +39,7 @@ function TextScroller:draw()
 
   print_with_outline(result, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
   if self.is_done then 
-    local output = self.text_pos >= #self.data and "🅾️ to close" or "🅾️ to continue"
-    print_with_outline(output, self.rect.position.x + 4, self.rect.size.y - 7, unpack(self.color))
+    print_with_outline("🅾️ to close", self.rect.position.x + 4, self.rect.size.y - 7, unpack(self.color))
   end
 end
 function TextScroller:update()
@@ -48,17 +47,17 @@ function TextScroller:update()
   self.internal_tick = (self.internal_tick + 1) % self.speed
   if (self.internal_tick == 0) self.char_pos += 1
   self.is_done = self.char_pos > #self.data[self.text_pos]
+  if (self.is_done) TextScroller.next(self)
 end
 function TextScroller:next()
   if (not self.enable or not self.is_done) return 
   if(self.text_pos >= #self.data) return true
-  text_scroller.skip(self)
-end
-function TextScroller:skip()
-  self.char_pos = #self.data[self.text_pos]
-  if (self.text_pos >= #self.data) return
   self.text_pos += 1
   self.char_pos, self.is_done = 1
+end
+function TextScroller:skip()
+  if (not self.enable) return 
+  self.char_pos = #self.data[self.text_pos]
 end
 function TextScroller:load(text, color_palette)
   if text == "" then
