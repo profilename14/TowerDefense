@@ -118,15 +118,14 @@ function parse_menu_content(content)
     for con in all(content) do
       add(cons, {
         text = con.text,
-        color = con.color,
+        color = con.color or {7, 0},
         callback = _ENV[con.callback],
         args = con.args
       }) 
     end
     return cons
-  else
-    return _ENV[content]()
   end
+  return _ENV[content]()
 end
 
 function toggle_mode()
@@ -217,9 +216,12 @@ function quit()
   reset_game() 
 end
 
-function load_game()
-  local start_address = 0x5e00
-  local tower_data, hp, scrap, map_id, wav, freeplay = {}
+function load_game_state()
+  if (@0x5e00 <=0) return
+  reset_game()
+  get_menu("main").enable = false
+  
+  local start_address, tower_data, hp, scrap, map_id, wav, freeplay = 0x5e00, {}
   -- health
   hp = @start_address
   start_address += 1
@@ -248,14 +250,6 @@ function load_game()
     })
   end
 
-  return hp, scrap, map_id, wav, freeplay, tower_data
-end
-
-function load_game_state()
-  if (@0x5e00 <=0) return
-  reset_game()
-  get_menu("main").enable = false
-  local hp, scrap, map_id, wav, freeplay, tower_data = load_game()
   load_map(map_id, wav, freeplay)
   player_health, coins = hp, scrap 
   -- TODO: calculate what the freeplay enemies will be

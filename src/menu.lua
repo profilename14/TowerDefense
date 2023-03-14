@@ -97,11 +97,7 @@ end
 function Menu:invoke()
   local cont = self.content[self.pos]
   if (cont.callback == nil) return
-  if cont.args then
-    cont.callback(unpack(cont.args))
-  else
-    cont.callback()
-  end
+  cont.callback(cont.args and unpack(cont.args))
 end
 
 function menu_scroll(dx1, dx2, dy, dir, rate, position)
