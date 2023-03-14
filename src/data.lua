@@ -28,12 +28,11 @@ function reset_game()
   }
   coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 30, 50, 10, global_table_data.credit_offsets, 0
 
-  text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
+  text_scroller = TextScroller:new(1, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
   -- Internal Data -- Don't modify
-  enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0
-  direction, game_state, selected_menu_tower_id = Vec:new(0, -1), "menu", 1
+  enemy_current_spawn_tick, direction, game_state, selected_menu_tower_id, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0, Vec:new(0, -1), "menu", 1
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(15)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end

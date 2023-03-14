@@ -1,4 +1,4 @@
--- Tower Defence v1.14.10
+-- Tower Defence v2.0.2
 -- By Jeren (Code), Jasper (Art, Code, & Design), Jimmy (Art & Music), and Kaoushik (Code)
 
 -- Forward Declaring Functions
@@ -48,12 +48,14 @@ function _update()
     if (player_health <= 0) reset_game()
     if shop_enable then shop_loop() else game_loop() end
   end
-  -- TEMP
+
   TextScroller.update(text_scroller)
 
   if btnp(🅾️) then 
     if TextScroller.next(text_scroller) then 
       text_scroller.enable = false
+    else
+      TextScroller.skip(text_scroller)
     end
   end
 end

@@ -241,11 +241,10 @@ function reset_game()
     size = 1
   }
   coins, player_health, enemy_required_spawn_ticks, credit_y_offsets, letter_rot, lock_cursor, text_flag = 30, 50, 10, global_table_data.credit_offsets, 0
-  text_scroller = TextScroller:new(1, nil, {7, 0}, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
+  text_scroller = TextScroller:new(1, { Vec:new(3, 80), Vec:new(96, 45), 8, 6, 3 })
   text_scroller.enable = false
   
-  enemy_current_spawn_tick, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0
-  direction, game_state, selected_menu_tower_id = Vec:new(0, -1), "menu", 1
+  enemy_current_spawn_tick, direction, game_state, selected_menu_tower_id, manifest_mode, sell_mode, manifested_tower_ref, enemies_active, shop_enable, start_next_wave, wave_cor, pathing, menu_enemy = 0, Vec:new(0, -1), "menu", 1
   grid, towers, enemies, particles, animators, incoming_hint, menus, projectiles = {}, {}, {}, {}, {}, {}, {}, {}
   music(15)
   for i, menu_dat in pairs(menu_data) do add(menus, Menu:new(unpack(menu_dat))) end
@@ -861,11 +860,7 @@ end
 function Menu:invoke()
   local cont = self.content[self.pos]
   if (cont.callback == nil) return
-  if cont.args then
-    cont.callback(unpack(cont.args))
-  else
-    cont.callback()
-  end
+  cont.callback(cont.args and unpack(cont.args))
 end
 function menu_scroll(dx1, dx2, dy, dir, rate, position)
   local dy1, dy3 = dy-10, dy+10
@@ -996,12 +991,12 @@ function Projectile:collider(enemy)
   return dist <= touching_distance
 end
 TextScroller = {}
-function TextScroller:new(char_delay, text_data, color_palette, rect_data)
+function TextScroller:new(char_delay, rect_data, text_data, color_palette)
   local brect = BorderRect:new(unpack(rect_data))
   obj = {
     speed = char_delay,
     rect = brect,
-    color = color_palette,
+    color = color_palette or {7, 0},
     char_pos = 1,
     text_pos = 1,
     internal_tick = 0,
@@ -1020,8 +1015,19 @@ function TextScroller:draw()
   BorderRect.draw(self.rect)
   local before = sub(self.data[self.text_pos], 1, self.char_pos)
   local lines, end_text = split(before, "\n"), sub(self.data[self.text_pos], self.char_pos+1, #self.data[self.text_pos])
-  local text = before..generate_garbage(end_text, self.rect.size.x, #lines[#lines], self.max_lines, #lines\2)
-  print_with_outline(text, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
+  local result, line, pos, buffer = before, #lines\2, 1, (#lines[#lines])*5
+  for i=1, #end_text do 
+    if (line > self.max_lines) break
+    if (buffer + pos*9) > self.rect.size.x then 
+      result ..= "\n\n"
+      line += 1
+      pos, buffer = 1, 0
+    else
+      result ..= chr(204 + flr(rnd(49))) 
+    end
+    pos += 1
+  end
+  print_with_outline(result, self.rect.position.x + 4, self.rect.position.y + 4, unpack(self.color))
   if self.is_done then 
     local output = self.text_pos >= #self.data and "🅾️ to close" or "🅾️ to continue"
     print_with_outline(output, self.rect.position.x + 4, self.rect.size.y - 7, unpack(self.color))
@@ -1035,7 +1041,12 @@ function TextScroller:update()
 end
 function TextScroller:next()
   if (not self.enable or not self.is_done) return 
-  if(self.text_pos + 1 > #self.data) return true
+  if(self.text_pos >= #self.data) return true
+  text_scroller.skip(self)
+end
+function TextScroller:skip()
+  self.char_pos = #self.data[self.text_pos]
+  if (self.text_pos >= #self.data) return
   self.text_pos += 1
   self.char_pos, self.is_done = 1
 end
@@ -1072,21 +1083,6 @@ function TextScroller:load(text, color_palette)
   end
   self.char_pos, self.text_pos, self.internal_tick, self.is_done = 1, 1, 0
 end
-function generate_garbage(data, line_width, curr_width, line_amount, curr_lines)
-  local result, line, pos, buffer = "", curr_lines, 1, curr_width*5
-  for i=1, #data do 
-    if (line > line_amount) break
-    if (buffer + pos*9) > line_width then 
-      result ..= "\n\n"
-      line += 1
-      pos, buffer = 1, 0
-    else
-      result ..= chr(204 + flr(rnd(49))) 
-    end
-    pos += 1
-  end
-  return result
-end
 function _init() 
   --[[preserve]]global_table_data=unpack_table(global_table_str)
   --[[preserve]]cartdata(global_table_data.cart_name)
@@ -1120,6 +1116,8 @@ function _update()
   if btnp(🅾️) then 
     if TextScroller.next(text_scroller) then 
       text_scroller.enable = false
+    else
+      TextScroller.skip(text_scroller)
     end
   end
 end
