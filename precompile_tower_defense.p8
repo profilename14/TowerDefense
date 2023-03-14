@@ -155,6 +155,7 @@ function save_game()
   start_address = save_int(start_address, coins)
   start_address = save_byte(start_address, loaded_map)
   start_address = save_byte(start_address, freeplay_rounds == 0 and wave_round or #global_table_data[global_table_data.wave_set[cur_level] or "wave_data"])
+  start_address = save_byte(start_address, encode(text_scroller.color[1], text_scroller.color[2], 4))
   start_address = save_int(start_address, freeplay_rounds)
   start_address = save_byte(start_address, #towers)
   for tower in all(towers) do 
@@ -195,6 +196,8 @@ function load_game_state()
   map_id = @start_address
   start_address += 1
   wav = @start_address
+  start_address += 1
+  text_scroller.color = pack(@start_address)
   start_address += 1
   freeplay = $start_address
   start_address += 4

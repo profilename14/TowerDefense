@@ -182,6 +182,8 @@ function save_game()
   start_address = save_byte(start_address, loaded_map)
   -- wave
   start_address = save_byte(start_address, freeplay_rounds == 0 and wave_round or #global_table_data[global_table_data.wave_set[cur_level] or "wave_data"])
+  -- current dialouge color palette
+  start_address = save_byte(start_address, encode(text_scroller.color[1], text_scroller.color[2], 4))
   -- freeplay round
   start_address = save_int(start_address, freeplay_rounds)
   -- current tower count
@@ -233,6 +235,9 @@ function load_game_state()
   start_address += 1
   -- wave
   wav = @start_address
+  start_address += 1
+  -- current dialouge color palette
+  text_scroller.color = pack(@start_address)
   start_address += 1
   -- freeplay round
   freeplay = $start_address
