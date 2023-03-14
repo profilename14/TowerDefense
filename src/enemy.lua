@@ -24,9 +24,6 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height
   return obj
 end
 function Enemy:step()
-  self.current_step = (self.current_step + 1) % self.step_delay
-  if (self.current_step ~= 0) return false
-
   if self.burning_tick > 0 then 
     self.burning_tick -= 1
     if self.type == 6 then
@@ -40,27 +37,28 @@ function Enemy:step()
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
   end
 
-  if (not self.is_frozen) return true 
-  if self.type == 6 then
-    -- Trailblazers are frozen a little longer and take damage.
-    self.frozen_tick = max(self.frozen_tick - 0.8, 0)
-    self.hp -= 2
-  elseif self.type == 5 then
-    -- Ice trucks are frozen for only 1/8 the time
-    self.frozen_tick = max(self.frozen_tick - 8, 0)
-  else
-    self.frozen_tick = max(self.frozen_tick - 1, 0)
+  printh(self.is_frozen and "is_frozen" or "")
+  if self.is_frozen then 
+    if self.type == 6 then
+      -- Trailblazers are frozen a little longer and take damage.
+      self.frozen_tick -= 0.8 --! FIX
+      self.hp -= 2
+    elseif self.type == 5 then
+      -- Ice trucks are frozen for only 1/8 the time
+      self.frozen_tick -= 8 --! FIX
+    else
+      self.frozen_tick -= 1 --! FIX
+    end
+    if (self.frozen_tick > 0) return
+    self.is_frozen = false
   end
-  if (self.frozen_tick ~= 0) return false
-  self.is_frozen = false
-  return true
+  self.current_step = (self.current_step + 1) % self.step_delay
+  return self.current_step == 0
 end
 function Enemy:get_pixel_location()
   local n, prev = pathing[self.pos], self.spawn_location
   if (self.pos - 1 >= 1) prev = pathing[self.pos-1]
-  local pos = self.position * 8
-  if (not self.is_frozen) pos = lerp(prev*8, n*8, self.current_step / self.step_delay)
-  return pos, n
+  return lerp(prev*8, n*8, self.current_step / self.step_delay), n
 end
 function Enemy:draw(is_shadows)
   if (self.hp <= 0) return
@@ -74,8 +72,7 @@ function Enemy:draw(is_shadows)
   end
   local p, n = Enemy.get_pixel_location(self)
   local theta = parse_direction(normalize(n-self.position))
-  if is_shadows then
-    if (self.type == 0) return
+  if is_shadows and self.type ~= 0 then
     draw_sprite_shadow(self.gfx, p, self.height, 8, theta)
   else
     draw_sprite_rotated(self.gfx, p, 8, theta)

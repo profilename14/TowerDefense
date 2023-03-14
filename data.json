@@ -336,7 +336,7 @@
     {
       "name": "hale howitzer",
       "text_color": [12, 7],
-      "damage": 5,
+      "damage": 15,
       "prefix": "delay",
       "radius": 2,
       "animation_key": "hale_howitzer",
