@@ -133,22 +133,24 @@ return obj end function TextScroller:draw()
 if(not self.enable)return
 BorderRect.draw(self.rect)local i=sub(self.data[self.text_pos],1,self.char_pos)local e,r=split(i,"\n"),sub(self.data[self.text_pos],self.char_pos+1,#self.data[self.text_pos])local t,o,n,a=i,#e\2,1,#e[#e]*5for e=1,#r do
 if(o>self.max_lines)break
-if a+n*9>self.rect.size.x then t..="\n\n"o+=1n,a=1,0else t..=chr(204+flr(rnd(49)))end n+=1end print_with_outline(t,self.rect.position.x+4,self.rect.position.y+4,unpack(self.color))if self.is_done then local e=self.text_pos>=#self.data and"🅾️ to close"or"🅾️ to continue"print_with_outline(e,self.rect.position.x+4,self.rect.size.y-7,unpack(self.color))end end function TextScroller:update()
+if a+n*9>self.rect.size.x then t..="\n\n"o+=1n,a=1,0else t..=chr(204+flr(rnd(49)))end n+=1end print_with_outline(t,self.rect.position.x+4,self.rect.position.y+4,unpack(self.color))if self.is_done then print_with_outline("🅾️ to close",self.rect.position.x+4,self.rect.size.y-7,unpack(self.color))end end function TextScroller:update()
 if(not self.enable or self.is_done or self.text_pos>#self.data)return
 self.internal_tick=(self.internal_tick+1)%self.speed
 if(self.internal_tick==0)self.char_pos+=1
-self.is_done=self.char_pos>#self.data[self.text_pos]end function TextScroller:next()
+self.is_done=self.char_pos>#self.data[self.text_pos]
+if(self.is_done)TextScroller.next(self)
+end function TextScroller:next()
 if(not self.enable or not self.is_done)return
 if(self.text_pos>=#self.data)return true
-text_scroller.skip(self)end function TextScroller:skip()self.char_pos=#self.data[self.text_pos]
-if(self.text_pos>=#self.data)return
-self.text_pos+=1self.char_pos,self.is_done=1end function TextScroller:load(i,e)if i==""then self.is_done,self.enable=true return end
+self.text_pos+=1self.char_pos,self.is_done=1end function TextScroller:skip()
+if(not self.enable)return
+self.char_pos=#self.data[self.text_pos]end function TextScroller:load(i,e)if i==""then self.is_done,self.enable=true return end
 if(e)self.color=e
 local e,n=self.width,""for o,t in pairs(split(i," "))do if#t+1<=e then n..=t.." "e-=#t+1elseif#t<=e then n..=t e-=#t else n..="\n"..t.." "e=self.width-#t+1end end self.data,e={},0local t,i="",split(n,"\n")for o,n in pairs(i)do if e<=self.max_lines then t..=n.."\n\n"e+=1else add(self.data,t)t,e=n.."\n\n",1end
 if(o==#i)add(self.data,t)
 end self.char_pos,self.text_pos,self.internal_tick,self.is_done=1,1,0end function _init()global_table_data=unpack_table(global_table_str)cartdata(global_table_data.cart_name)reset_game()end function _draw()cls()if game_state=="menu"then main_menu_draw_loop()elseif game_state=="credits"then credits_draw_loop()elseif game_state=="map"then map_draw_loop()elseif game_state=="game"then game_draw_loop()end TextScroller.draw(text_scroller)end function _update()if game_state=="menu"then main_menu_loop()elseif game_state=="credits"then credits_loop()elseif game_state=="map"then map_loop()elseif game_state=="game"then
 if(player_health<=0)reset_game()
-if shop_enable then shop_loop()else game_loop()end end TextScroller.update(text_scroller)if btnp(🅾️)then if TextScroller.next(text_scroller)then text_scroller.enable=false else TextScroller.skip(text_scroller)end end end function main_menu_draw_loop()map(unpack(global_table_data.splash_screens[1].mget_shift))local e,n,i=1,0,0for t,o in pairs(global_table_data.letters)do
+if shop_enable then shop_loop()else game_loop()end end TextScroller.update(text_scroller)if btnp(🅾️)then if text_scroller.is_done then text_scroller.enable=false else TextScroller.skip(text_scroller)end end end function main_menu_draw_loop()map(unpack(global_table_data.splash_screens[1].mget_shift))local e,n,i=1,0,0for t,o in pairs(global_table_data.letters)do
 if(e==8)e,n,i=1,18,16
 local a,r=Vec:new(e*16-8+i-((t==5or t==9)and 2or 0),letters[t]+n),t==5and letter_rot or 0draw_sprite_shadow(o,a,4,16,r)draw_sprite_rotated(o,a,16,r)e+=1end if menu_enemy then Enemy.draw(menu_enemy,true)Enemy.draw(menu_enemy)end Menu.draw(get_menu"main")end function credits_draw_loop()map(unpack(global_table_data.splash_screens[1].mget_shift))print_with_outline("credits",47,credit_y_offsets[1],7,1)print_with_outline("project developers",25,credit_y_offsets[2],7,1)print_with_outline("jasper:\n  • game director\n  • programmer",10,credit_y_offsets[3],7,1)print_with_outline("jeren:\n  • core programmer\n  • devops",10,credit_y_offsets[4],7,1)print_with_outline("jimmy:\n  • artist\n  • sound engineer",10,credit_y_offsets[5],7,1)print_with_outline("kaoushik:\n  • programmer",10,credit_y_offsets[6],7,1)print_with_outline("external developers",25,credit_y_offsets[7],7,1)print_with_outline("thisismypassport:\n  • shrinko8 developer",10,credit_y_offsets[8],7,1)print_with_outline("jihem:\n  • created the rotation\n  sprite draw function",10,credit_y_offsets[9],7,1)print_with_outline("rgb:\n  • created the acos function",10,credit_y_offsets[10],7,1)end function map_draw_loop()local e=get_menu"map"pal(global_table_data.palettes.dark_mode)map(unpack(global_table_data.map_data[e.pos].mget_shift))pal()Menu.draw(e)print_with_outline("map select",45,1,7,1)end function game_draw_loop()local e=global_table_data.map_data[loaded_map]local t=global_table_data.tower_templates[selected_menu_tower_id]map(unpack(e.mget_shift))
 if(manifested_tower_ref==nil and not sell_mode)draw_tower_attack_overlay(t)
@@ -175,7 +177,7 @@ else
 if(e==n)return true,t
 end end end function add_enemy_at_to_table(t,n,i)for e in all(enemies)do if e.position==t then add(n,e)
 if(not i)return
-end end end function draw_sprite_rotated(n,o,e,i,c)local u,h,t,a,r=n%16*8,n\16*8,e\2-.5,sin(i/360),cos(i/360)for l=0,e-1do for d=0,e-1do local f,s=l-t,d-t local n=flr(f*r-s*a+t)local i=flr(f*a+s*r+t)if n>=0and n<e and i>=0and i<=e then local e=sget(u+n,h+i)if e~=global_table_data.palettes.transparent_color_id or c then pset(o.x+l,o.y+d,e)end end end end end function draw_sprite_shadow(t,n,e,i,o)pal(global_table_data.palettes.shadows)draw_sprite_rotated(t,n+Vec:new(e,e),i,o)pal()end function parse_direction(e)
+end end end function draw_sprite_rotated(n,o,e,i,c)local u,h,t,a,r=n%16*8,n\16*8,e\2-.5,sin(i/360),cos(i/360)for l=0,e-1do for d=0,e-1do local f,s=l-t,d-t local n=flr(f*r-s*a+t)local i=flr(f*a+s*r+t)if n>=0and n<e and i>=0and i<e then local e=sget(u+n,h+i)if e~=global_table_data.palettes.transparent_color_id or c then pset(o.x+l,o.y+d,e)end end end end end function draw_sprite_shadow(t,n,e,i,o)pal(global_table_data.palettes.shadows)draw_sprite_rotated(t,n+Vec:new(e,e),i,o)pal()end function parse_direction(e)
 if(e.x>0)return 90
 if(e.x<0)return 270
 if(e.y>0)return 180

@@ -52,7 +52,7 @@ function _update()
   TextScroller.update(text_scroller)
 
   if btnp(🅾️) then 
-    if TextScroller.next(text_scroller) then 
+    if text_scroller.is_done then 
       text_scroller.enable = false
     else
       TextScroller.skip(text_scroller)
