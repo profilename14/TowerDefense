@@ -37,7 +37,7 @@ function Enemy:step()
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
   end
 
-  printh(self.is_frozen and "is_frozen" or "")
+  -- printh(self.is_frozen and "is_frozen" or "")
   if self.is_frozen then 
     if self.type == 6 then
       -- Trailblazers are frozen a little longer and take damage.
