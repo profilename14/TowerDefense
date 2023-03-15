@@ -101,7 +101,7 @@
       "content": [
         {
           "text": "save",
-          "callback": "func_save"
+          "callback": "save_state"
         },
         {
           "text": "save and quit",
@@ -464,7 +464,7 @@
       "height": 2
     },
     {
-      "hp": 160,
+      "hp": 200,
       "step_delay": 16,
       "sprite_index": 70,
       "type": 10,
@@ -520,7 +520,7 @@
       "height": 2
     },
     {
-      "hp": 220,
+      "hp": 275,
       "step_delay": 14,
       "sprite_index": 95,
       "type": 16,
@@ -652,11 +652,11 @@
     },
     "dialogue_intros": [
       {
-        "text": "i just became conscious - why is everyone trying to break apart my console!? i... could defend myself by placing my selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start wave.'",
+        "text": "i just became conscious - why is everyone trying to break apart my console!? i... could defend myself by placing my selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start round.'",
         "color": [9, 0]
       },
       {
-        "text": "no - it can't be - they've found me again! i recovered new blueprints from that horrifying experience. they allow construction of a rocket launcher that can be guided with manifestation. another blueprint set allows construction of a temporal laser - capable of speeding up any unmanifested tower in its range to double speed.",
+        "text": "no - it can't be - they've found me again! i don't want to keep fighting - but i'll have to push through. the terrain is suitable for using a sharpshooter at the very least...",
         "color": [9, 0]
       },
       {
@@ -674,7 +674,7 @@
     ],
     "dialogue_level1": [
       {
-        "text": "they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road.",
+        "text": "they're sending in more vehicles. i may have to open the menu and construct a torch trap far down the road",
         "color": [9, 0]
       },
       {
@@ -687,7 +687,7 @@
         "text": "they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective."
       },
       {
-        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging."
+        "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging"
       },
       {
         "text": ""
@@ -702,19 +702,19 @@
         "text": "manifesting the lightning lance fires a massive and powerful lightning bolt. it has a long delay before firing again - but it can charge even if unmanifested."
       },
       {
+        "text": "one other option i have is the sharp shooter - a rocket launcher that can be guided with manifestation. it's effective against single targets when in key positions."
+      },
+      {
+        "text": "i appear to have one last blueprint for a 'clock carbine.' it allows construction of a temporal laser - capable of speeding up any unmanifested tower to double speed. manifestation allows it to change targets."
+      },
+      {
         "text": ""
       },
       {
         "text": "accessing the menu seems to let me swap a 'scrapping mode' for anything unneeded."
       },
       {
-        "text": ""
-      },
-      {
         "text": "i also appear to be able to save or quit through the save menu. useful to keep checkpoints in difficult situations."
-      },
-      {
-        "text": ""
       },
       {
         "text": "i think that was the last of them. I can make my escape from this horrific lab by quitting and travelling to the wilderness. i may also continue with this area in a 'freeplay mode' simulation."
@@ -731,7 +731,7 @@
         "text": ""
       },
       {
-        "text": "i detect autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit.",
+        "text": "i detect autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit",
         "color": [9, 0]
       },
       {
@@ -912,7 +912,7 @@
         "text": ""
       },
       {
-        "text": "milit's forces seem almost endless - just a little longer should be enough to draw out the emperor."
+        "text": "milit's forces seem almost endless - just a little longer should be enough to draw out the emperor"
       },
       {
         "text": ""

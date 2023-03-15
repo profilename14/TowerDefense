@@ -82,6 +82,7 @@ function Tower:frontal_collision()
   return hits
 end
 function Tower:apply_damage(targets, damage)
+  --if (damage) printh(damage)
   local tower_type = self.type
   for enemy in all(targets) do
     if enemy.hp > 0 then
@@ -123,7 +124,8 @@ function Tower:manifested_lightning_blast()
   if (self.manifest_cooldown > 0) return 
   self.manifest_cooldown = self.cooldown
 
-  local dir, anchor, damage = (selector.position / 8 - self.position) / 8, self.position + Vec:new(1, 0), self.dmg * 2
+  -- it hits 6 times, so 4*6*0.67 = 24 damage
+  local dir, anchor, damage = (selector.position / 8 - self.position) / 8, self.position + Vec:new(1, 0), self.dmg * 1
 
   for i=1, 3 do 
     Tower.apply_damage(self, raycast(anchor, 64, dir), damage)
@@ -152,7 +154,7 @@ function Tower:manifested_hale_blast()
   end
   spawn_particles_at(locations, global_table_data.animation_data.frost)
   Tower.freeze_enemies(self, hits)
-  Tower.apply_damage(self, hits, self.dmg\4)
+  Tower.apply_damage(self, hits, self.dmg\9)
 end
 function Tower:manifested_nova()
   -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 
