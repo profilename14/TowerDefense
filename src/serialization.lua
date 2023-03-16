@@ -27,22 +27,25 @@ end
 
 function insert_key_val(str, table)
   local key, val = split_key_value_str(str)
+  
+  local value
+  if val[1] == "{" and val[-1] == "}" then 
+    value = unpack_table(sub(val, 2, #val-1))
+  elseif val == "true" then 
+    value = true 
+  elseif val == "false" then 
+    value = false 
+  elseif value == "inf" then 
+    value = 32767
+  elseif value == "nil" then 
+    value = nil
+  else
+    value = tonum(val) or val
+  end
+  
   if key == nil then
-    add(table, val)
+    add(table, value)
   else  
-    local value
-    if val[1] == "{" and val[-1] == "}" then 
-      value = unpack_table(sub(val, 2, #val-1))
-    elseif val == "true" then 
-      value = true 
-    elseif val == "false" then 
-      value = false 
-    else
-      value = tonum(val) or val
-    end
-    if value == "inf" then 
-      value = 32767
-    end
     table[key] = value
   end
 end

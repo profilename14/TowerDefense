@@ -72,7 +72,11 @@ function draw_sprite_rotated(sprite_id, position, size, theta, is_opaque)
 end
 
 function draw_sprite_shadow(sprite, position, height, size, theta)
-  pal(global_table_data.palettes.shadows)
+  local palette = {}
+  for i=0, 15 do 
+    palette[i] = 0
+  end
+  pal(palette)
   draw_sprite_rotated(sprite, position + Vec:new(height, height), size, theta)
   pal()
 end

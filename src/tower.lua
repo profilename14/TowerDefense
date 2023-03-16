@@ -6,7 +6,7 @@ function Tower:new(pos, tower_template_data, direction)
     radius = tower_template_data.radius, 
     attack_delay = tower_template_data.attack_delay,
     current_attack_ticks = 0,
-    cooldown = tower_template_data.cooldown,
+    cooldown = tower_template_data.cooldown or 0,
     manifest_cooldown = -1,
     being_manifested = false,
     being_boosted = false,
