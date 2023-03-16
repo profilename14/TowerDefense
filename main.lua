@@ -1,4 +1,4 @@
--- Tower Defence v2.0.2
+-- Tower Defence v2.0.3
 -- By Jeren (Code), Jasper (Art, Code, & Design), Jimmy (Art & Music), and Kaoushik (Code)
 
 -- Forward Declaring Functions

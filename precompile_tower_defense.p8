@@ -1136,6 +1136,7 @@ function main_menu_draw_loop()
     Enemy.draw(menu_enemy)
   end
   Menu.draw(get_menu("main"))
+  print_with_outline("v2.0.3", 1, 122, 7, 1)
 end
 function credits_draw_loop()
   map(unpack(global_table_data.splash_screens[1].mget_shift))
