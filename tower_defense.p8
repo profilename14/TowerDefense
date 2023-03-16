@@ -180,7 +180,7 @@ end end end function nova_apply(e,i)for n=-e,e do for t=-e,e do
 if(t~=0or n~=0)i(Vec:new(t,n))
 end end end function combine_and_unpack(n,t)local e={}for t in all(n)do add(e,t)end for n in all(t)do add(e,n)end return unpack(e)end function round_to(n,t)local e=10^(t or 0)return flr(n*e+.5)/e end function check_tile_flag_at(e,n)return fget(mget(Vec.unpack(e)),n)end function load_wave_text()
 if(freeplay_rounds>0)return
-local e=global_table_data.dialogue[global_table_data.level_dialogue_set[cur_level]or"dialogue_level4"][wave_round]if e then text_scroller.enable=true TextScroller.load(text_scroller,e.text,e.color)end end function acos(e)return atan2(e,-sqrt(1-e*e))end function save_byte(e,n)poke(e,n)return e+1end function save_int(e,n)poke4(e,n)return e+4end function encode(e,n,t)return e<<t|n end function decode(e,n,t)return flr(e>>>n),e&t end function unpack_table(n)local i,t,o,e={},1,0,1while e<=#n do if n[e]=="{"then o+=1elseif n[e]=="}"then o-=1
+local e=global_table_data.dialogue[global_table_data.level_dialogue_set[cur_level]or"dialogue_level4"][wave_round]if e then text_scroller.enable=true printh(e.text or"nil")TextScroller.load(text_scroller,e.text,e.color)end end function acos(e)return atan2(e,-sqrt(1-e*e))end function save_byte(e,n)poke(e,n)return e+1end function save_int(e,n)poke4(e,n)return e+4end function encode(e,n,t)return e<<t|n end function decode(e,n,t)return flr(e>>>n),e&t end function unpack_table(n)local i,t,o,e={},1,0,1while e<=#n do if n[e]=="{"then o+=1elseif n[e]=="}"then o-=1
 if(o>0)goto unpack_table_continue
 insert_key_val(sub(n,t,e),i)t=e+1
 if(e+2>#n)goto unpack_table_continue
