@@ -1203,7 +1203,7 @@ function ui_draw_loop(tower_details)
       Animator.update(manifest_selector)
       Animator.draw(manifest_selector, Vec.unpack(selector.position))
     end
-    if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 122, 7, 0)
+    if (not manifested_tower_ref) print_with_outline("🅾️ open menu", 1, 121, 7, 0)
     local tower_in_table_state = is_in_table(selector.position/8, towers, true)
     sell_selector.dir = tower_in_table_state and 1 or -1
     if tower_in_table_state and not manifested_tower_ref then 
