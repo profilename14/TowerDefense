@@ -374,8 +374,7 @@
       "step_delay": 10,
       "sprite_index": 3,
       "type": 3,
-      "damage": 1,
-      "height": 2
+      "damage": 1
     },
     {
       "hp": 10,
@@ -390,24 +389,21 @@
       "step_delay": 12,
       "sprite_index": 5,
       "type": 3,
-      "damage": 4,
-      "height": 2
+      "damage": 4
     },
     {
       "hp": 8,
       "step_delay": 12,
       "sprite_index": 64,
       "type": 4,
-      "damage": 1,
-      "height": 2
+      "damage": 1
     },
     {
       "hp": 40,
       "step_delay": 12,
       "sprite_index": 65,
       "type": 5,
-      "damage": 6,
-      "height": 2
+      "damage": 6
     },
     {
       "hp": 15,
@@ -422,8 +418,7 @@
       "step_delay": 10,
       "sprite_index": 67,
       "type": 7,
-      "damage": 3,
-      "height": 2
+      "damage": 3
     },
     {
       "hp": 11,
@@ -438,16 +433,14 @@
       "step_delay": 10,
       "sprite_index": 94,
       "type": 9,
-      "damage": 3,
-      "height": 2
+      "damage": 3
     },
     {
       "hp": 200,
       "step_delay": 16,
       "sprite_index": 70,
       "type": 10,
-      "damage": 49,
-      "height": 2
+      "damage": 49
     },
     {
       "hp": 20,
@@ -462,8 +455,7 @@
       "step_delay": 10,
       "sprite_index": 72,
       "type": 12,
-      "damage": 1,
-      "height": 2
+      "damage": 1
     },
     {
       "hp": 11,
@@ -478,32 +470,28 @@
       "step_delay": 12,
       "sprite_index": 74,
       "type": 14,
-      "damage": 7,
-      "height": 2
+      "damage": 7
     },
     {
       "hp": 80,
       "step_delay": 16,
       "sprite_index": 75,
       "type": 15,
-      "damage": 13,
-      "height": 2
+      "damage": 13
     },
     {
       "hp": 13,
       "step_delay": 4,
       "sprite_index": 69,
       "type": 16,
-      "damage": 0,
-      "height": 2
+      "damage": 0
     },
     {
       "hp": 275,
       "step_delay": 14,
       "sprite_index": 95,
       "type": 16,
-      "damage": 50,
-      "height": 2
+      "damage": 50
     }
   ],
   "wave_set": [

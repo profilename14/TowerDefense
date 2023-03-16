@@ -15,7 +15,7 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height
     gfx = sprite_id,
     type = type_,
     damage = damage_,
-    height = height_,
+    height = height_ or 2,
     pos = 1,
     spawn_location = Vec:new(location)
   }
