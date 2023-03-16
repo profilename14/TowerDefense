@@ -655,7 +655,9 @@
       {
         "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging"
       },
-      "nil",
+      {
+        "text": ""
+      },
       {
         "text": "i'm detecting swift and fiery rocketcraft. a torch trap will be ineffective but the hale howitzer will damage their engines."
       },
@@ -671,7 +673,9 @@
       {
         "text": "i appear to have one last blueprint for a 'clock carbine.' it allows construction of a temporal laser - capable of speeding up any unmanifested tower to double speed. manifestation allows redirection."
       },
-      "nil",
+      {
+        "text": ""
+      },
       {
         "text": "accessing the menu seems to let me swap a 'scrapping mode' for anything unneeded."
       },
@@ -683,9 +687,15 @@
       }
     ],
     "dialogue_level2": [
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "i detect autonomous attack vehicles. they seem resistant to bladed strikes but would be easy to short-circuit.",
         "color": [9, 0]
@@ -693,16 +703,30 @@
       {
         "text": "those cargo helicopters ahead will carry cars through my defenses - unless I use something capable of piercing both at once..."
       },
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "that vehicle isn't even aligned with milit - that's a bandit! it'll loot from my supplies if it makes it past."
       },
-      "nil",
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "machine bringer of death! i am the commander of this platoon and i saw what you did back at that lab. i'm here to end this once and for all!",
         "color": [2, 0]
@@ -713,78 +737,158 @@
       }
     ],
     "dialogue_level3": [
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "i can see armored attack vehicles coming. their protection seems resistant to my sharpshooters.",
         "color": [9, 0]
       },
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "a guided missile strike is coming! i'll can't let any past or they'll do critical damage!"
       },
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base. go away - let me see if i can salvage any of the lives you took today.",
         "color": [11, 0]
       }
     ],
     "dialogue_level4": [
-      "nil",
+      {
+        "text": ""
+      },
       {
         "text": "stealth planes detected. they can randomly cloak past my sensors so i'll have to be careful with manual attacks.",
         "color": [9, 0]
       },
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "those vehicles ahead have a energy dampening shield. a lightning lance won't be effective."
       },
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "all forces in this military installation are clear. i have to keep making my way through - the capital is just nearby."
       }
     ],
     "dialogue_level5": [
-      "nil",
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "extremely reinforced mechs sighted. the armor they use is strudy but vulnerable to blades.",
         "color": [9, 0]
       },
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "milit's forces seem almost endless - just a little longer might draw out the emperor"
       },
-      "nil",
-      "nil",
-      "nil",
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
+      {
+        "text": ""
+      },
       {
         "text": "blitz... it's sad to see you today in such a situation. we created you to bring prosperity to our great nation - not ruin! i'm the one who ordered your construction. but now? i'll be the one to order your execution!",
         "color": [8, 0]
