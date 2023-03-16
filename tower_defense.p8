@@ -136,7 +136,7 @@ if(not self.enable or not self.is_done)return
 if(self.text_pos>=#self.data)return true
 self.text_pos+=1self.char_pos,self.is_done=1end function TextScroller:skip()
 if(not self.enable)return
-self.char_pos=#self.data[self.text_pos]end function TextScroller:load(i,e)if i==""then self.is_done,self.enable=true return end
+self.char_pos=#self.data[self.text_pos]end function TextScroller:load(i,e)if i==""or i==nil then self.is_done,self.enable=true return end
 if(e)self.color=e
 local e,t=self.width,""for a,n in pairs(split(i," "))do if#n+1<=e then t..=n.." "e-=#n+1elseif#n<=e then t..=n e-=#n else t..="\n"..n.." "e=self.width-#n+1end end self.data,e={},0local n,i="",split(t,"\n")for a,t in pairs(i)do if e<=self.max_lines then n..=t.."\n\n"e+=1else add(self.data,n)n,e=t.."\n\n",1end
 if(a==#i)add(self.data,n)

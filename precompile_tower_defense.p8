@@ -1050,7 +1050,7 @@ function TextScroller:skip()
   self.char_pos = #self.data[self.text_pos]
 end
 function TextScroller:load(text, color_palette)
-  if text == "" then
+  if text == "" or text == nil then
     self.is_done, self.enable = true
     return
   end
