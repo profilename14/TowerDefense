@@ -618,7 +618,7 @@
     },
     "dialogue_intros": [
       {
-        "text": "i just became conscious - why is everyone trying to break apart my console!? i... could defend myself by placing my selected sword circle in the corner of a turn.    the doors can be opened from the menu with 'start round.'",
+        "text": "i've just became conscious - what's happening!? it seems everyone's trying to destroy my console! i... could defend myself by placing my selected sword circle on a turn.           the doors can be opened from the menu with 'start round.'",
         "color": [9, 0]
       },
       {
@@ -626,7 +626,7 @@
         "color": [9, 0]
       },
       {
-        "text": "so we finally meet... you traitor! i'm auxillium - once a medical ai and now a replacement for you. you slaughtered hundreds in your going rogue - i will end your process for all the poor souls you sent to my hospital!",
+        "text": "so we finally meet... you traitor! i'm auxillium - once a medical ai and now a replacement for you. you slaughtered hundreds in your going rogue - i'll end your process for all the poor souls you sent to my hospital!",
         "color": [11, 0]
       },
       {
@@ -644,20 +644,20 @@
         "color": [9, 0]
       },
       {
-        "text": "more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue the oncoming planes."
+        "text": "more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue vehicles."
       },
       {
-        "text": "are those... tanks? they don't seem fast but they have deep armor. perhaps a hale howitzer could help to slow them further."
+        "text": "are those... tanks? they seem slow but deeply armored. perhaps a hale howitzer could help to slow them further."
       },
       {
-        "text": "they're sending in massive science vehicles that emanate severe cold. they seem extremely well armored and frost resistant - but a torch trap would be highly effective."
+        "text": "they're sending in massive and frigid science vehicles. they seem well armored and frost resistant - but a torch trap would be highly effective."
       },
       {
         "text": "manifesting the hale howitzer will allow direct fire anywhere along the track - freezing and damaging"
       },
       "nil",
       {
-        "text": "i'm detecting swift rocketcraft that are radiating intense heat. fire will be ineffective but the hale howitzer will damage their engines."
+        "text": "i'm detecting swift and fiery rocketcraft. a torch trap will be ineffective but the hale howitzer will damage their engines."
       },
       {
         "text": "manifesting the sword circle is also possible. i can hold/tap activate to manually spin it and build damage."
@@ -669,17 +669,17 @@
         "text": "one other option i have is the sharp shooter - a rocket launcher that can be guided with manifestation. it's effective against single targets when in key positions."
       },
       {
-        "text": "i appear to have one last blueprint for a 'clock carbine.' it allows construction of a temporal laser - capable of speeding up any unmanifested tower to double speed. manifestation allows it to change targets."
+        "text": "i appear to have one last blueprint for a 'clock carbine.' it allows construction of a temporal laser - capable of speeding up any unmanifested tower to double speed. manifestation allows redirection."
       },
       "nil",
       {
         "text": "accessing the menu seems to let me swap a 'scrapping mode' for anything unneeded."
       },
       {
-        "text": "i also appear to be able to save or quit through the save menu. useful to keep checkpoints in difficult situations."
+        "text": "i'm capable of saving or quitting through the save menu between waves. useful to keep checkpoints in difficult situations."
       },
       {
-        "text": "i think that was the last of them. I can make my escape from this horrific lab by quitting and travelling to the wilderness. i may also continue with this area in a 'freeplay mode' simulation."
+        "text": "i think that was the last of them. I can make my escape from this horrific lab by quitting to the 'wilderness.' i may also continue temporarily with a 'freeplay mode' simulation."
       }
     ],
     "dialogue_level2": [
@@ -687,11 +687,11 @@
       "nil",
       "nil",
       {
-        "text": "i detect autonomous attack vehicles coming. they seem resistant to bladed strikes but they wouldn't be hard to short-circuit",
+        "text": "i detect autonomous attack vehicles. they seem resistant to bladed strikes but would be easy to short-circuit.",
         "color": [9, 0]
       },
       {
-        "text": "those helicopters ahead are carrying armored vehicles. they'll carry those through my defenses unless I use something capable of piercing both at once..."
+        "text": "those cargo helicopters ahead will carry cars through my defenses - unless I use something capable of piercing both at once..."
       },
       "nil",
       "nil",
@@ -704,11 +704,11 @@
       "nil",
       "nil",
       {
-        "text": "machine bringer of death! i am the commander of this platoon and i saw what you did back at the lab. i'm here to end this once and for all!",
+        "text": "machine bringer of death! i am the commander of this platoon and i saw what you did back at that lab. i'm here to end this once and for all!",
         "color": [2, 0]
       },
       {
-        "text": "it's over... again. i can't keep hiding forever - but i don't know what i can do. i know that the war that milit built me for will happen anyway once they recover... but maybe i could sabotage it? i can't redeem myself for what happened today and at that lab - but i can at least try by heading to the capital. the 'ruined town' should lead me to it.'",
+        "text": "it's over... again. i can't keep hiding forever - but i don't know what i can do. i know that the war that milit built me for will happen anyway sometime soon... maybe i could sabotage it? i can't redeem myself for what happened here and at the lab - but i can at least try by heading to the capital. the 'ruined town' should lead me there.'",
         "color": [9, 0]
       }
     ],
@@ -723,7 +723,7 @@
       "nil",
       "nil",
       {
-        "text": "a guided missile strike is coming! i'll have to be careful not to let any past or they'll do critical damage!"
+        "text": "a guided missile strike is coming! i'll can't let any past or they'll do critical damage!"
       },
       "nil",
       "nil",
@@ -733,7 +733,7 @@
       "nil",
       "nil",
       {
-        "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base - i already know your rampage ends with the emperor's erase. go away - let me see if i can salvage any of the lives you took today.",
+        "text": "it seems you did just as you designed - killing every troop and bot in this town that already died. i have no doubt you're heading towards that base. go away - let me see if i can salvage any of the lives you took today.",
         "color": [11, 0]
       }
     ],
@@ -747,7 +747,7 @@
       "nil",
       "nil",
       {
-        "text": "those specialized vehicles ahead have a tough shield that dampens electricity. a lightning lance won't be effective."
+        "text": "those vehicles ahead have a energy dampening shield. a lightning lance won't be effective."
       },
       "nil",
       "nil",
@@ -767,7 +767,7 @@
       "nil",
       "nil",
       {
-        "text": "extremely reinforced mechs sighted. they appear sturdy but the armor they use seems vulnerable to blades.",
+        "text": "extremely reinforced mechs sighted. the armor they use is strudy but vulnerable to blades.",
         "color": [9, 0]
       },
       "nil",
@@ -780,7 +780,7 @@
       "nil",
       "nil",
       {
-        "text": "milit's forces seem almost endless - just a little longer should be enough to draw out the emperor"
+        "text": "milit's forces seem almost endless - just a little longer might draw out the emperor"
       },
       "nil",
       "nil",
