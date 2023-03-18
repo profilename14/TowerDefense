@@ -421,7 +421,7 @@
       "damage": 3
     },
     {
-      "hp": 11,
+      "hp": 8,
       "step_delay": 8,
       "sprite_index": 68,
       "type": 8,
@@ -458,7 +458,7 @@
       "damage": 1
     },
     {
-      "hp": 11,
+      "hp": 8,
       "step_delay": 6,
       "sprite_index": 73,
       "type": 13,
