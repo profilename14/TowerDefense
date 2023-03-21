@@ -72,6 +72,8 @@ function shop_loop()
     if get_active_menu().prev == nil then 
       shop_enable = false
       menus[1].enable = false
+      -- Menu Sound
+      sfx(8)
       return
     else
       swap_menu_context(get_active_menu().prev)
@@ -92,6 +94,8 @@ function game_loop()
     if manifested_tower_ref == nil then
       shop_enable = true
       get_menu("game").enable = true
+      -- Menu Sound
+      sfx(7)
       return
     else
       unmanifest_tower()
@@ -161,8 +165,8 @@ function game_loop()
   foreach(particles, destroy_particle)
   if enemies_active and #enemies == 0 and enemies_remaining == 0 then 
     enemies_active = false 
-    --Our old round finished sound got lost in the music additions.
-    sfx(global_table_data.sfx_data.round_complete)
+    --Not referencing global table as it costs 2 extra tokens.
+    sfx(6)
     coins += 15
     
     load_wave_text()
