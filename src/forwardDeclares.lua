@@ -129,6 +129,7 @@ function parse_menu_content(content)
 end
 
 function toggle_mode()
+  sfx(48)
   manifest_mode, sell = not manifest_mode
   sell_mode = not sell_mode
 end

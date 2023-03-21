@@ -197,6 +197,7 @@ function raycast(position, radius, dir)
 end
 
 function manifest_tower_at(position)
+  sfx(9)
   for tower in all(towers) do
     if tower.position == position then 
       if (tower.being_boosted) tower.being_boosted = false

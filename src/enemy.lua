@@ -25,13 +25,13 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height
 end
 function Enemy:step()
   if self.burning_tick > 0 then 
-    self.burning_tick -= 1
+    self.burning_tick -= 0.25
     if self.type == 6 then
-      self.hp -= 0.5
+      self.hp -= 0.125
     elseif self.type == 5 then
-      self.hp -= 5
+      self.hp -= 1
     else
-      self.hp -= 2
+      self.hp -= 0.4
     end
     local p, _ = Enemy.get_pixel_location(self)
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))
