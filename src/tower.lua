@@ -234,6 +234,7 @@ function place_tower(position, override)
     -- spawn the tower
     if (#towers >= 64 or grid[position.y][position.x] == "tower" or coins < tower_details.cost or (tower_details.type == "floor") ~= (grid[position.y][position.x] == "path")) return
     coins -= tower_details.cost
+    sfx(5)
   end
   add(towers, Tower:new(position, tower_details, direction))
   grid[position.y][position.x] = "tower"
