@@ -1,6 +1,7 @@
-# [Ferrous Fight](https://github.com/profilename14/TowerDefense)
+# Ferrous Fight
 
 # Game Links
+- [Github](https://github.com/profilename14/TowerDefense)
 - [Itch.io](https://jeraquel.itch.io/ferrous-fight)
 - [BBS](https://www.lexaloffle.com/bbs/?tid=51931)
 - On splore as "ferrous_fight"
