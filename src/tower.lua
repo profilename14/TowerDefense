@@ -87,7 +87,7 @@ function Tower:apply_damage(targets, damage)
   for enemy in all(targets) do
     if enemy.hp > 0 then
       local enemy_type, dmg = enemy.type, damage
-      if (tower_type == "tack" and enemy_type == 7) or (tower_type == "rail" and enemy_type == 14) then
+      if (tower_type == "tack" and enemy_type == 7) or (tower_type == "rail" and (enemy_type == 14 or enemy_type == 10 or enemy_type == 19)) then
         dmg = damage \ 2
       elseif (tower_type == "rail" and enemy_type == 7) or (tower_type == "tack" and enemy_type == 15) then
         dmg *= 2
