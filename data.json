@@ -437,7 +437,7 @@
       "damage": 3
     },
     {
-      "hp": 200,
+      "hp": 140,
       "step_delay": 16,
       "sprite_index": 70,
       "type": 10,
@@ -474,7 +474,7 @@
       "damage": 7
     },
     {
-      "hp": 80,
+      "hp": 60,
       "step_delay": 16,
       "sprite_index": 75,
       "type": 15,
@@ -488,7 +488,7 @@
       "damage": 0
     },
     {
-      "hp": 275,
+      "hp": 225,
       "step_delay": 14,
       "sprite_index": 95,
       "type": 17,
@@ -681,7 +681,7 @@
         "text": "accessing the menu seems to let me swap a 'scrapping mode' for anything unneeded."
       },
       {
-        "text": "i'm capable of saving or quitting through the save menu between waves. useful to keep checkpoints in difficult situations."
+        "text": "i can save or quit with the save menu between waves. keeping checkpoints will prevent losing progress."
       },
       {
         "text": "i think that was the last of them. I can make my escape from this horrific lab by quitting to the 'wilderness.' i may also continue temporarily with a 'freeplay mode' simulation."
@@ -702,7 +702,7 @@
         "color": [9, 0]
       },
       {
-        "text": "those cargo helicopters ahead will carry cars through my defenses - unless I use something capable of piercing both at once..."
+        "text": "those cargo planes ahead will carry cars through my defenses - unless I use something capable of piercing both at once..."
       },
       {
         "text": ""

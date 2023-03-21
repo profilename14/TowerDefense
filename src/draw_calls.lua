@@ -16,7 +16,7 @@ function main_menu_draw_loop()
   end
 
   Menu.draw(get_menu("main"))
-  print_with_outline("v2.0.3", 1, 122, 7, 1)
+  print_with_outline("v2.1.0", 1, 122, 7, 1)
 end
 
 function credits_draw_loop()

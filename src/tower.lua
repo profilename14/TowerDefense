@@ -90,7 +90,7 @@ function Tower:apply_damage(targets, damage)
       if (tower_type == "tack" and enemy_type == 7) or (tower_type == "rail" and (enemy_type == 14 or enemy_type == 10 or enemy_type == 19)) then
         dmg = damage \ 2
       elseif (tower_type == "rail" and enemy_type == 7) or (tower_type == "tack" and enemy_type == 15) then
-        dmg *= 2
+        dmg *= 1.6
       end
       enemy.hp -= dmg
     end
@@ -154,7 +154,7 @@ function Tower:manifested_hale_blast()
   end
   spawn_particles_at(locations, global_table_data.animation_data.frost)
   Tower.freeze_enemies(self, hits)
-  Tower.apply_damage(self, hits, self.dmg\9)
+  Tower.apply_damage(self, hits, self.dmg\5)
 end
 function Tower:manifested_nova()
   -- The sword circle uses the cooldown system in a different kind of way: it stores the player's 
