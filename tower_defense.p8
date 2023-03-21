@@ -1,6 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 39
 __lua__
+-- ferrous fight v2.1.0
+-- jeren, jasper, jimmy & kaoushik
 function choose_tower(e)selected_menu_tower_id,get_active_menu().enable,shop_enable=e end function display_tower_info(n,i,o)local t,e=i+Vec:new(-1,-31),global_table_data.tower_templates[n]local n={{text=e.name,color=o},{text=e.prefix..": "..e.damage,color={7,0}},{text="cost: "..e.cost,color={coins>=e.cost and 3or 8,0}}}local i=longest_menu_str(n)*5+4tower_stats_background_rect=BorderRect:new(t,Vec:new(i+20,27),8,5,2)BorderRect.draw(tower_stats_background_rect)for e,i in pairs(n)do print_with_outline(i.text,combine_and_unpack({Vec.unpack(t+Vec:new(4,e==1and 2or 7*e))},i.color))end spr(e.icon_data,combine_and_unpack({Vec.unpack(tower_stats_background_rect.position+Vec:new(i,6))},{2,2}))end function display_tower_rotation(e,n)local e,t=global_table_data.tower_templates[selected_menu_tower_id],n+Vec:new(0,-28)tower_rotation_background_rect=BorderRect:new(t,Vec:new(24,24),8,5,2)BorderRect.draw(tower_rotation_background_rect)local n=t+Vec:new(4,4)if e.disable_icon_rotation then spr(e.icon_data,combine_and_unpack({Vec.unpack(n)},{2,2}))else draw_sprite_rotated(global_table_data.tower_icon_background,t,24,parse_direction(direction))draw_sprite_rotated(e.icon_data,n,16,parse_direction(direction))end end function rotate_clockwise()direction=Vec:new(-direction.y,direction.x)end function start_round()
 if(start_next_wave or#enemies~=0)return
 start_next_wave,enemies_active=true,true local e=global_table_data.wave_set[cur_level]or"wave_data"max_waves=#global_table_data[e]
