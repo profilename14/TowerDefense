@@ -279,7 +279,7 @@ function Enemy:new(location, hp_, step_delay_, sprite_id, type_, damage_, height
 end
 function Enemy:step()
   if self.burning_tick > 0 then 
-    self.burning_tick -= 0.25
+    self.burning_tick -= 0.2
     if self.type == 6 then
       self.hp -= 0.125
     elseif self.type == 5 then
