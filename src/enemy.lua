@@ -29,9 +29,9 @@ function Enemy:step()
     if self.type == 6 then
       self.hp -= 0.125
     elseif self.type == 5 then
-      self.hp -= 1
+      self.hp -= 0.8
     else
-      self.hp -= 0.4
+      self.hp -= 0.3
     end
     local p, _ = Enemy.get_pixel_location(self)
     add(particles, Particle:new(p, true, Animator:new(global_table_data.animation_data.burn, false)))

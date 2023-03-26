@@ -371,7 +371,7 @@
   ],
   "enemy_templates": [
     {
-      "hp": 12,
+      "hp": 11,
       "step_delay": 10,
       "sprite_index": 3,
       "type": 1,
@@ -619,7 +619,7 @@
     },
     "dialogue_intros": [
       {
-        "text": "i've just became conscious - what's happening!? it seems everyone's trying to destroy my console! i... could defend myself by placing my selected sword circle on a turn.           the doors can be opened from the menu with 'start round.'",
+        "text": "i've just became conscious - what's happening!? it seems everyone's trying to destroy my console! i... could defend myself by pressing 'X' on the marked tile to place towers. 'Z' opens the menu - where i can start the next round.",
         "color": [9, 0]
       },
       {
@@ -648,7 +648,7 @@
         "text": "more people and now planes? i don't have the defenses to protect myself from foes that fast... i'll have to manifest through this torch trap by selecting it. then i can move it around the road to pursue vehicles."
       },
       {
-        "text": "are those... tanks? they seem slow but deeply armored. perhaps a hale howitzer could help to slow them further."
+        "text": "are those... tanks? they seem slow but deeply armored. a hale howitzer could go well near the current towers."
       },
       {
         "text": "they're sending in massive and frigid science vehicles. they seem well armored and frost resistant - but a torch trap would be highly effective."
@@ -672,7 +672,7 @@
         "text": "one other option i have is the sharp shooter - a rocket launcher that can be guided with manifestation. it's effective against single targets when in key positions."
       },
       {
-        "text": "i appear to have one last blueprint for a 'clock carbine.' it allows construction of a temporal laser - capable of speeding up any unmanifested tower to double speed. manifestation allows redirection."
+        "text": "i appear to have one last blueprint for a 'clock carbine.' it allows construction of a temporal laser - capable of speeding up any unmanifested tower to double speed."
       },
       {
         "text": ""
